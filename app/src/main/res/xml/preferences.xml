@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/settings_personal_info"
+        android:layout="@layout/pref_category_layout"
+        android:key="@string/settings_personal_key">
+
+        <Preference
+            android:title="@string/settings_username"
+            android:summary=""
+            android:key="@string/settings_user_key"
+            android:layout="@layout/main_preference_layout"/>
+
+        <Preference
+            android:title="@string/settings_department"
+            android:summary=""
+            android:key="@string/settings_department_key"
+            android:layout="@layout/main_preference_layout"/>
+
+        <Preference
+            android:title="@string/settings_id"
+            android:summary=""
+            android:key="@string/settings_id_key"
+            android:layout="@layout/main_preference_layout"/>
+
+        <Preference
+            android:title="@string/settings_phone_number"
+            android:summary=""
+            android:key="@string/settings_phone_key"
+            android:layout="@layout/main_preference_layout"/>
+
+        <Preference
+            android:title="@string/settings_password"
+            android:summary=""
+            android:key="@string/settings_password_key"
+            android:layout="@layout/main_preference_layout"/>
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_admin"
+        android:layout="@layout/pref_category_layout"
+        android:key="@string/settings_admin_key">
+
+        <Preference
+            android:title="@string/settings_hospital_group"
+            android:summary=""
+            android:key="@string/settings_hospital_group_key"
+            android:layout="@layout/main_preference_layout"/>
+
+        <Preference
+            android:title="@string/settings_toolbar_color"
+            android:summary=""
+            android:key="@string/settings_toolbar_color_key"
+            android:layout="@layout/main_preference_layout"/>
+
+        <Preference
+            android:title="@string/settings_background_color"
+            android:summary=""
+            android:key="@string/settings_background_color_key"
+            android:layout="@layout/main_preference_layout"/>
+
+        <Preference
+            android:title="@string/settings_report_title_color"
+            android:summary=""
+            android:key="@string/settings_report_title_color_key"
+            android:layout="@layout/main_preference_layout"/>
+
+        <SwitchPreference
+            android:title="@string/settings_background_image_switch"
+            android:textStyle="bold"
+            android:key="@string/settings_background_image_key" />
+
+
+    </PreferenceCategory>
+</PreferenceScreen>

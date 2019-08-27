@@ -1,0 +1,74 @@
+<resources>
+
+    <!-- Main strings across the app -->
+
+    <string name="app_name">Infection Prevention</string>
+
+    <string name="hospital_name">Keck Medicine</string>
+
+    <string name="my_message">You clicked the settings button</string>
+
+    <string name="standard_precautions">Standard Precautions</string>
+    <string name="isolation_precautions">Isolation Precautions</string>
+
+
+    <!-- Settings strings -->
+
+    <string name="action_settings">Settings</string>
+    
+    <!-- General settings string and key -->
+
+    <string name="settings_personal_info">Personal Info</string>
+    <string name="settings_personal_key">user</string>
+
+    <string name="settings_username">Username</string>
+    <string name="settings_user_key">user</string>
+
+    <string name="settings_department">Department</string>
+    <string name="settings_department_key">department</string>
+
+    <string name="settings_id">ID</string>
+    <string name="settings_id_key">id</string>
+
+    <string name="settings_phone_number">Phone Number</string>
+    <string name="settings_phone_key">phone</string>
+
+    <string name="settings_password">Password</string>
+    <string name="settings_password_key">password</string>
+    
+    
+    <!-- Settings admin strings and keys -->
+
+    <string name="settings_admin">Admin Settings</string>
+    <string name="settings_admin_key">admin</string>
+
+    <string name="settings_toolbar_color">Toolbar Color</string>
+    <string name="settings_toolbar_color_key">toolbar_color</string>
+
+    <string name="settings_background_color">Background Color</string>
+    <string name="settings_background_color_key">background_color</string>
+
+    <string name="settings_report_title_color">Report Title Color</string>
+    <string name="settings_report_title_color_key">report_title_color</string>
+
+    <string name="settings_background_image_switch">Background Image</string>
+    <string name="settings_background_image_key">background_image</string>
+
+    <string name="settings_hospital_group">Hospital Group</string>
+    <string name="settings_hospital_group_key">hospital_group_key</string>
+    
+    
+    <!-- Creating a report strings -->
+    
+    <string name="create_report">New Hand Hygiene Observation</string>
+    <string name="create_report_date">Date of Observation</string>
+    <string name="create_report_facility">Facility</string>
+    <string name="create_report_unit">Unit</string>
+    <string name="create_report_assignments_button"><u>See your assignments</u></string>
+    <string name="create_report_room">Room</string>
+    <string name="create_report_observed_occupation">Observed Occupation</string>
+    <string name="create_report_service">Service/Discipline</string>
+    <string name="create_report_my_team">My Team: </string>
+    <string name="create_report_next_button">Next</string>
+
+</resources>
