@@ -144,9 +144,6 @@ public class MainActivity extends AppCompatActivity {
 
         precautions = new ArrayList<>();
 
-        // These will be loaded from a file stored in the server
-        // or simply a tree of backend data (JSON, PDF, Excel, etc).
-
         // Each array will represent one set of buttons
 
         ArrayList<HealthPractice> standard = new ArrayList<>();
