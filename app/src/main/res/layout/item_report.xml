@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+  <ImageView
+      android:id="@+id/reportTypeImageView"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:contentDescription="@string/report_icon_desc"
+      android:src="@drawable/ic_health_report"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/reportTypeTitleTV"
+      app:layout_constraintHorizontal_weight="3"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+      android:id="@+id/reportTypeTitleTV"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="5dp"
+      android:layout_marginBottom="8dp"
+      android:gravity="center"
+      android:text="Contact Enteric Violation"
+      android:textColor="@color/colorPrimary"
+      android:textSize="20sp"
+      android:textStyle="bold"
+      app:layout_constraintBottom_toTopOf="@+id/reportEmployeeNameTV"
+      app:layout_constraintEnd_toStartOf="@id/reportDateTV"
+      app:layout_constraintHorizontal_weight="8"
+      app:layout_constraintStart_toEndOf="@id/reportTypeImageView"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+      android:id="@+id/reportDateTV"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:lineSpacingExtra="8dp"
+      android:text="10:24pm 10/12/2019"
+      android:textSize="12sp"
+      android:textColor="@color/colorPrimary"
+      app:layout_constraintBottom_toBottomOf="@+id/reportTypeTitleTV"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_weight="3"
+      app:layout_constraintStart_toEndOf="@id/reportTypeTitleTV"
+      app:layout_constraintTop_toTopOf="@+id/reportTypeTitleTV" />
+
+  <TextView
+      android:id="@+id/reportEmployeeNameTV"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:paddingStart="20dp"
+      android:paddingEnd="20dp"
+      android:text="Committed by Nicholas Lionel Caceres"
+      android:textColor="@color/colorPrimary"
+      app:layout_constraintBottom_toTopOf="@+id/reportLocationTV"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/reportTypeImageView"
+      app:layout_constraintTop_toBottomOf="@+id/reportTypeTitleTV" />
+
+  <TextView
+      android:id="@+id/reportLocationTV"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:paddingStart="20dp"
+      android:paddingEnd="20dp"
+      android:text="Location: HSC Unit 3 Room 323"
+      android:textColor="@color/colorPrimary"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/reportTypeImageView"
+      app:layout_constraintTop_toBottomOf="@+id/reportEmployeeNameTV" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

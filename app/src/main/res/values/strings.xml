@@ -7,17 +7,30 @@
     <string name="hospital_name">Keck Medicine</string>
 
     <string name="my_message">You clicked the settings button</string>
+    <string name="alert_dialog_ok">OK</string>
+    <string name="alert_dialog_cancel">Cancel</string>
 
+    <!-- Main Activity -->
+    <string name="main_alert_dialog_title">Connection Issue!</string>
+    <string name="main_alert_dialog_message">Issue retrieving new precaution list. Possible internet connection problem</string>
+    <string name="precautions_sorry_message">Sorry! Couldn\'t Retrieve the Precaution Types</string>
+
+    <!-- Nav Drawer Strings -->
+    <string name="reports">Reports</string>
+    <string name="report_filters">Report Filters</string>
     <string name="standard_precautions">Standard Precautions</string>
     <string name="isolation_precautions">Isolation Precautions</string>
 
+    <!-- Create New Report Activity -->
 
-    <!-- Settings strings -->
+    <string name="create_new_report_label">Create New Report</string>
+    <string name="date_edittext_hint">Time &amp; Date</string>
 
+    <!-- Settings Activity String -->
+    <string name="settings_label">Settings</string>
     <string name="action_settings">Settings</string>
     
-    <!-- General settings string and key -->
-
+    <!-- General User Settings Activities w/ Keys -->
     <string name="settings_personal_info">Personal Info</string>
     <string name="settings_personal_key">user</string>
 
@@ -38,7 +51,6 @@
     
     
     <!-- Settings admin strings and keys -->
-
     <string name="settings_admin">Admin Settings</string>
     <string name="settings_admin_key">admin</string>
 
@@ -59,16 +71,33 @@
     
     
     <!-- Creating a report strings -->
-    
     <string name="create_report">New Hand Hygiene Observation</string>
     <string name="create_report_date">Date of Observation</string>
-    <string name="create_report_facility">Facility</string>
+    <string name="create_report_employee_prompt">Select an Employee</string>
+    <string name="create_report_health_practice_prompt">Select a Health Practice</string>
+    <string name="create_report_location_prompt">Select a Facility, Unit and Room Number</string>
+    <string name="create_report_facility_location">Occurrence Location</string>
     <string name="create_report_unit">Unit</string>
     <string name="create_report_assignments_button"><u>See your assignments</u></string>
     <string name="create_report_room">Room</string>
-    <string name="create_report_observed_occupation">Observed Occupation</string>
-    <string name="create_report_service">Service/Discipline</string>
+    <string name="create_report_health_practice">Health Practice</string>
     <string name="create_report_my_team">My Team: </string>
-    <string name="create_report_next_button">Next</string>
+    <string name="create_report_button">Submit</string>
+    <string name="date_alert_dialog_title">Date Left Empty!</string>
+    <string name="date_alert_dialog_message">You haven\'t filled in a date. Would you like to use the current time for the report date?</string>
+
+    <!-- Reports List Activity -->
+    <string name="reports_filter_button">Sort &amp; Filter</string>
+    <string name="filter_desc">Sorting and Filtering button</string>
+    <string name="report_icon_desc">Report icon</string>
+    <string name="search_label">Search</string>
+    <string name="search_hint">Search by name, health practice, id, or more!</string>
+    <string name="report_list_alert_dialog_message">Issue retrieving report list. Possible internet connection problem</string>
+    <string name="reports_sorry_message">Sorry! Couldn\'t Retrieve the Reports</string>
+
+    <!-- Sort Filter Menu -->
+    <string name="set_filter_menu_label">Done</string>
+    <string name="reset_filter_menu_label">Reset Filters</string>
+
 
 </resources>

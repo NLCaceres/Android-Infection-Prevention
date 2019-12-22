@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp">
+
+    <TextView
+        android:id="@+id/precautionTypeTView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        android:background="@color/colorLight"
+        android:padding="10dp"
+        android:elevation="2dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/horizontalRecycleView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/horizontalRecycleView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/precautionTypeTView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <ImageView
+        android:id="@+id/backwardIndicatorArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_indicator_backward"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/horizontalRecycleView"
+        app:layout_constraintBottom_toBottomOf="@id/horizontalRecycleView"
+        app:layout_constraintStart_toStartOf="@id/horizontalRecycleView" />
+    <ImageView
+        android:id="@+id/forwardIndicatorArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_indicator_forward"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/horizontalRecycleView"
+        app:layout_constraintBottom_toBottomOf="@id/horizontalRecycleView"
+        app:layout_constraintEnd_toEndOf="@id/horizontalRecycleView"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

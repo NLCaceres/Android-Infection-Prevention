@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    tools:context=".ActivityMain">
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:layout_height="match_parent"
@@ -16,57 +16,57 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:minHeight="?android:attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ToolbarStyle"
-        app:popupTheme="@style/ToolbarPopupStyle"
-        app:title="@string/hospital_name"
+    <include layout="@layout/app_toolbar"
+        android:id="@+id/toolbar_layout"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintBottom_toTopOf="@+id/precautionRV"/>
 
-
-    <ImageView
-        android:id="@+id/bannerIV"
-        android:elevation="4dp"
+    <include layout="@layout/app_progress_indicator"
+        android:id="@+id/progress_indicator_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFCC00"
-        android:src="@drawable/keck_logo"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_layout" />
+    <!-- Height and width necessary if not just sitting at the top like toolbar is for INCLUDE tags -->
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:id="@+id/precautionRV"
-        android:background="@color/colorAccent"
-        app:layout_constraintTop_toBottomOf="@+id/bannerIV"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/sorryTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/precautions_sorry_message"
+        android:textSize="18sp"
+        android:alpha="0.6"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <!-- Coordinator Layout allows Snackbars (so maybe not necessary live) -->
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_height="match_parent"
         android:layout_width="wrap_content"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
         app:menu="@menu/drawer_view"
         app:headerLayout="@layout/nav_header"/>
+
+    <!-- Drawer Layout for the navDrawer above -->
 
 </androidx.drawerlayout.widget.DrawerLayout>

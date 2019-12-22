@@ -4,7 +4,7 @@
     <!-- Settings button -->
     <item
         android:id="@+id/action_settings"
-        android:icon="@drawable/ic_settings_icon"
+        android:icon="@drawable/ic_settings"
         android:title="@string/action_settings"
         app:showAsAction="ifRoom" />
 

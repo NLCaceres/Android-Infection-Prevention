@@ -2,40 +2,60 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.usc.nlcaceres.infectionprevention">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
-    <application
-        android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+  <application
+      android:usesCleartextTraffic="true"
+      android:label="@string/app_name"
+      android:icon="@mipmap/ic_launcher"
+      android:theme="@style/AppTheme"
+      android:allowBackup="true"
+      android:supportsRtl="false">
+    <!-- usesCleartext enables dev urls -->
 
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+    <activity
+        android:name=".ActivityMain"
+        android:label="">
 
-        <activity android:name=".CreateReportActivity"
-            android:parentActivityName=".MainActivity">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
 
-            <!--This meta data tag is used for sub 4.0 apps -->
+    <activity android:name=".ActivityCreateReport"
+        android:label=""
+        android:parentActivityName=".ActivityMain"> <!-- Pre SDK 21/Android 4.0/Ice_Cream_Sandwich used Meta-Data tag instead -->
 
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+    </activity>
 
-        </activity>
+    <activity android:name=".ActivityReportList" android:parentActivityName=".ActivityMain"
+        android:label=""
+        android:launchMode="singleTop"> <!-- Keeps it to a single instance of the activity -->
 
-        <activity android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity">
+      <intent-filter>
+        <action android:name="android.intent.action.SEARCH" />
+      </intent-filter>
+      <meta-data android:name="android.app.searchable"
+          android:resource="@xml/searchable"/>
+      <!-- Could also have another activity start this one via search dialog (button) to display search results with meta-data default_searchable and val this activity name-->
 
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
-    </application>
+    </activity>
 
+    <activity android:name=".ActivitySortFilter"
+      android:label=""
+      android:parentActivityName=".ActivityReportList">
+
+    </activity>
+
+    <activity android:name=".ActivitySettings"
+        android:label="@string/settings_label"
+        android:parentActivityName=".ActivityMain">
+
+    </activity>
+
+  </application>
 
 </manifest>

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#990000</color>
-    <color name="colorPrimaryDark">#FFCC00</color>
-    <color name="colorAccent">#FAFAFA</color>
+    <color name="colorLight">#FFCC00</color>
+    <color name="colorLightDark">#C09800</color>
+    <color name="colorPrimaryDark">#610303</color>
+    <color name="colorAccent">#EC4444</color>
+
+    <color name="appBackground">#CCCCCC</color> <!-- USC Light Grey -->
+
+    <color name="actionModeColor">#EC4444</color>
 </resources>

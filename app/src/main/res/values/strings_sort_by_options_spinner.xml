@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="sort_by_spinner">
+    <item>Date Reported</item>
+    <item>Employee Name (A-Z)</item>
+    <item>Employee Name (Z-A)</item>
+  </string-array>
+</resources>
