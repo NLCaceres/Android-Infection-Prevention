@@ -4,18 +4,23 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import edu.usc.nlcaceres.infectionprevention.databinding.ActivitySettingsBinding;
 
 public class ActivitySettings extends AppCompatActivity {
+    private ActivitySettingsBinding viewBinding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        viewBinding = ActivitySettingsBinding.inflate(getLayoutInflater());
+        setContentView(viewBinding.getRoot());
 
-        androidx.appcompat.widget.Toolbar settingsToolbar = findViewById(R.id.home_toolbar);
+        androidx.appcompat.widget.Toolbar settingsToolbar = viewBinding.toolbarLayout.homeToolbar;
         setSupportActionBar(settingsToolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) supportActionBar.setDisplayHomeAsUpEnabled(true); // Possible Null ActionBar (but not likely)
 
         getSupportFragmentManager().beginTransaction().replace(R.id.settings_fragment, FragmentSettings.newInstance()).commit();
     }
