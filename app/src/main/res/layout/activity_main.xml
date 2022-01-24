@@ -9,55 +9,55 @@
     android:fitsSystemWindows="true"
     tools:context=".ActivityMain">
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:id="@+id/myCoordinatorLayout">
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <include layout="@layout/app_toolbar"
-        android:id="@+id/toolbar_layout"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/precautionRV"/>
-
-    <include layout="@layout/app_progress_indicator"
-        android:id="@+id/progress_indicator_layout"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_layout" />
-    <!-- Height and width necessary if not just sitting at the top like toolbar is for INCLUDE tags -->
+        android:id="@+id/myCoordinatorLayout">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:id="@+id/precautionRV"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_layout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/sorryTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/precautions_sorry_message"
-        android:textSize="18sp"
-        android:alpha="0.6"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+            <include layout="@layout/app_toolbar"
+                android:id="@+id/toolbar_layout"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/precautionRV"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <include layout="@layout/app_progress_indicator"
+                android:id="@+id/progress_indicator_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar_layout" />
+            <!-- Height and width necessary if not just sitting at the top like toolbar is for INCLUDE tags -->
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:id="@+id/precautionRV"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar_layout"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Coordinator Layout allows Snackbars (so maybe not necessary live) -->
+            <TextView
+                android:id="@+id/sorryTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/precautions_sorry_message"
+                android:textSize="18sp"
+                android:alpha="0.6"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <!-- Coordinator Layout allows Snackbars -->
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
