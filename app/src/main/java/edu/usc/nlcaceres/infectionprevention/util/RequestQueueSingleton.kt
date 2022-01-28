@@ -1,4 +1,4 @@
-package edu.usc.nlcaceres.infectionprevention.helpers
+package edu.usc.nlcaceres.infectionprevention.util
 
 import android.content.Context
 import com.android.volley.Request

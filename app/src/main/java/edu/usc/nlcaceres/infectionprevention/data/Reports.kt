@@ -1,15 +1,8 @@
-package edu.usc.nlcaceres.infectionprevention.helpers
+package edu.usc.nlcaceres.infectionprevention.data
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
 import java.util.*
 import kotlin.collections.ArrayList
-
-class FilterGroup(val name : String, val filters : ArrayList<FilterItem>, var isExpanded : Boolean, var singleSelectionEnabled : Boolean)
-
-@Parcelize
-class FilterItem(val name : String, var isSelected : Boolean, val filterGroupName : String) : Parcelable // RViews will not save state due to reuse of views, so let the model do it!
 
 // May have to refactor model to accommodate facilityName, UnitNum, and roomNum
 data class Location(@SerializedName("_id") val id : String?, val facilityName : String, val unitNum : String, val roomNum : String) {
@@ -47,7 +40,8 @@ enum class PrecautionType { // If other precautionTypes are used then this will 
   Standard, Isolation
 } // Sealed Classes also an alternative to enums - especially in When statements (using the result)
 
-data class HealthPractice(@SerializedName("_id") val id : String?, val name : String, val precaution : PrecautionType?) { // May simply use Precaution Name as String instead of enum/sealed class for flexibility
+data class HealthPractice(@SerializedName("_id") val id : String?, val name : String, val precaution : PrecautionType?) {
+  // May simply use Precaution Name as String instead of enum/sealed class for flexibility
   override fun toString(): String = name
 }
 

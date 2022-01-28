@@ -1,6 +1,7 @@
-package edu.usc.nlcaceres.infectionprevention.helpers
+package edu.usc.nlcaceres.infectionprevention.util
 
 import com.google.gson.FieldNamingPolicy
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
 // Backend Endpoints
@@ -22,7 +23,8 @@ const val reportCreationURL = "$baseURL/reports/create"
 const val reportCreationDevURL = "$baseDevURL/reports/create"
 
 // Gson Helper
-fun underscoredNameGson() = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create() // Catches underscored names e.g. first_name
+fun underscoredNameGson(): Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).
+  create() // Catches underscored names e.g. first_name
 
 // Volley
 const val TIMEOUT_MS = 5000
