@@ -1,7 +1,7 @@
 package edu.usc.nlcaceres.infectionprevention.data
 
 import com.google.gson.annotations.SerializedName
-import java.util.*
+import java.util.Date
 import kotlin.collections.ArrayList
 
 // May have to refactor model to accommodate facilityName, UnitNum, and roomNum
@@ -45,5 +45,6 @@ data class HealthPractice(@SerializedName("_id") val id : String?, val name : St
   override fun toString(): String = name
 }
 
+// SerializedName for date prop ensures proper json format
 data class Report(val id : String?, val employee : Employee?, val healthPractice : HealthPractice?, val location : Location?,
                   @SerializedName("date_reported") val date: Date?)
