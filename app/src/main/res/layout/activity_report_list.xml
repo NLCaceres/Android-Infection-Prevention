@@ -1,42 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:id="@+id/myCoordinatorLayout">
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_height="match_parent"
+  android:layout_width="match_parent"
+  android:id="@+id/myCoordinatorLayout">
 
   <androidx.constraintlayout.widget.ConstraintLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:focusable="true"
-      android:focusableInTouchMode="true" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true" >
 
     <include layout="@layout/app_toolbar"
-        android:id="@+id/toolbar_layout"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/swipeLayout"/>
-
-  <!--  <FrameLayout-->
-  <!--      android:id="@+id/reportListFrame"-->
-  <!--      android:layout_width="0dp"-->
-  <!--      android:layout_height="0dp"-->
-  <!--      app:layout_constraintStart_toStartOf="parent"-->
-  <!--      app:layout_constraintEnd_toEndOf="parent"-->
-  <!--      app:layout_constraintTop_toBottomOf="@+id/toolbar_layout"-->
-  <!--      app:layout_constraintBottom_toBottomOf="parent"/>-->
+      android:id="@+id/toolbar_layout"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toTopOf="@+id/swipeLayout"/>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:id="@+id/swipeLayout"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
-        app:layout_constraintBottom_toBottomOf="parent">
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:id="@+id/swipeLayout"
+      app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
+      app:layout_constraintBottom_toBottomOf="parent">
       <!-- Refresh logo does move depending on top/size of refreshLayout! -->
 
       <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/selectedFilterRV"
           android:layout_width="match_parent"
-          android:layout_height="match_parent">
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintBottom_toTopOf="@+id/reportRV"/>
+
+        <TextView
+          android:id="@+id/sorryTextView"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/reports_sorry_message"
+          android:textSize="18sp"
+          android:alpha="0.6"
+          android:visibility="gone"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/reportRV"
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_marginTop="10dp"
+          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+          app:layout_constraintTop_toBottomOf="@+id/selectedFilterRV"
+          app:layout_constraintBottom_toBottomOf="parent"/>
 
         <!-- Much better than button, imageview, textview combo -->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -50,37 +71,6 @@
             android:layout_marginBottom="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/selectedFilterRV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/reportRV"/>
-
-        <TextView
-            android:id="@+id/sorryTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/reports_sorry_message"
-            android:textSize="18sp"
-            android:alpha="0.6"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/reportRV"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@+id/selectedFilterRV"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
 
       </androidx.constraintlayout.widget.ConstraintLayout>
 
