@@ -12,27 +12,31 @@
       android:theme="@style/AppTheme"
       android:allowBackup="true"
       android:supportsRtl="false">
-    <!-- usesCleartext enables dev urls -->
+    <!-- usesCleartext enables dev urls (allows http urls so TODO: Have different values for prod vs dev) -->
 
     <activity
         android:name=".ActivityMain"
-        android:label="">
+        android:label=""
+        android:exported="true">
 
       <intent-filter>
+        <!-- Main = launch point of activity. Launcher = Create an icon to be clicked for this app/(task related to app) -->
         <action android:name="android.intent.action.MAIN" />
-        <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.LAUNCHER" />
+        <!-- Below = Useful for Google indexing + 'DeepLink'ing into app from web or other apps -->
+        <!-- <action android:name="android.intent.action.VIEW"/> -->
       </intent-filter>
     </activity>
 
     <activity android:name=".ActivityCreateReport"
         android:label=""
-        android:parentActivityName=".ActivityMain"> <!-- Pre SDK 21/Android 4.0/Ice_Cream_Sandwich used Meta-Data tag instead -->
+        android:parentActivityName=".ActivityMain"> <!-- PreSDK 21/Android 4.0/IceCreamSandwich used Meta-Data tag instead -->
 
     </activity>
 
     <activity android:name=".ActivityReportList" android:parentActivityName=".ActivityMain"
         android:label=""
+        android:exported="false"
         android:launchMode="singleTop"> <!-- Keeps it to a single instance of the activity -->
 
       <intent-filter>
@@ -40,7 +44,8 @@
       </intent-filter>
       <meta-data android:name="android.app.searchable"
           android:resource="@xml/searchable"/>
-      <!-- Could also have another activity start this one via search dialog (button) to display search results with meta-data default_searchable and val this activity name-->
+      <!-- Could also have another activity start this one via search dialog (button) to display search results with
+           meta-data default_searchable and val this activity name-->
 
     </activity>
 

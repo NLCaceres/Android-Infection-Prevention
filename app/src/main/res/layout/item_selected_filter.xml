@@ -8,6 +8,7 @@
 
   <ImageView
       android:id="@+id/removeFilterButton"
+      android:contentDescription="@string/remove_filter_button"
       android:layout_width="30dp"
       android:layout_height="30dp"
       android:background="@drawable/circle_buttons"
@@ -20,7 +21,7 @@
       android:paddingStart="10dp"
       android:paddingEnd="10dp"
       android:gravity="center"
-      android:text="Filter Name"
+      android:text="@string/default_filter_name"
       android:textSize="12sp"
       android:textStyle="bold" />
 

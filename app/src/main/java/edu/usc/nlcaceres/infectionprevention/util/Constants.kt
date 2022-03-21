@@ -5,8 +5,8 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
 // Backend Endpoints
-const val baseURL = "https://safe-retreat-87739.herokuapp.com/api"
-const val baseDevURL = "http://10.0.2.2:3000/api" // LocalHost
+const val baseURL = "https://infection-prevention-express.herokuapp.com/api/"
+const val baseDevURL = "http://10.0.2.2:3000/api/" // LocalHost
 const val precautionsURL = "$baseURL/precautions"
 const val precautionsDevURL = "$baseDevURL/precautions"
 const val practicesURL = "$baseURL/healthpractices"
@@ -23,7 +23,7 @@ const val reportCreationURL = "$baseURL/reports/create"
 const val reportCreationDevURL = "$baseDevURL/reports/create"
 
 // Gson Helper
-fun underscoredNameGson(): Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).
+fun snakeCaseGson(): Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).
   create() // Catches underscored names e.g. first_name
 
 // Volley

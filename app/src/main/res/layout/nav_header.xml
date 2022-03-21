@@ -11,6 +11,7 @@
 
     <ImageView
         android:id="@+id/logoImageView"
+        android:contentDescription="@string/nav_header_img"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:background="@drawable/usc_shield_mono_gold"

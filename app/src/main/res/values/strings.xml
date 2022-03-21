@@ -13,13 +13,18 @@
     <!-- Main Activity -->
     <string name="main_alert_dialog_title">Connection Issue!</string>
     <string name="main_alert_dialog_message">Issue retrieving new precaution list. Possible internet connection problem</string>
-    <string name="precautions_sorry_message">Sorry! Couldn\'t Retrieve the Precaution Types</string>
+    <string name="precautions_sorry_message">"Sorry! Couldn't Retrieve the Precaution Types"</string>
+    <!-- Below uses a placeholder (%1$ w/ an 's' for a string) injected as the second arg of getString -->
+    <string name="create_report_header">Create a New %1$s Report</string>
+    <string name="slide_forward_hint">Slide Right</string>
+    <string name="slide_backward_hint">Slide Left</string>
 
     <!-- Nav Drawer Strings -->
-    <string name="reports">Reports</string>
-    <string name="report_filters">Report Filters</string>
-    <string name="standard_precautions">Standard Precautions</string>
-    <string name="isolation_precautions">Isolation Precautions</string>
+    <string name="nav_header_img">USC Shield Nav Header Logo</string>
+    <string name="reports">Recent Reports</string>
+    <string name="report_filters">Recent Reports by Filter</string>
+    <string name="standard_precautions">Standard Precaution</string>
+    <string name="isolation_precautions">Isolation Precaution</string>
 
     <!-- Create New Report Activity -->
 
@@ -84,7 +89,7 @@
     <string name="create_report_my_team">My Team: </string>
     <string name="create_report_button">Submit</string>
     <string name="date_alert_dialog_title">Date Left Empty!</string>
-    <string name="date_alert_dialog_message">You haven\'t filled in a date. Would you like to use the current time for the report date?</string>
+    <string name="date_alert_dialog_message">"You haven't filled in a date. Would you like to use the current time for the report date?"</string>
 
     <!-- Reports List Activity -->
     <string name="reports_filter_button">Sort &amp; Filter</string>
@@ -93,11 +98,13 @@
     <string name="search_label">Search</string>
     <string name="search_hint">Search by name, health practice, id, or more!</string>
     <string name="report_list_alert_dialog_message">Issue retrieving report list. Possible internet connection problem</string>
-    <string name="reports_sorry_message">Sorry! Couldn\'t Retrieve the Reports</string>
+    <string name="reports_sorry_message">"Sorry! Couldn't Retrieve the Reports"</string>
 
     <!-- Sort Filter Menu -->
     <string name="set_filter_menu_label">Done</string>
     <string name="reset_filter_menu_label">Reset Filters</string>
+    <string name="remove_filter_button">Remove Filter Button</string>
+    <string name="default_filter_name">Filter Name</string>
 
 
 </resources>
