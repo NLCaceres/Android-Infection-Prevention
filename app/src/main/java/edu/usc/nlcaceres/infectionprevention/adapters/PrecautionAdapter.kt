@@ -36,8 +36,10 @@ class PrecautionAdapter(private val healthPracticeClickListener : HealthPractice
           val alphaAnim = AlphaAnimation(0.0f, 1.0f).apply {
             duration = 1000; startOffset = 50; repeatMode = Animation.REVERSE; repeatCount = 5
             setAnimationListener(object : Animation.AnimationListener {
-              override fun onAnimationEnd(p0: Animation?) { backwardIndicatorArrow.alpha = 0.0f; backwardIndicatorArrow.visibility = View.GONE
-                forwardIndicatorArrow.alpha = 0.0f; forwardIndicatorArrow.visibility = View.GONE } // End on invisible
+              override fun onAnimationEnd(p0: Animation?) {
+                backwardIndicatorArrow.alpha = 0.0f; backwardIndicatorArrow.visibility = View.GONE
+                forwardIndicatorArrow.alpha = 0.0f; forwardIndicatorArrow.visibility = View.GONE
+              } // End on invisible
               override fun onAnimationRepeat(p0: Animation?) {}; override fun onAnimationStart(p0: Animation?) {}
             })
           }

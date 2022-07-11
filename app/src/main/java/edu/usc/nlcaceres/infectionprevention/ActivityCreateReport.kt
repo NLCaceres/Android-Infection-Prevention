@@ -31,19 +31,7 @@ import edu.usc.nlcaceres.infectionprevention.data.Report
 import edu.usc.nlcaceres.infectionprevention.data.Location
 import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 import edu.usc.nlcaceres.infectionprevention.data.Employee
-import edu.usc.nlcaceres.infectionprevention.util.SetupToolbar
-import edu.usc.nlcaceres.infectionprevention.util.HideProgressIndicator
-import edu.usc.nlcaceres.infectionprevention.util.createReportPracticeExtra
-import edu.usc.nlcaceres.infectionprevention.util.snakeCaseGson
-import edu.usc.nlcaceres.infectionprevention.util.CreateReportFragCancelTag
-import edu.usc.nlcaceres.infectionprevention.util.RequestQueueSingleton
-import edu.usc.nlcaceres.infectionprevention.util.TIMEOUT_MS
-import edu.usc.nlcaceres.infectionprevention.util.MAX_RETRIES
-import edu.usc.nlcaceres.infectionprevention.util.employeesURL
-import edu.usc.nlcaceres.infectionprevention.util.locationsURL
-import edu.usc.nlcaceres.infectionprevention.util.practicesURL
-import edu.usc.nlcaceres.infectionprevention.util.HealthPracticeDeserializer
-import edu.usc.nlcaceres.infectionprevention.util.reportCreationURL
+import edu.usc.nlcaceres.infectionprevention.util.*
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -158,7 +146,7 @@ class ActivityCreateReport : AppCompatActivity() {
     val practicesListRequest = JsonArrayRequest(practicesURL, { // Response.Listener<JSONArray> SAM
       try {
         healthPracticeList.addAll(GsonBuilder().registerTypeAdapter(HealthPractice::class.java, HealthPracticeDeserializer()).create().
-        fromJson(it.toString(), TypeToken.getParameterized(ArrayList::class.java, HealthPractice::class.java).type))
+          fromJson(it.toString(), TypeToken.getParameterized(ArrayList::class.java, HealthPractice::class.java).type))
       }
       catch (err : Error) { Log.w("Prof Response Err", err.localizedMessage ?: err.toString())}
 

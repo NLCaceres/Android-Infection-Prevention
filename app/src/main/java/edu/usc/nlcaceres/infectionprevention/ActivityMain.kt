@@ -20,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import edu.usc.nlcaceres.infectionprevention.adapters.PrecautionAdapter
 import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 import edu.usc.nlcaceres.infectionprevention.data.Precaution
+import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 import edu.usc.nlcaceres.infectionprevention.data.ReportService
 import edu.usc.nlcaceres.infectionprevention.databinding.ActivityMainBinding
 import edu.usc.nlcaceres.infectionprevention.util.createReportPracticeExtra
@@ -58,6 +59,7 @@ class ActivityMain : AppCompatActivity() {
     precautionRecyclerView = viewBinding.precautionRV.apply {
       setHasFixedSize(true)
       precautionAdapter = PrecautionAdapter { _, healthPractice ->
+        // Click Listener that creates an intent and launches the CreateReport Activity
         Intent(applicationContext, ActivityCreateReport::class.java).apply {
           putExtra(createReportPracticeExtra, healthPractice.name)
         }.also { createReportActivityLauncher.launch(it) }
@@ -111,7 +113,9 @@ class ActivityMain : AppCompatActivity() {
         try {
           if (precautionResponse.isSuccessful) {
             // Using submitList callback to add new list of items once committed to activity's list
-            precautionResponse.body()?.let { precautionAdapter.submitList(ArrayList(it)) { precautionList.addAll(it) } }
+            precautionResponse.body()?.let { precautionAdapter.submitList(ArrayList(it)) {
+              precautionList.addAll(it)
+            }}
           }
           else {
             Snackbar.make(viewBinding.myCoordinatorLayout, "Error: ${precautionResponse.code()}", Snackbar.LENGTH_SHORT).show()

@@ -38,7 +38,7 @@ import edu.usc.nlcaceres.infectionprevention.data.Report
 import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 import edu.usc.nlcaceres.infectionprevention.adapters.SelectedFilterAdapter
 import kotlin.collections.ArrayList
-//import java.util.Date
+//import java.edu.usc.nlcaceres.infectionprevention.util.Date
 import edu.usc.nlcaceres.infectionprevention.databinding.ActivityReportListBinding
 // Following = FetchReports dependencies TODO Move to a Service class
 import com.google.gson.GsonBuilder
@@ -213,7 +213,7 @@ class ActivityReportList : AppCompatActivity() {
       val newReportsList : ArrayList<Report> = arrayListOf()
       try {
         newReportsList.addAll(GsonBuilder().registerTypeAdapter(Report::class.java, ReportDeserializer()).create().
-        fromJson(it, TypeToken.getParameterized(ArrayList::class.java, Report::class.java).type))
+          fromJson(it, TypeToken.getParameterized(ArrayList::class.java, Report::class.java).type))
       } catch (err : Error) { Log.w("Report Parse Err", "Issue with parsing the json for reports")}
 
       if (reportList.size > 0 ) reportList.clear(); reportList.addAll(newReportsList) // Activity's copy of what adapter gets
