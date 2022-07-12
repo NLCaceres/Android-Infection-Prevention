@@ -1,13 +1,31 @@
 package edu.usc.nlcaceres.infectionprevention.util
 
-import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
+import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonParseException
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.Locale
-import edu.usc.nlcaceres.infectionprevention.data.*
+import edu.usc.nlcaceres.infectionprevention.data.Location
+import edu.usc.nlcaceres.infectionprevention.data.PrecautionType
+import edu.usc.nlcaceres.infectionprevention.data.Employee
+import edu.usc.nlcaceres.infectionprevention.data.Report
+import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
+import edu.usc.nlcaceres.infectionprevention.data.Precaution
+
+interface JsonDeserialization<T> {
+  fun buildGson(): Gson
+  fun toArray(jsonResponse: JsonArray): List<T>
+  fun toInstance(jsonResponse: JsonObject): T
+  fun toMap(jsonResponse: JsonObject): Map<String, *> = buildGson().fromJson(jsonResponse, // As of GSON 2.8.6 jsonResponse.toString() not needed
+    TypeToken.getParameterized(Map::class.java, String::class.java).type)
+}
 
 class ReportDeserializer : JsonDeserializer<Report> {
   override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): Report? {
@@ -27,6 +45,12 @@ class ReportDeserializer : JsonDeserializer<Report> {
     }
     return null
   }
+  companion object : JsonDeserialization<Report> {
+    override fun buildGson(): Gson = GsonBuilder().registerTypeAdapter(Report::class.java, ReportDeserializer()).create()
+    override fun toArray(jsonResponse: JsonArray): List<Report> = buildGson().fromJson(jsonResponse, TypeToken.
+      getParameterized(ArrayList::class.java, Report::class.java).type)
+    override fun toInstance(jsonResponse: JsonObject): Report = buildGson().fromJson(jsonResponse, Report::class.java)
+  }
 }
 
 class PrecautionDeserializer : JsonDeserializer<Precaution> {
@@ -43,6 +67,12 @@ class PrecautionDeserializer : JsonDeserializer<Precaution> {
     }
     return Precaution(jsonObj["_id"].asString, name, practicesArr)
   }
+  companion object : JsonDeserialization<Precaution> {
+    override fun buildGson(): Gson = GsonBuilder().registerTypeAdapter(Precaution::class.java, PrecautionDeserializer()).create()
+    override fun toArray(jsonResponse: JsonArray): List<Precaution> = buildGson().fromJson<List<Precaution>>(jsonResponse.toString(),
+      TypeToken.getParameterized(ArrayList::class.java, Precaution::class.java).type)
+    override fun toInstance(jsonResponse: JsonObject): Precaution = buildGson().fromJson(jsonResponse.toString(), Precaution::class.java)
+  }
 }
 
 class HealthPracticeDeserializer : JsonDeserializer<HealthPractice> { // Not a big problem to return a null as long as you handle it later
@@ -53,5 +83,11 @@ class HealthPracticeDeserializer : JsonDeserializer<HealthPractice> { // Not a b
     val precautionType = precautionTypeStr?.let { if (it == "Standard") PrecautionType.Standard else PrecautionType.Isolation }
     val healthPracticeName = jsonObj?.get("name")?.asString
     return if (healthPracticeName != null && precautionType != null) HealthPractice(id, healthPracticeName, precautionType) else null
+  }
+  companion object : JsonDeserialization<HealthPractice> {
+    override fun buildGson(): Gson = GsonBuilder().registerTypeAdapter(HealthPractice::class.java, HealthPracticeDeserializer()).create()
+    override fun toArray(jsonResponse: JsonArray): List<HealthPractice> = buildGson().fromJson<List<HealthPractice>>(jsonResponse.toString(),
+      TypeToken.getParameterized(ArrayList::class.java, HealthPractice::class.java).type)
+    override fun toInstance(jsonResponse: JsonObject): HealthPractice = buildGson().fromJson(jsonResponse.toString(), HealthPractice::class.java)
   }
 }

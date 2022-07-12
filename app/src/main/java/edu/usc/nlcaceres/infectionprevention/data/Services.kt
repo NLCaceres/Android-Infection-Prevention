@@ -12,21 +12,14 @@ import retrofit2.Response
 interface ReportService {
 
   companion object {
+    private val RetrofitInstance by lazy { createBaseRetrofitInstance() } // Thread-safe alternative to a singleton
     private fun createBaseRetrofitInstance() : Retrofit {
       return Retrofit.Builder().baseUrl(baseURL) // BaseUrl must end in '/'
-        .addConverterFactory(GsonConverterFactory.create(snakeCaseGson()))
+        .addConverterFactory(GsonConverterFactory.create(snakeCaseGson())) // Custom Gson factory based on a GsonBuilder instance
         .build()
     }
-    fun createReportApi() : ReportApiInterface {
-      return Retrofit.Builder().baseUrl(baseURL)
-        .addConverterFactory(GsonConverterFactory.create(snakeCaseGson())) // Custom Gson factory based on a GsonBuilder instance
-        .build().create(ReportApiInterface::class.java)
-    }
-    fun createPrecautionApi() : PrecautionApiInterface {
-      return Retrofit.Builder().baseUrl(baseURL)
-        .addConverterFactory(GsonConverterFactory.create(snakeCaseGson()))
-        .build().create(PrecautionApiInterface::class.java)
-    }
+    fun createReportApi(): ReportApiInterface = RetrofitInstance.create(ReportApiInterface::class.java)
+    fun createPrecautionApi(): PrecautionApiInterface = RetrofitInstance.create(PrecautionApiInterface::class.java)
   }
 
   interface ReportApiInterface {
