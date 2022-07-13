@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import edu.usc.nlcaceres.infectionprevention.R
 import edu.usc.nlcaceres.infectionprevention.data.Precaution
 import edu.usc.nlcaceres.infectionprevention.databinding.ItemPrecautionBinding
+import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
 
 /* Adapter to render sets of buttons to launch CreateReportActivity based on precaution type */
 class PrecautionAdapter(private val healthPracticeClickListener : HealthPracticeClickListener) :
@@ -27,7 +28,9 @@ class PrecautionAdapter(private val healthPracticeClickListener : HealthPractice
         horizontalRecycleView.apply {
           layoutManager = rvLayoutManager
           adapter = HealthPracticeAdapter(healthPracticeClickListener)
+          EspressoIdlingResource.increment()
           (adapter as HealthPracticeAdapter).submitList(precaution.practices)
+          EspressoIdlingResource.decrement()
         }
         /* Since the healthPracticeRV scrolls horizontally, more than 2 items means the 3rd+ item will be off screen
         * so following animation intends to let user know they can scroll, displaying arrows then slowly hiding them */

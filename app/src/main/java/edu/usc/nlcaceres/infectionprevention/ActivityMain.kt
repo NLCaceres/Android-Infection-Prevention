@@ -23,6 +23,7 @@ import edu.usc.nlcaceres.infectionprevention.data.Precaution
 import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 import edu.usc.nlcaceres.infectionprevention.data.ReportService
 import edu.usc.nlcaceres.infectionprevention.databinding.ActivityMainBinding
+import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
 import edu.usc.nlcaceres.infectionprevention.util.createReportPracticeExtra
 import edu.usc.nlcaceres.infectionprevention.util.preSelectedFilterExtra
 import edu.usc.nlcaceres.infectionprevention.util.SetupToolbar
@@ -65,7 +66,9 @@ class ActivityMain : AppCompatActivity() {
         }.also { createReportActivityLauncher.launch(it) }
       }
       adapter = precautionAdapter
+      EspressoIdlingResource.increment()
       precautionAdapter.submitList(precautionList)
+      EspressoIdlingResource.decrement()
     }
     if (precautionList.size == 0) fetchPrecautions()
   }
@@ -107,6 +110,7 @@ class ActivityMain : AppCompatActivity() {
   }
 
   private fun fetchPrecautions() {
+    EspressoIdlingResource.increment()
     precautionFetchJob = CoroutineScope(Dispatchers.IO).launch {
       val precautionResponse = ReportService.createPrecautionApi().fetchPrecautionList()
       withContext(Dispatchers.Main) {
@@ -123,11 +127,14 @@ class ActivityMain : AppCompatActivity() {
               false).show(supportFragmentManager, "main_alert_dialog")
             sorryMsgTextView.visibility = View.VISIBLE
           }
+          EspressoIdlingResource.decrement()
           mProgressIndicator.visibility = View.INVISIBLE // Made invisible no matter what
         } catch (e : HttpException) {
           Snackbar.make(viewBinding.myCoordinatorLayout, "HTTP Error: ${e.message()}", Snackbar.LENGTH_SHORT).show()
+          EspressoIdlingResource.decrement()
         } catch (e : Throwable) {
           Snackbar.make(viewBinding.myCoordinatorLayout, "Error: ${e.message}", Snackbar.LENGTH_SHORT).show()
+          EspressoIdlingResource.decrement()
         }
       }
     }

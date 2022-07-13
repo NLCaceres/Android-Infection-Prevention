@@ -124,6 +124,7 @@ class ActivityCreateReport : AppCompatActivity() {
 
   // Spinners Setup in Order of Appearance in layout file
   private fun setUpEmployeeSpinner() { // ArrayList<Employee> Serializer Request example
+    EspressoIdlingResource.increment()
     val employeesListRequest = StringRequest(employeesURL, { // Response.Listener<String> Single Abstract Method Interface (SAM)
       try { // Receive a Json String to convert into Gson and serialize to a list of Employees
         employeeList.addAll(snakeCaseGson().fromJson(it, TypeToken.getParameterized(ArrayList::class.java, Employee::class.java).type))
@@ -136,13 +137,15 @@ class ActivityCreateReport : AppCompatActivity() {
         employeeSpinner.onItemSelectedListener = spinnerListener
       }
       HideProgressIndicator(healthPracticeList.isNotEmpty() && locationList.isNotEmpty() && employeeList.isNotEmpty(), progressIndicator)
-    }, { Log.w("Employee fetch err", it.localizedMessage ?: it.toString()) }) // Response.ErrorListener SAM
+      EspressoIdlingResource.decrement()
+    }, { Log.w("Employee fetch err", it.localizedMessage ?: it.toString()); EspressoIdlingResource.decrement() }) // Response.ErrorListener SAM
 
     employeesListRequest.tag = CreateReportFragCancelTag
     employeesListRequest.retryPolicy = DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
     RequestQueueSingleton.getInstance(applicationContext).addToRequestQueue(employeesListRequest)
   }
   private fun setUpHealthPracticeSpinner() {
+    EspressoIdlingResource.increment()
     val practicesListRequest = JsonArrayRequest(practicesURL, { // Response.Listener<JSONArray> SAM
       try {
         healthPracticeList.addAll(GsonBuilder().registerTypeAdapter(HealthPractice::class.java, HealthPracticeDeserializer()).create().
@@ -157,14 +160,16 @@ class ActivityCreateReport : AppCompatActivity() {
         healthPracticeSpinner.onItemSelectedListener = spinnerListener
       }
       HideProgressIndicator(healthPracticeList.isNotEmpty() && locationList.isNotEmpty() && employeeList.isNotEmpty(), progressIndicator)
+      EspressoIdlingResource.decrement()
       // Both here are SAM conversions, working identically to object expression pattern of kotlin... See fetchLocations()
-    }, { Log.w("Profession Fetch error", it.localizedMessage ?: it.toString()) })
+    }, { Log.w("Profession Fetch error", it.localizedMessage ?: it.toString()); EspressoIdlingResource.decrement() })
 
     practicesListRequest.tag = CreateReportFragCancelTag
     practicesListRequest.retryPolicy = DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
     RequestQueueSingleton.getInstance(applicationContext).addToRequestQueue(practicesListRequest)
   }
   private fun setUpLocationSpinner() { // Object Serializer Request example
+    EspressoIdlingResource.increment()
     val locationListRequest = JsonArrayRequest(locationsURL,
       { // The object expression (ex: "object : Response.Listener<JSONArray> {}"). SAM conversions work w/ Java interfaces, not abstract classes
           for (i in 0 until it.length()) { // Kotlin equiv of standard Java for loop, (due to JSONArray not being iterable)
@@ -176,8 +181,10 @@ class ActivityCreateReport : AppCompatActivity() {
             locationSpinner.onItemSelectedListener = spinnerListener
           }
           HideProgressIndicator(healthPracticeList.isNotEmpty() && locationList.isNotEmpty() && employeeList.isNotEmpty(), progressIndicator)
+        EspressoIdlingResource.decrement()
       }, { // Also can name param and use arrow lambda instead of it keyword!
         error -> Log.w("Location Fetch Error", error.localizedMessage ?: error.toString())
+        EspressoIdlingResource.decrement()
       }) // If this was our own kotlin code/fun we could inline it for better performance with SAMCs but since java and not ours, not possible
     locationListRequest.tag = CreateReportFragCancelTag
     locationListRequest.retryPolicy = DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)

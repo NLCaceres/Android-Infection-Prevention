@@ -1,6 +1,7 @@
 package edu.usc.nlcaceres.infectionprevention
 
 import android.app.Activity
+import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
@@ -209,6 +210,7 @@ class ActivityReportList : AppCompatActivity() {
   //private fun dateSearchComparison(date : Date, searchText : String) {}
 
   private fun fetchReports() {
+    EspressoIdlingResource.increment()
     val reportsListRequest = StringRequest(reportsURL, {
       val newReportsList : ArrayList<Report> = arrayListOf()
       try {
@@ -219,6 +221,7 @@ class ActivityReportList : AppCompatActivity() {
       if (reportList.size > 0 ) reportList.clear(); reportList.addAll(newReportsList) // Activity's copy of what adapter gets
       reportsAdapter.submitList(newReportsList) // notifyDataSetChanged no longer needed (and should never have been)
       refreshLayout.isRefreshing = false
+      EspressoIdlingResource.decrement()
 
     }, {
       Log.w("Report Fetch Err", "Issue fetching reports")
@@ -228,6 +231,7 @@ class ActivityReportList : AppCompatActivity() {
 
       refreshLayout.isRefreshing = false
       sorryMessage.visibility = View.VISIBLE
+      EspressoIdlingResource.decrement()
     })
 
     reportsListRequest.retryPolicy = DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
