@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<!--  <item android:drawable="@drawable/circle_buttons" />-->
+  <item>
+    <shape android:shape="rectangle">
+      <corners android:radius="20dp" />
+      <solid android:color="@color/colorPrimary" /> <!-- Main Color -->
+      <stroke android:width="2dp" android:color="@android:color/black" /> <!-- Outline -->
+    </shape>
+  </item>
+  <item android:drawable="@drawable/ic_circle_plus" />
+</layer-list>

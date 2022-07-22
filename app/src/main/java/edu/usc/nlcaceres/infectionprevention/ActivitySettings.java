@@ -15,7 +15,9 @@ public class ActivitySettings extends AppCompatActivity {
         viewBinding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(viewBinding.getRoot());
 
-        ViewHelpersKt.SetupToolbar(this, viewBinding.toolbarLayout.homeToolbar, 0);
+        // Calling Kotlin code from Java means default param values are REQUIRED, no omitting like in kotlin!
+        ViewHelpersKt.SetupToolbar(this, viewBinding.toolbarLayout.homeToolbar,
+            R.drawable.ic_back_arrow, "Settings");
 
         getSupportFragmentManager().beginTransaction().replace(R.id.settings_fragment, FragmentSettings.newInstance()).commit();
     }

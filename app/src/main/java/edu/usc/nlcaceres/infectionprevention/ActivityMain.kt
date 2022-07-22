@@ -74,7 +74,8 @@ class ActivityMain : AppCompatActivity() {
   }
 
   private fun setUpToolbarAndNavView() {
-    SetupToolbar(this, viewBinding.toolbarLayout.homeToolbar, R.drawable.ic_menu)
+    // Since MainLauncher Activity label gives the app icon AND the toolbar its title, we purposely remove it here
+    SetupToolbar(this, viewBinding.toolbarLayout.homeToolbar, R.drawable.ic_menu, " ")
 
     mDrawerLayout = viewBinding.myNavDrawer
 

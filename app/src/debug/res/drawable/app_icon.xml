@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <shape android:shape="rectangle">
+      <corners android:radius="100dp" />
+      <solid android:color="@android:color/tertiary_text_light" /> <!-- Easy to spot debug Color -->
+      <stroke android:width="2dp" android:color="@android:color/white" /> <!-- Outline -->
+    </shape>
+  </item>
+  <item android:drawable="@drawable/usc_seal_gold" />
+</layer-list>
