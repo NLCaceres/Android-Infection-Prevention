@@ -39,12 +39,11 @@ class ActivityMainTest: RoboTest() {
 
   @Before
   fun registerIdlingResource() {
-      IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
+    IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
   }
-
   @After
   fun unregisterIdlingResource() {
-      IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
+    IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
   }
 
   @Test fun clickHealthPracticeToLaunchCreateActivity() {
@@ -94,12 +93,11 @@ class ActivityMainTest: RoboTest() {
       }
   }
 
-  @Test fun clickSettingsToolbarButtonToLaunchReportListActivity() {
+  @Test fun clickSettingsToolbarButtonToLaunchSettingsActivity() {
       mainActivity {
         checkNavDrawerOpen(false) // Not open
         goToSettings()
         SettingsRobot.personalInfoHeader().isOnScreen()
       }
   }
-
 }
