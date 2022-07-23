@@ -3,15 +3,20 @@ package edu.usc.nlcaceres.infectionprevention.helpers.util
 import android.view.View
 import androidx.test.espresso.ViewInteraction
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.endsWith
+import androidx.test.espresso.action.ViewActions.pressBack
+import org.hamcrest.Matchers.not
+import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.startsWith
+import org.hamcrest.Matchers.endsWith
 
 /* Goal: Make interactions as simple as possible and matchers as reusable and not wordy! */
 
@@ -22,6 +27,9 @@ import org.hamcrest.Matchers.startsWith
 // While 'with' seems to match specific (seems best for finding views)
 
 // Matchers - Often used in onView() to find views! ('with' usually)
+fun containsText(text: String): Matcher<View> = withText(containsString(text))
+fun withPrefix(text: String): Matcher<View> = withText(startsWith(text))
+fun withSuffix(text: String): Matcher<View> = withText(endsWith(text))
 fun childWithText(text: String): Matcher<View> = hasDescendant(withText(text))
 fun childWithTextMatching(matcher: Matcher<String>): Matcher<View> = hasDescendant(withText(matcher))
 fun childWithPrefix(text: String): Matcher<View> = childWithTextMatching(startsWith(text))
@@ -29,6 +37,7 @@ fun childWithSuffix(text: String): Matcher<View> = childWithTextMatching(endsWit
 
 // Actions - Starts with perform() on some viewInteraction
 fun ViewInteraction.tap(): ViewInteraction = perform(click())
+fun tapBackButton(): ViewInteraction = onView(isRoot()).perform(pressBack())
 // RecyclerView related (unclear on diff between (scroll/action)To vs (scroll/action)ToHolder) - used VERY similarly)
 fun <VH: RecyclerView.ViewHolder> ViewInteraction.swipeTo(childMatcher: Matcher<View>): ViewInteraction =
   perform(scrollTo<VH>(childMatcher)) // Versatile swipeTo
@@ -45,6 +54,14 @@ fun <VH: RecyclerView.ViewHolder> ViewInteraction.tapOn(position: Int): ViewInte
 
 
 // Assertions - starts with check() ('has' or 'is' generally)
-fun ViewInteraction.hasText(text: String): ViewInteraction = check(matches(withText(text)))
-fun ViewInteraction.hasChildWithText(text: String): ViewInteraction = check(matches(childWithText(text)))
-fun ViewInteraction.isOnScreen(): ViewInteraction = check(matches(isDisplayed()))
+fun ViewInteraction.matching(matcher: Matcher<View>): ViewInteraction = check(matches(matcher))
+fun ViewInteraction.hasText(text: String): ViewInteraction = matching(withText(text))
+fun ViewInteraction.containingText(text: String): ViewInteraction = matching(containsText(text))
+fun ViewInteraction.hasPrefix(text: String): ViewInteraction = matching(withPrefix(text))
+fun ViewInteraction.hasSuffix(text: String): ViewInteraction = matching(withSuffix(text))
+fun ViewInteraction.hasChildWithText(text: String): ViewInteraction = matching(childWithText(text))
+fun ViewInteraction.hasChildWithTextMatching(matcher: Matcher<String>): ViewInteraction = matching(childWithTextMatching(matcher))
+fun ViewInteraction.hasChildWithPrefix(text: String): ViewInteraction = matching(childWithPrefix(text))
+fun ViewInteraction.hasChildWithSuffix(text: String): ViewInteraction = matching(childWithSuffix(text))
+fun ViewInteraction.isOnScreen(): ViewInteraction = matching(isDisplayed())
+fun ViewInteraction.isHidden(): ViewInteraction = matching(not(isDisplayed()))
