@@ -3,8 +3,10 @@ package edu.usc.nlcaceres.infectionprevention
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -80,8 +82,9 @@ class ActivityCreateReport : AppCompatActivity() {
     progressIndicator = viewBinding.progressIndicator.appProgressbar.apply { visibility = View.VISIBLE }
 
     selectedPracticeName = intent.getStringExtra(createReportPracticeExtra)
-    val headingText = "New $selectedPracticeName Observation"
-    headerTV = viewBinding.headerTV.apply { text = headingText }
+    headerTV = viewBinding.headerTV.apply { // Handle brief "New null Observation" b4 spinner loads to set TV to "New PPE..."
+      text = if (selectedPracticeName != null) "New $selectedPracticeName Observation" else "New Observation"
+    }
 
     // Instead of a true Builder pattern, Kotlin can use apply to set the var's props, return the instance, & init the var
     dateET = viewBinding.dateEditText.apply {
@@ -97,6 +100,18 @@ class ActivityCreateReport : AppCompatActivity() {
     locationSpinner = viewBinding.facilitySpinner.also { setUpLocationSpinner() }
 
     createReportButton = viewBinding.createReportButton.apply { setOnClickListener(SubmitReportClickListener()) }
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean { // Return true to end any further menu processing
+    return when (item.itemId) {
+      android.R.id.home -> { // Could also override onBackPressed but better not to (i.e. app closes if no backStack + backButton)
+        // If at this activity w/out a backStack then launch mainActivity, finish this one
+        if (this.isTaskRoot) { startActivity(Intent(this, ActivityMain::class.java)) }
+        finish() // If there's a backstack!, should behave as normal (onBackPressed() to mainActivity)
+        true // Finally always return true (done working with menu items here)
+      }
+      else -> super.onOptionsItemSelected(item) // Defaults to false (meaning nothing happens)
+    }
   }
 
   private inner class DateTimeSetListener : DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
@@ -132,7 +147,7 @@ class ActivityCreateReport : AppCompatActivity() {
       catch (err : Error) { Log.w("Employee parse err", err.localizedMessage ?: err.toString()) }
 
       ArrayAdapter(this, R.layout.custom_spinner_dropdown, employeeList).also { adapter ->
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) // Take this away and dropdown items will use the selected item layout
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) // W/out this, dropdown items use custom_spinner layout
         employeeSpinner.adapter = adapter
         employeeSpinner.onItemSelectedListener = spinnerListener
       }
@@ -206,8 +221,8 @@ class ActivityCreateReport : AppCompatActivity() {
       when (parent?.id) {
         R.id.healthPracticeSpinner -> {
           selectedPractice = parent.selectedItem as? HealthPractice
-          val headerTVText = "New ${selectedPractice?.name} Observation"
-          headerTV.text = headerTVText
+          headerTV.text = if (selectedPracticeName != null) "New $selectedPracticeName Observation"
+            else "New Observation"
         }
         R.id.employeeSpinner -> selectedEmployee = parent.selectedItem as? Employee
         R.id.facilitySpinner -> selectedLocation = parent.selectedItem as? Location
@@ -249,6 +264,8 @@ class ActivityCreateReport : AppCompatActivity() {
     }
 
     setResult(Activity.RESULT_OK)
+    // Following conditional considers nav when using shortcut: Go to main then reportList, don't close app.
+    if (this.isTaskRoot) { startActivity(Intent(this, ActivityMain::class.java)) }
     finish()
   }
 
