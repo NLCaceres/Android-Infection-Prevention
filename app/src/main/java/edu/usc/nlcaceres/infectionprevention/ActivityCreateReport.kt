@@ -118,19 +118,23 @@ class ActivityCreateReport : AppCompatActivity() {
     // Handles Both TimePicker and DatePicker SetListeners
     override fun onTimeSet(view: TimePicker?, hour: Int, minute: Int) {
       val amOrPM = if (hour < 12) "AM" else "PM" // Always seems to return 24 hour time so to check if AM or PM
-      val hourOfDay = if (hour > 12) hour - 12 else hour // Prevent military time
-      val timeOfDay = String.format("%d:%02d", hourOfDay, minute) // Format to have two zeros for minute
+      val hourOfDay = when { // Need to handle military time
+        hour > 12 -> hour - 12 // 13, 14, etc down to 1, 2, etc.
+        hour == 0 -> 12 // Midnight
+        else -> hour
+      }
+      val timeOfDay = String.format("%d:%02d", hourOfDay, minute) // Format to 12:00, 12:05 (NOT 12:5), 12:10 (NOT 12:1)
 
       val dateStr = "$timeOfDay $amOrPM" // Don't concatenate in setText
       dateET.setText(dateStr)
 
       Calendar.getInstance().also { c -> // 'this' will reuse the listener currently calling onTimeSet
-        DatePickerDialog(parent, this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show()
+        DatePickerDialog(this@ActivityCreateReport, this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show()
       }
     }
-    override fun onDateSet(view: DatePicker?, year: Int, month: Int, day: Int) {
-      // Instead of initing a Calendar obj w/ year, month & date then SimpleDateFormat.format() to make the string
-      val fullDateTimeStr = "${dateET.text} $month/$day/$year"
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, day: Int) { // Month is 0 indexed, Day is not.
+      // Instead of initing a Calendar obj w/ year, month & date then using SimpleDateFormat.format() to make the string
+      val fullDateTimeStr = "${dateET.text} ${month+1}/$day/$year" // Straight to a string! (+1 for month to be correct number)
       dateET.setText(fullDateTimeStr)
       val dateFormat = SimpleDateFormat("h:mm a MM/dd/yy", Locale.getDefault())
       selectedDate = dateFormat.parse(fullDateTimeStr) // Returns a date obj
@@ -247,6 +251,7 @@ class ActivityCreateReport : AppCompatActivity() {
           create() // After set up return the alert dialog via create
         }.show()
       }
+      else { completeReportSubmission() }
     }
   }
 
