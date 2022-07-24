@@ -21,22 +21,22 @@ class FilterAdapter(private val singleSelectionEnabled : Boolean, private val fi
         text = filter.name
         isChecked = filter.isSelected
         setOnClickListener {
+          if (singleSelectionEnabled && !this.isChecked) { handleSingleSelection() }
           this.isChecked = !this.isChecked
           filter.isSelected = this.isChecked
-          handleSingleSelection(filter, this.isChecked)
           filterSelectedListener.onFilterSelected(this, filter, singleSelectionEnabled)
         }
       }
     }
   }
 
-  fun handleSingleSelection(filterOption : FilterItem, checked : Boolean) {
-    if (singleSelectionEnabled && checked) {
-      for (filterItem in currentList) { if (filterItem != filterOption) filterItem.isSelected = false }
-//      notifyDataSetChanged()
+  fun handleSingleSelection() {
+    val currentlyCheckmarkedFilterIndex = currentList.indexOfFirst { it.isSelected }
+    if (currentlyCheckmarkedFilterIndex == -1) return // Nothing currently selected, so need to deselect anything, move on.
+    currentList[currentlyCheckmarkedFilterIndex].isSelected = false // Unmark it
+    notifyItemChanged(currentlyCheckmarkedFilterIndex)
     /* Shouldn't need notifyDateSetChanged() anymore BUT if it is, then a SortedList may work (it binds outside of the adapter / in view)
     SortedList takes the class type contained + a SortedList.Callback (SortedList.BatchedCallback or SortedListAdapterCallback, the latter = better) */
-    }
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilterViewHolder = FilterViewHolder(
@@ -57,5 +57,5 @@ class FilterDiffCallback : DiffUtil.ItemCallback<FilterItem>() {
 
   // If above returns true, below will be the final check
   override fun areContentsTheSame(oldFilter: FilterItem, newFilter: FilterItem): Boolean =
-    oldFilter.filterGroupName == newFilter.filterGroupName
+    oldFilter.filterGroupName == newFilter.filterGroupName && oldFilter.isSelected == newFilter.isSelected
 }

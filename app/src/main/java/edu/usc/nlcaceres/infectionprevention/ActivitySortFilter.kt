@@ -18,6 +18,7 @@ import edu.usc.nlcaceres.infectionprevention.databinding.ActivitySortFilterBindi
 import edu.usc.nlcaceres.infectionprevention.data.FilterGroup
 import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 import edu.usc.nlcaceres.infectionprevention.adapters.ExpandableFilterAdapter
+import edu.usc.nlcaceres.infectionprevention.adapters.ExpandableFilterAdapter.ExpandableFilterViewHolder
 import edu.usc.nlcaceres.infectionprevention.adapters.OnFilterSelectedListener
 import edu.usc.nlcaceres.infectionprevention.adapters.SelectedFilterAdapter
 import edu.usc.nlcaceres.infectionprevention.util.SetupToolbar
@@ -66,7 +67,7 @@ class ActivitySortFilter : AppCompatActivity() {
   override fun onPrepareOptionsMenu(menu: Menu): Boolean { // Called after onCreate and in lifecycle when invalidateOptionsMenu is called!
     menu[1].apply { // Get() doneButton
       isEnabled = doneButtonEnabled // Use global var, change it, then call invalidateOptionsMenu
-      icon.alpha = if (isEnabled) 255 else 130
+      icon.alpha = if (isEnabled) 255 else 130 // Full brightness when enabled. Just over half when disabled
     }
     return true
   }
@@ -77,9 +78,16 @@ class ActivitySortFilter : AppCompatActivity() {
       true
     }
     R.id.reset_filters_action -> {
-      selectedFilterList.clear(); selectedFilterAdapter.submitList(arrayListOf())
-      for (filterGroup in filterGroupList) { filterGroup.filters.forEach { it.isSelected = false } }
-      doneButtonEnabled = false; invalidateOptionsMenu() // invalidate calls onPrepareOptionsMenu which updates doneButton in toolbar
+      val selectedFilterSize = selectedFilterList.size
+      selectedFilterList.clear() // Using rangeRemoved over dataSetChange means no total recyclerview reset
+      selectedFilterAdapter.notifyItemRangeRemoved(0, selectedFilterSize)
+
+      filterGroupList.forEachIndexed { i, filterGroup -> // Possibly better than "for (i,filterGroup) in withIndex"
+        filterGroup.filters.forEach { if (it.isSelected) it.isSelected = false }
+        if (filterGroup.isExpanded) { filterGroup.isExpanded = false; expandableFilterAdapter.notifyItemChanged(i) }
+      }
+
+      doneButtonEnabled = false; invalidateOptionsMenu() // Invalidating calls onPrepareOptionsMenu to disable doneButton
       true
     }
     R.id.settings_action -> {
@@ -114,60 +122,67 @@ class ActivitySortFilter : AppCompatActivity() {
   }
 
   private fun setUpSelectedFilterRV() {
-    selectedFilterAdapter = SelectedFilterAdapter { _, filter, position -> // View, FilterItem, Int
-      selectedFilterList.removeAt(position)//; selectedFilterAdapter.notifyItemRemoved(position)
-      // Below inits new list in memory w/ references of each item in our activity's list! SO
-      selectedFilterAdapter.submitList(ArrayList(selectedFilterList)) // SubmitList'll properly diff & not ignore removal!
-      for ((index, filterGroup) in filterGroupList.withIndex()) {
-        val checkedFilterPosition = filterGroup.filters.indexOf(filter)
-        if (checkedFilterPosition == -1) continue // Prevent running following code at indexes it shouldn't
-        else {
-          filter.isSelected = !filter.isSelected // Since it's a ref, no need to change set at list position
-          (expandableFilterRV.findViewHolderForAdapterPosition(index) as ExpandableFilterAdapter.ExpandableFilterViewHolder).
-            filterAdapter.notifyItemChanged(checkedFilterPosition) // TODO Follow selectedFilterList removal example via submitList
-          if (selectedFilterList.size == 0) { // Now at 0 so invalidate & update menu!
-            doneButtonEnabled = false; invalidateOptionsMenu()
-          }
-          break // No more looping (no duplicates in list)
-        }
+    selectedFilterAdapter = SelectedFilterAdapter removeSelectedFilter@{ _, filter, position -> // View, FilterItem, Int
+      selectedFilterList.removeAt(position) // First remove filter from selectedFilterList
+      selectedFilterAdapter.notifyItemRemoved(position) // Bit more efficient than submitting whole new list to diff
+      // Now uncheck the filter in the expandableLists
+      val filterGroupIndex = filterGroupList.indexOfFirst { it.name == filter.filterGroupName } // SHOULD never return -1 but just in case!
+      if (filterGroupIndex == -1) { return@removeSelectedFilter } // Prevent indexOutOfRange exception by returning from closure (not setupFunc)
+      val filterIndex = filterGroupList[filterGroupIndex].filters.indexOfFirst { it.name == filter.name }
+      if (filterIndex != -1) { // Also shouldn't ever return -1 BUT just in case
+        filter.isSelected = !filter.isSelected // Since it's a ref, can change checkmark here (rather than with index on the list)
+        (expandableFilterRV.findViewHolderForAdapterPosition(filterGroupIndex) as ExpandableFilterViewHolder)
+          .filterAdapter.notifyItemChanged(filterIndex)
       }
+      if (selectedFilterList.size == 0) { doneButtonEnabled = false; invalidateOptionsMenu() } // Disable doneButton if no selected filters
     }
+
     selectedFilterRV = viewBinding.selectedFiltersRecyclerView.apply {
       adapter = selectedFilterAdapter
       (adapter as SelectedFilterAdapter).submitList(selectedFilterList) // Initial list submit (should be null up until here)
-      visibility = if (selectedFilterList.size > 0) View.VISIBLE else View.GONE
       layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW, FlexWrap.WRAP).apply { justifyContent = JustifyContent.CENTER }
     }
   }
 
   private inner class FilterSelectionListener : OnFilterSelectedListener {
     override fun onFilterSelected(view: View, selectedFilter: FilterItem, singleSelectionEnabled : Boolean) {
-      if (selectedFilter.isSelected) { // Selected (checked) so update new insertion at end
-        if (singleSelectionEnabled) { // If singleSelection type, must remove old selection first!
-          for ((index, filterItem) in selectedFilterList.withIndex()) {
-            if (filterItem.filterGroupName == selectedFilter.filterGroupName) {
-              selectedFilterList.remove(filterItem)
-              selectedFilterRV.adapter?.notifyItemRemoved(index)
-              break
-            }
-          }
-        }
-        selectedFilterList.add(selectedFilter) // Add now that old has been removed
-        selectedFilterRV.adapter?.notifyItemInserted(selectedFilterList.size - 1)
-      } else { // If selection == false (unchecked) then remove and update adapter properly
-        val removedIndex = selectedFilterList.indexOf(selectedFilter)
-        selectedFilterList.remove(selectedFilter)
-        selectedFilterRV.adapter?.notifyItemRemoved(removedIndex)
+      // When clicking new filter, must add to selectedRV
+      // If just checkmarked a filter AND it's "singleSelection only" then remove any previous one
+      // If not single selection BUT just checkmarked, -1 prevents unnecessary removal. Only run removal on the filter unchecked.
+      val removalIndex = if (selectedFilter.isSelected && singleSelectionEnabled)
+        selectedFilterList.indexOfFirst { it.filterGroupName == selectedFilter.filterGroupName }
+        else if (selectedFilter.isSelected) { -1 }
+        else selectedFilterList.indexOf(selectedFilter)
+      if (removalIndex != -1) { // -1 means no match exists, therefore only remove if actually already in selectedList
+        selectedFilterList.removeAt(removalIndex)
+        selectedFilterAdapter.notifyItemRemoved(removalIndex)
       }
-      if (selectedFilterList.size > 0) {
-        selectedFilterRV.visibility = View.VISIBLE
-        doneButtonEnabled = true
-        invalidateOptionsMenu()
-      } else {
-        selectedFilterRV.visibility = View.GONE
-        doneButtonEnabled = false
-        invalidateOptionsMenu()
+      if (selectedFilter.isSelected) {
+        selectedFilterList.add(selectedFilter) // Old filter was removed, Add new one now
+        selectedFilterAdapter.notifyItemInserted(selectedFilterList.size - 1)
       }
+//      if (selectedFilter.isSelected) { // Selected (checked) so update new insertion at end
+//        if (singleSelectionEnabled) { // If singleSelection type, must remove old selection first!
+//          val filterToRemovePosition = selectedFilterList.indexOfFirst { it.filterGroupName == selectedFilter.filterGroupName }
+//          selectedFilterList.removeAt(filterToRemovePosition); selectedFilterAdapter.notifyItemRemoved(filterToRemovePosition)
+//          for ((index, filterItem) in selectedFilterList.withIndex()) {
+//            if (filterItem.filterGroupName == selectedFilter.filterGroupName) {
+//              selectedFilterList.remove(filterItem)
+//              selectedFilterAdapter.notifyItemRemoved(index)
+//              break
+//            }
+//          }
+//        }
+//        selectedFilterList.add(selectedFilter) // Old now removed, Add new one
+//        selectedFilterAdapter.notifyItemInserted(selectedFilterList.size - 1)
+//      }
+//      else { // If selection == false (unchecked) then remove and update adapter properly
+//        val removedIndex = selectedFilterList.indexOf(selectedFilter)
+//        selectedFilterList.remove(selectedFilter)
+//        selectedFilterAdapter.notifyItemRemoved(removedIndex)
+//      }
+      doneButtonEnabled = selectedFilterList.isNotEmpty() // selectedFilterList.size > 0, then should be finishable!
+      invalidateOptionsMenu() // Update doneButton to be enabled/tappable if selectedFilterList.size > 0
     }
   }
 }

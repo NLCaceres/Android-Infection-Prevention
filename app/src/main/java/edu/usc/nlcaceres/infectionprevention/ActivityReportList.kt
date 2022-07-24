@@ -93,17 +93,19 @@ class ActivityReportList : AppCompatActivity() {
 
     intent.getParcelableExtra<FilterItem>(preSelectedFilterExtra)?.let { selectedFilters.add(it) }
 
-    selectedFilterAdapter = SelectedFilterAdapter { _, _, _ -> // TODO: RemoveButtonListener
-
+    selectedFilterAdapter = SelectedFilterAdapter { _, _, position -> // View, FilterItem, Int
+      selectedFilters.removeAt(position) // First remove filter from selectedFilterList
+      selectedFilterAdapter.notifyItemRemoved(position) // Bit more efficient than submitting whole new list to diff
     }
     selectedFilterRV = viewBinding.selectedFilterRV.apply {
       // If our custom Adapter doesn't receive a brand new list then its updateData callback can act odd
       adapter = selectedFilterAdapter // May be worth using apply with submitList in it!
       (adapter as SelectedFilterAdapter).submitList(selectedFilters)
-      visibility = if (selectedFilters.size > 0) View.VISIBLE else View.GONE
       layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW, FlexWrap.WRAP).apply { justifyContent = JustifyContent.CENTER }
     }
+
     sorryMessage = viewBinding.sorryTextView // Fallback textview
+
     reportsRV = viewBinding.reportRV.apply {
       //TODO May need to pass a callback! (updateData() fun in the file! maybe?)
       reportsAdapter = ReportAdapter().also { adapter = it } // ALSO set adapter of reportsRV
@@ -243,9 +245,11 @@ class ActivityReportList : AppCompatActivity() {
   private val sortFilterActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
     // Handles result from the Sorting/Filtering Activity
     if (it.resultCode == Activity.RESULT_OK) {
-      val selectedFilters = it.data?.getParcelableArrayListExtra<FilterItem>(selectedFilterParcel)
-      if (selectedFilters != null && selectedFilters.size > 0) {
-        Snackbar.make(viewBinding.myCoordinatorLayout, "Got filters!", Snackbar.LENGTH_SHORT).show()
+      val selectedFiltersReceived = it.data?.getParcelableArrayListExtra<FilterItem>(selectedFilterParcel)
+      if (selectedFiltersReceived != null && selectedFiltersReceived.size > 0) {
+        Snackbar.make(viewBinding.myCoordinatorLayout, "Filtering and Sorting!", Snackbar.LENGTH_SHORT).show()
+        selectedFilters.clear(); selectedFilters.addAll(selectedFiltersReceived)
+        selectedFilterAdapter.notifyItemRangeInserted(0, selectedFiltersReceived.size)
       }
     }
   }
