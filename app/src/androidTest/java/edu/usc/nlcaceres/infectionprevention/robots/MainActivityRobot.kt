@@ -3,6 +3,7 @@ package edu.usc.nlcaceres.infectionprevention.robots
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.hasSibling
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -57,9 +58,7 @@ class MainActivityRobot : BaseRobot() {
     checkNavDrawerOpen(true)
     navFilterIsoReportListButton().tap() // Go to ReportListView with only isolation reports left after filter
   }
-  fun goToSettings() {
-    settingButton().tap()
-  }
+  fun goToSettings() { settingButton().tap() }
 
   companion object {
     fun precautionRV(): ViewInteraction = onView(withId(R.id.precautionRV)) // Outer
@@ -79,6 +78,6 @@ class MainActivityRobot : BaseRobot() {
     fun navNormalReportListButton(): ViewInteraction = onView(withId(R.id.nav_reports))
     fun navFilterStandardReportListButton(): ViewInteraction = onView(withId(R.id.nav_standard_precautions))
     fun navFilterIsoReportListButton(): ViewInteraction = onView(withId(R.id.nav_isolation_precautions))
-    fun settingButton(): ViewInteraction = onView(withId(R.id.action_settings)) // Uses system id to find
+    fun settingButton(): ViewInteraction = onView(withContentDescription("Settings")) // Alternative is R.id.action_settings BUT seemingly not consistent
   }
 }

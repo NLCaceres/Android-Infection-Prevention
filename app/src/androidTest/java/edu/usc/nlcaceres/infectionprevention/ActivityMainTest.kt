@@ -64,7 +64,7 @@ class ActivityMainTest: RoboTest() {
         goToReportList()
       }
       reportListActivity {
-        checkListLoaded() // Verify in reportList (have to wait until RV loads)
+        checkInitListLoaded() // Verify in reportList (have to wait until RV loads)
       }
   }
 
@@ -77,7 +77,7 @@ class ActivityMainTest: RoboTest() {
       }
       reportListActivity {
         checkFiltersLoaded("Standard")
-        checkListLoaded() // Verify in reportList (have to wait until RV loads)
+        checkInitListLoaded() // Verify in reportList (have to wait until RV loads)
       }
   }
   @Test fun clickNavDrawerIsoReportFilterToLaunchReportListActivity() {
@@ -89,7 +89,7 @@ class ActivityMainTest: RoboTest() {
       }
       reportListActivity {
         checkFiltersLoaded("Isolation")
-        checkListLoaded() // Verify in reportList (have to wait until RV loads)
+        checkInitListLoaded() // Verify in reportList (have to wait until RV loads)
       }
   }
 

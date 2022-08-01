@@ -115,7 +115,7 @@ class ActivityCreateReportTest: RoboTest() {
     // Android seems to optimize around actually needing to nav to mainActivity
     // Instead, just running the resultHandler that launches the intent toward the reportList view
     reportListActivity {
-      checkListLoaded() // Should be no filters BUT should be a list of reports!
+      checkInitListLoaded() // Should be no filters BUT should be a list of reports!
     }
   }
 }

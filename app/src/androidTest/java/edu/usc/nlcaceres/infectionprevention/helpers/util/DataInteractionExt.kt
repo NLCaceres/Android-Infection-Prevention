@@ -6,14 +6,9 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.BoundedMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.startsWith
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
-
-// Useful readable version of Hamcrest's 'is' since it comes up often in onData()
-fun <T> thatIs(something: T): Matcher<T> = `is`(something) // EASIER than dealing with kotlin backtick requirement
-fun <T> thatIs(someMatcher: Matcher<T>): Matcher<T> = `is`(someMatcher) // Handle cases like "instanceOf" that's a matcher, not a value or type
 
 // Actions
 fun DataInteraction.tap(): ViewInteraction = perform(click())
