@@ -102,9 +102,10 @@ class ActivitySortFilter : AppCompatActivity() {
 
   private fun createGroupAndLists() {
     val sortByTitleStr = "Sort By"
-    val sortByList = arrayListOf(FilterItem("Date Reported", false, sortByTitleStr),
-        FilterItem("Employee Name (A-Z)", false, sortByTitleStr),
-        FilterItem("Employee Name (Z-A)", false, sortByTitleStr))
+    val sortByList = arrayListOf(FilterItem("New Reports", false, sortByTitleStr),
+      FilterItem("Older Reports", false, sortByTitleStr),
+      FilterItem("Employee Name (A-Z)", false, sortByTitleStr),
+      FilterItem("Employee Name (Z-A)", false, sortByTitleStr))
 
     val tempPrecautionTypeList = intent.getStringArrayListExtra("PrecautionList")
     val tempPracticeTypeList = intent.getStringArrayListExtra("PracticeList")
