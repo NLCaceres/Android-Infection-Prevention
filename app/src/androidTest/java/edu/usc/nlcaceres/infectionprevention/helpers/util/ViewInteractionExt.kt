@@ -4,15 +4,19 @@ import android.view.View
 import androidx.test.espresso.ViewInteraction
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.isFocused
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import org.hamcrest.Matcher
 import androidx.test.espresso.action.ViewActions.pressBack
+import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.typeTextIntoFocusedView
 import org.hamcrest.Matchers.not
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.startsWith
@@ -38,6 +42,8 @@ fun childWithSuffix(text: String): Matcher<View> = childWithTextMatching(endsWit
 // Actions - Starts with perform() on some viewInteraction
 fun ViewInteraction.tap(): ViewInteraction = perform(click())
 fun tapBackButton(): ViewInteraction = onView(isRoot()).perform(pressBack())
+fun ViewInteraction.enterText(text: String): ViewInteraction = perform(typeText(text))
+fun ViewInteraction.enterTextIntoFocus(text: String): ViewInteraction = perform(typeTextIntoFocusedView(text))
 // RecyclerView related (unclear on diff between (scroll/action)To vs (scroll/action)ToHolder) - used VERY similarly)
 fun <VH: RecyclerView.ViewHolder> ViewInteraction.swipeTo(childMatcher: Matcher<View>): ViewInteraction =
   perform(scrollTo<VH>(childMatcher)) // Versatile swipeTo
@@ -63,5 +69,7 @@ fun ViewInteraction.hasChildWithText(text: String): ViewInteraction = matching(c
 fun ViewInteraction.hasChildWithTextMatching(matcher: Matcher<String>): ViewInteraction = matching(childWithTextMatching(matcher))
 fun ViewInteraction.hasChildWithPrefix(text: String): ViewInteraction = matching(childWithPrefix(text))
 fun ViewInteraction.hasChildWithSuffix(text: String): ViewInteraction = matching(childWithSuffix(text))
+fun ViewInteraction.isTheFocus(): ViewInteraction = matching(isFocused())
 fun ViewInteraction.isOnScreen(): ViewInteraction = matching(isDisplayed())
 fun ViewInteraction.isHidden(): ViewInteraction = matching(not(isDisplayed()))
+fun ViewInteraction.isNotInLayout(): ViewInteraction = check(doesNotExist())
