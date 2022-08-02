@@ -13,7 +13,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-
         <item name="actionModeBackground">@color/actionModeColor</item>
 
         <!-- Typically do not theme the textColor! -->
@@ -32,7 +31,10 @@
     <style name="CustomToolBarStyle" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@android:color/white</item>
-        <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="homeAsUpIndicator">@drawable/ic_back_arrow</item>
+        <item name="actionMenuTextColor">@color/colorLight</item>
+<!--        <item name="searchViewStyle">@style/MySearchViewStyle</item>-->
+        <item name="editTextStyle">@style/CustomEditTextStyle</item>
 <!--        <item name="colorControlNormal">@color/colorLight</item>--> <!-- Will work to change most buttons! but may shrink android standard ones! -->
 <!--        <item name="actionOverflowButtonStyle">@style/Widget.AppCompat.Light.ActionButton.Overflow</item>-->
 <!--        <item name="drawerArrowStyle">@style/Widget.AppCompat.DrawerArrowToggle</item>-->
@@ -54,6 +56,15 @@
     
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="color">@color/colorLight</item>
+    </style>
+
+<!--    <style name="MySearchViewStyle" parent="Widget.AppCompat.SearchView">-->
+<!--        <item name="closeIcon">@drawable/ic_close</item>-->
+<!--        <item name="searchHintIcon">@color/colorPrimary</item>-->
+<!--    </style>-->
+    <style name="CustomEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="colorControlNormal">@color/colorLight</item>
+        <item name="colorControlActivated">@color/colorLight</item>
     </style>
 
     <style name="DropDownTheme" parent="android:TextAppearance.Widget.TextView.SpinnerItem">

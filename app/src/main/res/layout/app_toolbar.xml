@@ -14,33 +14,20 @@
       android:theme="@style/CustomToolBarStyle"
       app:popupTheme="@style/ToolbarPopupStyle"
       app:layout_scrollFlags="scroll|enterAlways"
-      app:titleTextAppearance="@style/Toolbar.TitleText">
+      app:titleTextAppearance="@style/Toolbar.TitleText"
+      app:collapseIcon="@drawable/ic_close">
     <!-- Activity will take its label from manifest (otherwise from App Name or even package name)-->
 
     <ImageView
         android:id="@+id/toolbar_logo"
+        android:contentDescription="@string/company_logo"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:adjustViewBounds="true"
         android:src="@drawable/usc_primary_shield"/>
-    <!-- The above is a way of handling position for setLogo -->
+    <!-- gravity + adjustViewBounds handles proper positioning for setLogo -->
 
   </androidx.appcompat.widget.Toolbar>
-
-  <!--    <androidx.appcompat.widget.Toolbar-->
-  <!--        android:id="@+id/my_toolbar"-->
-  <!--        android:layout_width="match_parent"-->
-  <!--        android:layout_height="?android:attr/actionBarSize"-->
-  <!--        android:minHeight="?android:attr/actionBarSize"-->
-  <!--        android:background="@color/colorPrimary"-->
-  <!--        android:elevation="4dp"-->
-  <!--        android:theme="@style/ToolbarStyle"-->
-  <!--        app:popupTheme="@style/ToolbarPopupStyle"-->
-  <!--        app:title="@string/hospital_name"-->
-  <!--        app:layout_constraintTop_toTopOf="parent"-->
-  <!--        app:layout_constraintStart_toStartOf="parent"-->
-  <!--        app:layout_constraintEnd_toEndOf="parent"-->
-  <!--        />-->
 
 </com.google.android.material.appbar.AppBarLayout>

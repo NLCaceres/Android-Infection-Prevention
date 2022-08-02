@@ -2,6 +2,7 @@
 
     <!-- Main strings across the app -->
     <string name="app_name">Infection Prevention</string>
+    <string name="company_logo">Action Bar Company Logo</string>
 
     <string name="hospital_name">Keck Medicine</string>
 
