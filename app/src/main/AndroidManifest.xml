@@ -39,27 +39,16 @@
         android:label=""
         android:exported="false"
         android:launchMode="singleTop"> <!-- Keeps it to a single instance of the activity -->
-
-      <intent-filter>
-        <action android:name="android.intent.action.SEARCH" />
-      </intent-filter>
-      <meta-data android:name="android.app.searchable"
-          android:resource="@xml/searchable"/>
-      <!-- Could also have another activity start this one via search dialog (button) to display search results with
-           meta-data default_searchable and val this activity name-->
-
     </activity>
 
     <activity android:name=".ActivitySortFilter"
       android:label=""
       android:parentActivityName=".ActivityReportList">
-
     </activity>
 
     <activity android:name=".ActivitySettings"
         android:label="@string/settings_label"
         android:parentActivityName=".ActivityMain">
-
     </activity>
 
   </application>
