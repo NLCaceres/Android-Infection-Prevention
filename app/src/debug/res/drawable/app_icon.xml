@@ -3,8 +3,8 @@
   <item>
     <shape android:shape="rectangle">
       <corners android:radius="100dp" />
-      <solid android:color="@android:color/tertiary_text_light" /> <!-- Easy to spot debug Color -->
-      <stroke android:width="2dp" android:color="@android:color/white" /> <!-- Outline -->
+      <solid android:color="@color/textHintColor" /> <!-- Easy to spot debug Color -->
+      <stroke android:width="2dp" android:color="@color/lightMode" /> <!-- Outline -->
     </shape>
   </item>
   <item android:drawable="@drawable/usc_seal_gold" />

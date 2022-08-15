@@ -4,7 +4,7 @@
     <shape android:shape="rectangle">
       <corners android:radius="100dp" />
       <solid android:color="@color/colorPrimaryDark" /> <!-- Main Color -->
-      <stroke android:width="2dp" android:color="@android:color/white" /> <!-- Outline -->
+      <stroke android:width="2dp" android:color="@color/lightMode" /> <!-- Outline -->
     </shape>
   </item>
   <item android:drawable="@drawable/usc_seal_gold" />

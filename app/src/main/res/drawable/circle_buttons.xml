@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <corners android:radius="100dp" />
     <solid android:color="@color/colorPrimary" /> <!-- Main Color -->
-    <stroke android:width="2dp"
-        android:color="@android:color/black" /> <!-- Outline -->
-    <padding
-        android:bottom="4dp"
-        android:left="4dp"
-        android:right="4dp"
-        android:top="4dp" />
-
+    <stroke android:width="2dp" android:color="@color/darkMode" /> <!-- Outline -->
+    <padding android:left="4dp" android:right="4dp" android:top="4dp" android:bottom="4dp" />
 </shape>

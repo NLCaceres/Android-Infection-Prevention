@@ -5,7 +5,7 @@
   <corners android:radius="20dp" />
   <solid android:color="#999999" /> <!-- Main Color -->
   <stroke android:width="2dp"
-      android:color="@android:color/black" /> <!-- Outline -->
+      android:color="@color/darkMode" /> <!-- Outline -->
   <padding
       android:bottom="4dp"
       android:left="4dp"
