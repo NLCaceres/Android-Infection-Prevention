@@ -225,6 +225,7 @@ class ActivityCreateReport : AppCompatActivity() {
       when (parent?.id) {
         R.id.healthPracticeSpinner -> {
           selectedPractice = parent.selectedItem as? HealthPractice
+          selectedPracticeName = selectedPractice?.name
           headerTV.text = if (selectedPracticeName != null) "New $selectedPracticeName Observation"
             else "New Observation"
         }
