@@ -11,6 +11,7 @@ abstract class RoboTest {
   val createReportActivity = robotRunner(CreateReportRobot::class)
   val reportListActivity = robotRunner(ReportListRobot::class)
   val sortFilterActivity = robotRunner(SortFilterRobot::class)
+  val settingsActivity = robotRunner(SettingsRobot::class)
 
   private fun <T : BaseRobot> robotRunner(cls: KClass<T>) = { func: T.() -> Unit ->
     cls.createInstance().apply { func() } // Create instance of robot, then run our closures

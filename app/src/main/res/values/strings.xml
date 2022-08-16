@@ -44,12 +44,12 @@
     <string name="settings_personal_key">user</string>
 
     <string name="settings_username">Username</string>
-    <string name="settings_user_key">user</string>
+    <string name="settings_user_key">username</string>
 
     <string name="settings_department">Department</string>
     <string name="settings_department_key">department</string>
 
-    <string name="settings_id">ID</string>
+    <string name="settings_id">Employee ID</string>
     <string name="settings_id_key">id</string>
 
     <string name="settings_phone_number">Phone Number</string>

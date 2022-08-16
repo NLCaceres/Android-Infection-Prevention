@@ -3,76 +3,38 @@
 
     <PreferenceCategory
         android:title="@string/settings_personal_info"
-        android:layout="@layout/preferences_categories"
-        android:key="@string/settings_personal_key">
+        android:layout="@layout/preferences_category"
+        android:key="@string/settings_personal_key" >
 
         <Preference
             android:title="@string/settings_username"
             android:summary=""
             android:key="@string/settings_user_key"
-            android:layout="@layout/preferences_main"/>
+            android:layout="@layout/preference_divided" />
 
         <Preference
             android:title="@string/settings_department"
             android:summary=""
             android:key="@string/settings_department_key"
-            android:layout="@layout/preferences_main"/>
+            android:layout="@layout/preference_divided" />
 
         <Preference
             android:title="@string/settings_id"
             android:summary=""
             android:key="@string/settings_id_key"
-            android:layout="@layout/preferences_main"/>
+            android:layout="@layout/preference_divided" />
 
-        <Preference
+        <EditTextPreference
             android:title="@string/settings_phone_number"
             android:summary=""
             android:key="@string/settings_phone_key"
-            android:layout="@layout/preferences_main"/>
+            android:layout="@layout/preference_divided" />
 
-        <Preference
+        <EditTextPreference
             android:title="@string/settings_password"
             android:summary=""
             android:key="@string/settings_password_key"
-            android:layout="@layout/preferences_main"/>
-
-
+            android:layout="@layout/preference_main" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/settings_admin"
-        android:layout="@layout/preferences_categories"
-        android:key="@string/settings_admin_key">
-
-        <Preference
-            android:title="@string/settings_hospital_group"
-            android:summary=""
-            android:key="@string/settings_hospital_group_key"
-            android:layout="@layout/preferences_main"/>
-
-        <Preference
-            android:title="@string/settings_toolbar_color"
-            android:summary=""
-            android:key="@string/settings_toolbar_color_key"
-            android:layout="@layout/preferences_main"/>
-
-        <Preference
-            android:title="@string/settings_background_color"
-            android:summary=""
-            android:key="@string/settings_background_color_key"
-            android:layout="@layout/preferences_main"/>
-
-        <Preference
-            android:title="@string/settings_report_title_color"
-            android:summary=""
-            android:key="@string/settings_report_title_color_key"
-            android:layout="@layout/preferences_main"/>
-
-        <SwitchPreference
-            android:title="@string/settings_background_image_switch"
-            android:textStyle="bold"
-            android:key="@string/settings_background_image_key" />
-
-
-    </PreferenceCategory>
 </PreferenceScreen>
