@@ -8,11 +8,17 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import android.graphics.Point
 import android.os.Build
-import android.view.*
+import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
+import android.view.Gravity
 import edu.usc.nlcaceres.infectionprevention.databinding.CustomAlertDialogBinding
 import android.view.WindowInsets
 
-/* Custom DialogFragment, overrides onCreateView NOT onCreateDialog. Guide: https://bit.ly/3FUyvAy - Dialog with Custom Layout
+/* Custom DialogFragment, overrides onCreateView NOT onCreateDialog.
+Guide: https://developer.android.com/guide/topics/ui/dialogs - Dialog with Custom Layout
 Use: Display network errors - Shown by ActivityReportList & ActivityMain */
 class AppFragmentAlertDialog : DialogFragment() {
   private lateinit var viewBinding : CustomAlertDialogBinding
@@ -24,15 +30,14 @@ class AppFragmentAlertDialog : DialogFragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
     viewBinding = CustomAlertDialogBinding.inflate(inflater, container, false)
-    return viewBinding.root // https://bit.ly/3mPAtLa - Android Custom Dialog info
+    return viewBinding.root
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-//    alertIcon = view.findViewById<ImageView>(R.id.alertIcon).apply { setImageDrawable(ContextCompat.getDrawable(context, R.drawable.usc_shield_mono_gold)) }
     alertIcon = viewBinding.alertIcon.apply { setImageDrawable(ContextCompat.getDrawable(context, R.drawable.usc_shield_mono_gold)) }
-    alertTitle = viewBinding.titleTextView.apply { text = arguments?.getString("Title") }
+    alertTitle = viewBinding.alertTitle.apply { text = arguments?.getString("Title") }
     alertMessage = viewBinding.alertMessage.apply { text = arguments?.getString("Message") }
     alertOKButton = viewBinding.alertOkButton.apply { setOnClickListener { dismiss() } }
     alertCancelButton = viewBinding.alertCancelButton.apply {
@@ -62,18 +67,18 @@ class AppFragmentAlertDialog : DialogFragment() {
     }
     else { // How display.getSize used to calculate (rather than use currentWindowMetrics.bounds)
       val display = window.windowManager.defaultDisplay
-      // Why use getSize? Injects the size info into our size var! BUT
+      // Why use getSize? Injects the dimensions into our windowSize var! BUT
       Point().also { display.getSize(it) } // Deprecated since return val changes if not called in an Activity
     }
 
-    val width = windowSize.x
-    //val height = windowSize.y
-    window.setLayout((width * 0.85).toInt(), WindowManager.LayoutParams.WRAP_CONTENT) // 75% of screen width
-    //window.setLayout((width * 0.85).toInt(), (height * 0.3).toInt()) // Similar to above but height modded too
+    val width = windowSize.x * 0.9 // Width will actually be slightly under 90% of screen width (due to insets)
+    window.setLayout(width.toInt(), WindowManager.LayoutParams.WRAP_CONTENT) // Height will wrap content
     window.setGravity(Gravity.CENTER)
   }
 
   companion object {
+    // Why newInstance rather than constructor? Bundle survives configuration changes + recreation
+    // ViewModel survives config changes BUT not recreation. During recreation the empty default constructor is called
     fun newInstance(title : String, message : String, needCancelButton : Boolean) : AppFragmentAlertDialog {
       val frag = AppFragmentAlertDialog()
       frag.arguments = Bundle().apply {
