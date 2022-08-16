@@ -3,9 +3,7 @@ package edu.usc.nlcaceres.infectionprevention
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import edu.usc.nlcaceres.infectionprevention.robots.RoboTest
-import edu.usc.nlcaceres.infectionprevention.robots.SettingsRobot
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
-import edu.usc.nlcaceres.infectionprevention.helpers.util.isOnScreen
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -37,10 +35,8 @@ class ActivitySortFilterTest: RoboTest() {
 
   // Navigation
   @Test fun navigateToSettings() {
-    sortFilterActivity {
-      goToSettings()
-      SettingsRobot.personalInfoHeader().isOnScreen()
-    }
+    sortFilterActivity { goToSettings() }
+    settingsActivity { checkInitLoad() }
   }
   @Test fun navigateBackToReportList() {
     sortFilterActivity { pressCloseButton() } // X button

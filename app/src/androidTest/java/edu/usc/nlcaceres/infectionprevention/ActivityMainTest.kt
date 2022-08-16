@@ -1,37 +1,21 @@
 package edu.usc.nlcaceres.infectionprevention
 
-import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import org.junit.Rule
 import org.junit.Test
-import edu.usc.nlcaceres.infectionprevention.helpers.data.ReportsFactory.Factory.buildPrecaution
-import edu.usc.nlcaceres.infectionprevention.data.PrecautionType
-import edu.usc.nlcaceres.infectionprevention.data.ReportService
-import edu.usc.nlcaceres.infectionprevention.data.ReportService.PrecautionApiInterface
-import retrofit2.Response
 import androidx.test.espresso.IdlingRegistry
-import edu.usc.nlcaceres.infectionprevention.helpers.util.RepeatRule
-import edu.usc.nlcaceres.infectionprevention.helpers.util.RepeatTest
-import edu.usc.nlcaceres.infectionprevention.robots.*
+import edu.usc.nlcaceres.infectionprevention.robots.RoboTest
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
-import edu.usc.nlcaceres.infectionprevention.helpers.util.isOnScreen
-import edu.usc.nlcaceres.infectionprevention.adapters.HealthPracticeAdapter.PracticeViewHolder
-import edu.usc.nlcaceres.infectionprevention.data.Precaution
 import org.junit.After
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyBlocking
-import retrofit2.Call
-import retrofit2.Retrofit
+
+// Best to remember: Turn off animations for instrumentedTests via devOptions in "About Emulated Device" (tap buildNum 10 times)
+// Settings > devOptions > Drawing section > Turn off windowAnimationScale, transitionAnimationScale, animationDurationScale
+// Also can reduce animation durations to 1 for debug build
 
 /* Tests MainActivity and its interactions toward the rest of the app */
-// Probably best to always remember to turn off animations (especially in this activity where flashing icons are present)
-// Go to settings > devOptions > Drawing section > Turn off windowAnimationScale, transitionAnimationScale, animationDurationScale
-// May require turning on devOptions in "About Emulated Device" (tap buildNum 10 times)
 @RunWith(MockitoJUnitRunner::class)
 class ActivityMainTest: RoboTest() {
   @get:Rule // Runs launch(ActivityClass) that can be accessed via this prop instead!
@@ -68,6 +52,7 @@ class ActivityMainTest: RoboTest() {
       }
   }
 
+  // TODO: Following two tests fail since Precaution Type Filter currently filters out all reports
   @Test fun clickNavDrawerStandardReportFilterToLaunchReportListActivity() {
       mainActivity {
         checkNavDrawerOpen(false) // Not open
@@ -94,10 +79,10 @@ class ActivityMainTest: RoboTest() {
   }
 
   @Test fun clickSettingsToolbarButtonToLaunchSettingsActivity() {
-      mainActivity {
-        checkNavDrawerOpen(false) // Not open
-        goToSettings()
-        SettingsRobot.personalInfoHeader().isOnScreen()
-      }
+    mainActivity {
+      checkNavDrawerOpen(false) // Not open
+      goToSettings()
+    }
+    settingsActivity { checkInitLoad() }
   }
 }
