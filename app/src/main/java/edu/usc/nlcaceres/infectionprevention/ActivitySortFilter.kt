@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -33,14 +34,12 @@ class ActivitySortFilter : AppCompatActivity() {
   private lateinit var selectedFilterRV : RecyclerView
   private lateinit var selectedFilterAdapter : SelectedFilterAdapter
   private var selectedFilterList : ArrayList<FilterItem> = arrayListOf()
-  private var filterNames : ArrayList<String> = arrayListOf()
   private lateinit var expandableFilterRV : RecyclerView
   private lateinit var expandableFilterAdapter : ExpandableFilterAdapter
   private var filterGroupList = arrayListOf<FilterGroup>()
   private var precautionTypeList = arrayListOf<FilterItem>()
   private var practiceTypeList = arrayListOf<FilterItem>()
 
-  // TODO: Consider either a complete button and/or reset button
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     viewBinding = ActivitySortFilterBinding.inflate(layoutInflater)
@@ -57,7 +56,8 @@ class ActivitySortFilter : AppCompatActivity() {
     expandableFilterRV = viewBinding.expandableFilterRecyclerView.apply {
       adapter = expandableFilterAdapter
       (adapter as ExpandableFilterAdapter).submitList(filterGroupList)
-      addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+      addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        .apply { setDrawable(ContextCompat.getDrawable(context, R.drawable.custom_item_divider)!!) })
       //isNestedScrollingEnabled = false // Making false usually not good w/ recyclerViews - messes with recycling
     }
   }
@@ -149,7 +149,7 @@ class ActivitySortFilter : AppCompatActivity() {
     override fun onFilterSelected(view: View, selectedFilter: FilterItem, singleSelectionEnabled : Boolean) {
       // When clicking new filter, must add to selectedRV
       // If just checkmarked a filter AND it's "singleSelection only" then remove any previous one
-      // If not single selection BUT just checkmarked, -1 prevents unnecessary removal. Only run removal on the filter unchecked.
+      // If not single selection BUT just checkmarked, -1 prevents unnecessary removal. Only remove an unchecked filter
       val removalIndex = if (selectedFilter.isSelected && singleSelectionEnabled)
         selectedFilterList.indexOfFirst { it.filterGroupName == selectedFilter.filterGroupName }
         else if (selectedFilter.isSelected) { -1 }
@@ -162,26 +162,6 @@ class ActivitySortFilter : AppCompatActivity() {
         selectedFilterList.add(selectedFilter) // Old filter was removed, Add new one now
         selectedFilterAdapter.notifyItemInserted(selectedFilterList.size - 1)
       }
-//      if (selectedFilter.isSelected) { // Selected (checked) so update new insertion at end
-//        if (singleSelectionEnabled) { // If singleSelection type, must remove old selection first!
-//          val filterToRemovePosition = selectedFilterList.indexOfFirst { it.filterGroupName == selectedFilter.filterGroupName }
-//          selectedFilterList.removeAt(filterToRemovePosition); selectedFilterAdapter.notifyItemRemoved(filterToRemovePosition)
-//          for ((index, filterItem) in selectedFilterList.withIndex()) {
-//            if (filterItem.filterGroupName == selectedFilter.filterGroupName) {
-//              selectedFilterList.remove(filterItem)
-//              selectedFilterAdapter.notifyItemRemoved(index)
-//              break
-//            }
-//          }
-//        }
-//        selectedFilterList.add(selectedFilter) // Old now removed, Add new one
-//        selectedFilterAdapter.notifyItemInserted(selectedFilterList.size - 1)
-//      }
-//      else { // If selection == false (unchecked) then remove and update adapter properly
-//        val removedIndex = selectedFilterList.indexOf(selectedFilter)
-//        selectedFilterList.remove(selectedFilter)
-//        selectedFilterAdapter.notifyItemRemoved(removedIndex)
-//      }
       doneButtonEnabled = selectedFilterList.isNotEmpty() // selectedFilterList.size > 0, then should be finishable!
       invalidateOptionsMenu() // Update doneButton to be enabled/tappable if selectedFilterList.size > 0
     }

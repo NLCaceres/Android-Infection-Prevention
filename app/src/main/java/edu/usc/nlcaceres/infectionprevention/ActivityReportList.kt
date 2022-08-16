@@ -105,7 +105,8 @@ class ActivityReportList : AppCompatActivity() {
 
     reportsRV = viewBinding.reportRV.apply {
       reportsAdapter = ReportAdapter().also { adapter = it } // ALSO setAdapter for reportsRV
-      addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+      val tintedLine = ContextCompat.getDrawable(context, R.drawable.custom_item_divider)?.apply { setTint(ContextCompat.getColor(context, R.color.colorPrimaryDark)) }
+      addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply { setDrawable(tintedLine!!) })
     }
 
     if (reportList.isEmpty()) { refreshLayout.isRefreshing = true; fetchReports() }

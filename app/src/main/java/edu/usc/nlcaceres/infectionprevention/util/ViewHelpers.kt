@@ -1,12 +1,11 @@
 package edu.usc.nlcaceres.infectionprevention.util
 
+import android.content.res.Resources.getSystem
 import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import edu.usc.nlcaceres.infectionprevention.R
 
 /* Dedicate reusable functions to use across Activities/Fragments */
@@ -30,3 +29,7 @@ fun SetupToolbar(activity: AppCompatActivity, toolbar: Toolbar, upIndicator: Int
     }
     return toolbar
 }
+
+// If a fun takes pixels but would like to use densityIndependentPixels (dp), then easy conversion helpers!
+fun dpUnits(desiredVal: Int) = (desiredVal * getSystem().displayMetrics.density).toInt()
+fun pixels(dpUnits: Int) = (dpUnits / getSystem().displayMetrics.density).toInt()

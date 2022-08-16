@@ -1,13 +1,19 @@
 package edu.usc.nlcaceres.infectionprevention.adapters
 
+import android.graphics.drawable.InsetDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import edu.usc.nlcaceres.infectionprevention.R
 import edu.usc.nlcaceres.infectionprevention.data.FilterGroup
 import edu.usc.nlcaceres.infectionprevention.databinding.ItemExpandableFilterBinding
+import edu.usc.nlcaceres.infectionprevention.util.DivideAllButLastItemDecoration
+import edu.usc.nlcaceres.infectionprevention.util.dpUnits
 
 /* RecyclerViewAdapter that contains a list of GROUPS of different filter types. Each items opens accordion-style
 * containing a RecyclerView full of specific filters from that group */
@@ -33,10 +39,12 @@ class ExpandableFilterAdapter(private val filterSelectedListener: OnFilterSelect
         adapter = filterAdapter
         (adapter as FilterAdapter).submitList(filterGroup.filters)
         visibility = if (filterGroup.isExpanded) View.VISIBLE else View.GONE
+        // Setup dividers for individual filters with a margin thanks to InsetDrawable
+        val margin = dpUnits(18)
+        val divider = ContextCompat.getDrawable(context, R.drawable.custom_item_divider)
+        val dividerWithInsets = InsetDrawable(divider, margin, 0, margin, 0)
+        addItemDecoration(DivideAllButLastItemDecoration(dividerWithInsets, DividerItemDecoration.VERTICAL))
       }
-    }
-    fun notifyFilterRemoved(position : Int) {
-      filterAdapter.notifyItemChanged(position)
     }
   }
 
@@ -50,13 +58,11 @@ class ExpandableFilterAdapter(private val filterSelectedListener: OnFilterSelect
   override fun onBindViewHolder(holder: ExpandableFilterViewHolder, position: Int, payloads: MutableList<Any>) {
     if (payloads.isNotEmpty()) {
       val expandPayload = payloads.firstOrNull { payload -> (payload as String) == "Expanded-Changed" } as? String
-      if (expandPayload != null) { // If not null, we SHOULD have "Expanded-Changed"
-          val filterGroup = getItem(position)
-          holder.viewBinding.filterRecyclerView.visibility = if (filterGroup.isExpanded) View.VISIBLE else View.GONE
+      if (expandPayload != null) { // If not null, we SHOULD have "Expanded-Changed" so get filterGroup via getItem
+          holder.viewBinding.filterRecyclerView.visibility = if (getItem(position).isExpanded) View.VISIBLE else View.GONE
       }
-      return // Ensure any code below running
     }
-    onBindViewHolder(holder, position) // Ensure this fires in case payloads are indeed empty
+    else onBindViewHolder(holder, position) // Ensure normal version fires in case payloads are indeed empty
   }
 }
 
