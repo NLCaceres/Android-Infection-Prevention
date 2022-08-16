@@ -21,13 +21,13 @@
             <include layout="@layout/app_toolbar"
                 android:id="@+id/toolbar_layout"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/precautionRV"/>
+                app:layout_constraintBottom_toTopOf="@+id/precautionRV" />
 
             <include layout="@layout/app_progress_indicator"
                 android:id="@+id/progress_indicator_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar_layout" />
+                app:layout_constraintTop_toBottomOf="@id/toolbar_layout" />
             <!-- Height and width necessary if not just sitting at the top like toolbar is for INCLUDE tags -->
 
             <androidx.recyclerview.widget.RecyclerView
@@ -35,10 +35,10 @@
                 android:layout_height="0dp"
                 android:id="@+id/precautionRV"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar_layout"
+                app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <TextView
                 android:id="@+id/sorryTextView"
@@ -51,7 +51,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -65,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_gravity="start"
         app:menu="@menu/drawer_view"
-        app:headerLayout="@layout/nav_header"/>
+        app:headerLayout="@layout/nav_header" />
 
     <!-- Drawer Layout for the navDrawer above -->
 
