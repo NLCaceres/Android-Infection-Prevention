@@ -3,16 +3,18 @@ package edu.usc.nlcaceres.infectionprevention.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DiffUtil
 import edu.usc.nlcaceres.infectionprevention.R
 import edu.usc.nlcaceres.infectionprevention.data.Precaution
 import edu.usc.nlcaceres.infectionprevention.databinding.ItemPrecautionBinding
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
+import edu.usc.nlcaceres.infectionprevention.util.MarginsItemDecoration
+import edu.usc.nlcaceres.infectionprevention.util.createFlashingAnimation
+import edu.usc.nlcaceres.infectionprevention.util.dpUnits
 
 /* Adapter to render sets of buttons to launch CreateReportActivity based on precaution type */
 class PrecautionAdapter(private val healthPracticeClickListener : HealthPracticeClickListener) :
@@ -24,30 +26,24 @@ class PrecautionAdapter(private val healthPracticeClickListener : HealthPractice
     fun bind(precaution : Precaution, healthPracticeClickListener : HealthPracticeClickListener) {
       viewBinding.run {
         precautionTypeTView.text = itemView.context.resources.getString(R.string.create_report_header, precaution.name)
-        val rvLayoutManager = LinearLayoutManager(null, LinearLayoutManager.HORIZONTAL, false)
-        horizontalRecycleView.apply {
-          layoutManager = rvLayoutManager
+        horizontalRecycleView.apply { // Horizontal scroll thanks to above layoutManager
+          layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+          addItemDecoration(MarginsItemDecoration(dpUnits(30), orientation = DividerItemDecoration.VERTICAL))
           adapter = HealthPracticeAdapter(healthPracticeClickListener)
           EspressoIdlingResource.increment()
           (adapter as HealthPracticeAdapter).submitList(precaution.practices)
           EspressoIdlingResource.decrement()
         }
-        /* Since the healthPracticeRV scrolls horizontally, more than 2 items means the 3rd+ item will be off screen
-        * so following animation intends to let user know they can scroll, displaying arrows then slowly hiding them */
-        precaution.practices?.let { if (it.size > 2) {
+        // > 2 items means the rest may be off screen so animating the arrows SHOULD let users know they can scroll
+        precaution.practices?.let { if (it.size > 2) { // Can use imageView.context w/ imageView.drawable.setTint to change arrows' color
           backwardIndicatorArrow.visibility = View.VISIBLE; forwardIndicatorArrow.visibility = View.VISIBLE
-          val alphaAnim = AlphaAnimation(0.0f, 1.0f).apply {
-            duration = 1000; startOffset = 50; repeatMode = Animation.REVERSE; repeatCount = 5
-            setAnimationListener(object : Animation.AnimationListener {
-              override fun onAnimationEnd(p0: Animation?) {
-                backwardIndicatorArrow.alpha = 0.0f; backwardIndicatorArrow.visibility = View.GONE
-                forwardIndicatorArrow.alpha = 0.0f; forwardIndicatorArrow.visibility = View.GONE
-              } // End on invisible
-              override fun onAnimationRepeat(p0: Animation?) {}; override fun onAnimationStart(p0: Animation?) {}
-            })
+          createFlashingAnimation(animationEnd = { // Arrows start visible above and end invisible
+            backwardIndicatorArrow.alpha = 0.0f; backwardIndicatorArrow.visibility = View.GONE
+            forwardIndicatorArrow.alpha = 0.0f; forwardIndicatorArrow.visibility = View.GONE
+          }).let { anim -> // Fire off animation created above
+            backwardIndicatorArrow.startAnimation(anim)
+            forwardIndicatorArrow.startAnimation(anim)
           }
-          backwardIndicatorArrow.startAnimation(alphaAnim)
-          forwardIndicatorArrow.startAnimation(alphaAnim)
         }}
       }
     }
