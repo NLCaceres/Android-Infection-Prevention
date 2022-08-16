@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import edu.usc.nlcaceres.infectionprevention.R
 import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 import edu.usc.nlcaceres.infectionprevention.databinding.ItemFilterCheckboxBinding
 
@@ -20,6 +21,7 @@ class FilterAdapter(private val singleSelectionEnabled : Boolean, private val fi
       viewBinding.filterCheckNameTextView.apply {
         text = filter.name
         isChecked = filter.isSelected
+        if (singleSelectionEnabled) { setCheckMarkDrawable(R.drawable.custom_radio_button) }
         setOnClickListener {
           if (singleSelectionEnabled && !this.isChecked) { handleSingleSelection() }
           this.isChecked = !this.isChecked

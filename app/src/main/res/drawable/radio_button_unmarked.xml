@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="36dp" android:viewportHeight="24.0" android:viewportWidth="24.0" android:width="36dp">
+  <group>
+    <!-- Needs a bit of an offset. If either X or Y coordinate is 0, it gets cut off -->
+    <path android:strokeColor="@color/colorPrimary" android:strokeWidth="2.5"
+      android:pathData="M3,12 A9,9,0,0,1,12,3 A9,9,0,0,1,21,12
+      A9,9,0,0,1,12,21 A9,9,0,0,1,3,12" />
+  </group>
+</vector>
