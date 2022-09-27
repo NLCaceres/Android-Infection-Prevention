@@ -67,7 +67,7 @@ class ActivitySortFilter : AppCompatActivity() {
   override fun onPrepareOptionsMenu(menu: Menu): Boolean { // Called after onCreate and in lifecycle when invalidateOptionsMenu is called!
     menu[1].apply { // Get() doneButton
       isEnabled = doneButtonEnabled // Use global var, change it, then call invalidateOptionsMenu
-      icon.alpha = if (isEnabled) 255 else 130 // Full brightness when enabled. Just over half when disabled
+      icon?.alpha = if (isEnabled) 255 else 130 // Full brightness when enabled. Just over half when disabled
     }
     return true
   }

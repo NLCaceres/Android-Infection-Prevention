@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Main strings across the app -->
-    <string name="app_name">Infection Prevention</string>
+    <string name="app_name">Infection Protection</string>
     <string name="company_logo">Action Bar Company Logo</string>
 
     <string name="hospital_name">Keck Medicine</string>
@@ -17,7 +17,7 @@
     <!-- Main Activity -->
     <string name="main_alert_dialog_title">Connection Issue!</string>
     <string name="main_alert_dialog_message">Issue retrieving new precaution list. Possible internet connection problem</string>
-    <string name="precautions_sorry_message">"Sorry! Couldn't Retrieve the Precaution Types"</string>
+    <string name="precautions_sorry_message">"Sorry! We're having trouble finding the precautions at the moment!"</string>
     <!-- Below uses a placeholder (%1$ w/ an 's' for a string) injected as the second arg of getString -->
     <string name="create_report_header">Create a New %1$s Report</string>
     <string name="slide_forward_hint">Slide Right</string>

@@ -156,12 +156,12 @@ class ActivityReportList : AppCompatActivity() {
       }
     }
     val expansionListener = object : MenuItem.OnActionExpandListener {
-      override fun onMenuItemActionExpand(searchIcon: MenuItem?): Boolean { // Returning true lets expansion/collapse to happen
+      override fun onMenuItemActionExpand(searchIcon: MenuItem): Boolean { // Returning true lets expansion/collapse to happen
         searchBar.requestFocus()
         if (searchBar.onFocusChangeListener == null) searchBar.onFocusChangeListener = focusListener
         return true
       }
-      override fun onMenuItemActionCollapse(searchIcon: MenuItem?): Boolean {
+      override fun onMenuItemActionCollapse(searchIcon: MenuItem): Boolean {
         if (currentFocus == searchBar && searchBar.text.isNotEmpty()) {
           searchBar.text.clear()
           (getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
@@ -174,7 +174,7 @@ class ActivityReportList : AppCompatActivity() {
         }
         // Made it here, either user didn't interact at all or above "else if" ran so clearFocus() let focusListener run collapse
         (getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
-          .hideSoftInputFromWindow(searchIcon?.actionView?.windowToken, 0)
+          .hideSoftInputFromWindow(searchIcon.actionView?.windowToken, 0)
         searchBar.text.clear(); return true
       }
     }

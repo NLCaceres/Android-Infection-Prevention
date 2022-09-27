@@ -18,17 +18,17 @@ interface ReportService {
         .addConverterFactory(GsonConverterFactory.create(snakeCaseGson())) // Custom Gson factory based on a GsonBuilder instance
         .build()
     }
-    fun createReportApi(): ReportApiInterface = RetrofitInstance.create(ReportApiInterface::class.java)
-    fun createPrecautionApi(): PrecautionApiInterface = RetrofitInstance.create(PrecautionApiInterface::class.java)
+    fun createReportApi(): ReportAPI = RetrofitInstance.create(ReportAPI::class.java)
+    fun createPrecautionApi(): PrecautionAPI = RetrofitInstance.create(PrecautionAPI::class.java)
   }
 
-  interface ReportApiInterface {
+  interface ReportAPI {
     @GET("reports") // Suspend funs launch on main thread by default so need to call from a coroutine!
     suspend fun fetchReportList(): Response<List<Report>>
     @POST("reports/create") // Response helper type gets metadata like status codes
     suspend fun createReport(@Body report : Report): Response<Report>
   }
-  interface PrecautionApiInterface {
+  interface PrecautionAPI {
     @GET("precautions")
     suspend fun fetchPrecautionList(): Response<List<Precaution>>
   }
