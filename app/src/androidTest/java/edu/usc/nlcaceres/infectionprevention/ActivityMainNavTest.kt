@@ -4,22 +4,24 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import org.junit.Rule
 import org.junit.Test
 import androidx.test.espresso.IdlingRegistry
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import edu.usc.nlcaceres.infectionprevention.robots.RoboTest
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
 import org.junit.After
 import org.junit.Before
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
+import org.junit.rules.RuleChain
 
 // Best to remember: Turn off animations for instrumentedTests via devOptions in "About Emulated Device" (tap buildNum 10 times)
 // Settings > devOptions > Drawing section > Turn off windowAnimationScale, transitionAnimationScale, animationDurationScale
 // Also can reduce animation durations to 1 for debug build
 
-/* Tests MainActivity and its interactions toward the rest of the app */
-@RunWith(MockitoJUnitRunner::class)
-class ActivityMainTest: RoboTest() {
-  @get:Rule // Runs launch(ActivityClass) that can be accessed via this prop instead!
-  val activityRule = ActivityScenarioRule(ActivityMain::class.java)
+/* Tests MainActivity navigation interactions around the rest of the app */
+@HiltAndroidTest
+class ActivityMainNavTest: RoboTest() {
+  @get:Rule
+  var rules = RuleChain.outerRule(HiltAndroidRule(this))
+    .around(ActivityScenarioRule(ActivityMain::class.java)) // Runs launch(ActivityClass) that can be accessed via this prop instead!
 
   @Before
   fun registerIdlingResource() {

@@ -2,19 +2,21 @@ package edu.usc.nlcaceres.infectionprevention
 
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import edu.usc.nlcaceres.infectionprevention.robots.RoboTest
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
+import org.junit.rules.RuleChain
 
-@RunWith(MockitoJUnitRunner::class)
+@HiltAndroidTest
 class ActivitySettingsTest: RoboTest() {
   @get:Rule
-  val activityRule = ActivityScenarioRule(ActivityMain::class.java)
+  var rules = RuleChain.outerRule(HiltAndroidRule(this))
+    .around(ActivityScenarioRule(ActivityMain::class.java))
 
   @Before
   fun registerIdlingResource() {

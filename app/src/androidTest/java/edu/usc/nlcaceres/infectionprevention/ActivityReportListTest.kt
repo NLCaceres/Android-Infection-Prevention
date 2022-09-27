@@ -2,16 +2,21 @@ package edu.usc.nlcaceres.infectionprevention
 
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import edu.usc.nlcaceres.infectionprevention.robots.RoboTest
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 
+@HiltAndroidTest
 class ActivityReportListTest: RoboTest() {
-  @get:Rule // Best to start from MainActivity for a normal user Task experience
-  val activityRule = ActivityScenarioRule(ActivityMain::class.java)
+  @get:Rule
+  var rules = RuleChain.outerRule(HiltAndroidRule(this))
+    .around(ActivityScenarioRule(ActivityMain::class.java))
 
   @Before
   fun registerIdlingResource() {
