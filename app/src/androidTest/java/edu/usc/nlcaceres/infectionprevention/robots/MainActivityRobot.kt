@@ -15,7 +15,9 @@ import org.hamcrest.Matchers.endsWith
 import androidx.test.espresso.contrib.DrawerActions
 import androidx.test.espresso.contrib.DrawerMatchers.isClosed
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
+import edu.usc.nlcaceres.infectionprevention.helpers.util.hasText
 import edu.usc.nlcaceres.infectionprevention.helpers.util.isOnScreen
+import edu.usc.nlcaceres.infectionprevention.helpers.util.isHidden
 import edu.usc.nlcaceres.infectionprevention.helpers.util.hasChildWithText
 import edu.usc.nlcaceres.infectionprevention.helpers.util.tap
 import edu.usc.nlcaceres.infectionprevention.helpers.util.swipeTo
@@ -24,9 +26,17 @@ import edu.usc.nlcaceres.infectionprevention.helpers.util.tapItemLabeled
 
 class MainActivityRobot : BaseRobot() {
 
+  fun checkSorryMessage(text: String) {
+    sorryMessage().hasText(text)
+  }
+  fun checkProgressBar(visible: Boolean = false) {
+    if (visible) progressBar().isOnScreen() else progressBar().isHidden()
+  }
   fun checkViewLoaded() { // Be sure RVs are visible && data loaded in (to interact with viewHolders)
     secondHorizontalRV().isOnScreen() // Quick check secondRV is visible
     firstHorizontalRV().hasChildWithText("Hand Hygiene") // Quick check data loaded
+    sorryMessage().isHidden()
+    progressBar().isHidden()
   }
   fun goCreateStandardReportLabeled(text: String) {
     goToStandardItem(text) // Make sure its visible!
@@ -61,6 +71,8 @@ class MainActivityRobot : BaseRobot() {
   fun goToSettings() { settingButton().tap() }
 
   companion object {
+    fun progressBar(): ViewInteraction = onView(withId(R.id.app_progressbar))
+    fun sorryMessage(): ViewInteraction = onView(withId(R.id.sorryTextView))
     fun precautionRV(): ViewInteraction = onView(withId(R.id.precautionRV)) // Outer
     fun firstHorizontalRV(): ViewInteraction = onView(allOf(hasSibling(withText(endsWith("Standard Report"))),
       withId(R.id.horizontalRecycleView))) // Nested RV (An item of outer RV)

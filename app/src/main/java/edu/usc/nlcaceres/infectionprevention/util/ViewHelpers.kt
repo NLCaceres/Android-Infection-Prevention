@@ -2,13 +2,27 @@ package edu.usc.nlcaceres.infectionprevention.util
 
 import android.content.res.Resources.getSystem
 import android.view.View
+import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 import edu.usc.nlcaceres.infectionprevention.R
 
 /* Dedicate reusable functions to use across Activities/Fragments */
+
+// Quick reusable Snackbar display func AND handles Espresso, a common pain point with snackbars/toasts
+fun ShowSnackbar(view: CoordinatorLayout, text: String, duration: Int) {
+    Snackbar.make(view, text, duration).run {
+      addCallback(object : Snackbar.Callback() {
+        override fun onShown(sb: Snackbar?) { EspressoIdlingResource.increment() }
+        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) { EspressoIdlingResource.decrement() }
+      })
+      show()
+    }
+}
 
 // May be useful for more than a progressBar but most common case
 fun HideProgressIndicator(hidden : Boolean, progressBar : ProgressBar) {
