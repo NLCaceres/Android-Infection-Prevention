@@ -10,7 +10,7 @@
       android:id="@+id/filterGroupNameTextView"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="Filter Name!"
+      android:text="@string/default_filter_name"
       android:textSize="22sp"
       android:textStyle="bold"
       android:padding="10dp"

@@ -14,7 +14,7 @@
       android:paddingEnd="20dp"
       android:paddingTop="10dp"
       android:paddingBottom="10dp"
-      android:text="Filter Name"
+      android:text="@string/default_filter_name"
       android:textSize="20sp"
       android:checkMark="@drawable/custom_checkbox"
       android:gravity="center_vertical"

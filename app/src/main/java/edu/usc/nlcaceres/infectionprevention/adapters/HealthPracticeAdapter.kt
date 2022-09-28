@@ -17,6 +17,7 @@ class HealthPracticeAdapter(private val healthPracticeClickListener : HealthPrac
   class PracticeViewHolder(private val viewBinding : ItemHealthPracticeBinding) : RecyclerView.ViewHolder(viewBinding.root) {
     fun bind(healthPractice : HealthPractice, listener : HealthPracticeClickListener) {
       viewBinding.precautionButtonTV.text = healthPractice.name
+      viewBinding.precautionImageView.contentDescription = "Create New ${healthPractice.name} button"
       // Following click listener will not work with buttons, instead imageView is used (buttons seem to consume clicks, but not running callback)
       viewBinding.practiceItemView.setOnClickListener { itemView -> listener.onHealthPracticeItemClick(itemView, healthPractice) }
     }

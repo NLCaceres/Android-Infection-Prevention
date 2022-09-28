@@ -19,14 +19,12 @@
         <!-- Typically do not theme the textColor! -->
 
         <!-- Date/Time Picker -->
-<!--        <item name="android:selectableItemBackgroundBorderless">@color/colorLight</item>--> <!-- Colors A LOT of standard Android buttons from calendar arrows to searchView close btn -->
         <item name="colorControlNormal">@color/colorLight</item>
         <item name="colorControlHighlight">@color/colorAccent</item>
         <item name="colorControlActivated">@color/colorPrimary</item>
 
         <!-- Spinner Dropdown -->
         <item name="android:dropDownListViewStyle">@style/DropDownTheme</item>
-
     </style>
 
     <style name="CustomToolBarStyle" parent="ThemeOverlay.AppCompat.ActionBar">
@@ -34,12 +32,7 @@
         <item name="android:textColorSecondary">@color/lightMode</item>
         <item name="homeAsUpIndicator">@drawable/ic_back_arrow</item>
         <item name="actionMenuTextColor">@color/colorLight</item>
-<!--        <item name="searchViewStyle">@style/MySearchViewStyle</item>-->
         <item name="editTextStyle">@style/CustomEditTextStyle</item>
-<!--        <item name="colorControlNormal">@color/colorLight</item>--> <!-- Will work to change most buttons! but may shrink android standard ones! -->
-<!--        <item name="actionOverflowButtonStyle">@style/Widget.AppCompat.Light.ActionButton.Overflow</item>-->
-<!--        <item name="drawerArrowStyle">@style/Widget.AppCompat.DrawerArrowToggle</item>-->
-<!--        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>-->
     </style>
 
     <style name="CustomActionModeStyle" parent="Widget.AppCompat.ActionMode">
@@ -59,10 +52,6 @@
         <item name="color">@color/colorLight</item>
     </style>
 
-<!--    <style name="MySearchViewStyle" parent="Widget.AppCompat.SearchView">-->
-<!--        <item name="closeIcon">@drawable/ic_close</item>-->
-<!--        <item name="searchHintIcon">@color/colorPrimary</item>-->
-<!--    </style>-->
     <style name="CustomEditTextStyle" parent="Widget.AppCompat.EditText">
         <item name="colorControlNormal">@color/colorLight</item>
         <item name="colorControlActivated">@color/colorLight</item>

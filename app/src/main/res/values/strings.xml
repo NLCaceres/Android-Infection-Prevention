@@ -1,14 +1,19 @@
 <resources>
 
-    <!-- Main strings across the app -->
+    <!-- App-Wide Strings -->
     <string name="app_name">Infection Protection</string>
     <string name="company_logo">Action Bar Company Logo</string>
 
     <string name="hospital_name">Keck Medicine</string>
 
-    <string name="my_message">You clicked the settings button</string>
+    <!-- CUSTOM VIEWS -->
+    <!-- Custom Alert Dialog -->
+    <string name="default_alert_dialog_title">Alert!</string>
+    <string name="default_alert_dialog_message">Alert Dialog Message</string>
     <string name="alert_dialog_ok">OK</string>
     <string name="alert_dialog_cancel">Cancel</string>
+    <!-- Custom Spinner -->
+    <string name="default_spinner_message">This is an Example</string>
 
     <!-- Shortcuts -->
     <string name="create_new_report_shortcut_short_label">Create New Report</string>
@@ -31,13 +36,14 @@
     <string name="isolation_precautions">Isolation Precaution</string>
 
     <!-- Create New Report Activity -->
-
     <string name="create_new_report_label">Create New Report</string>
     <string name="date_edittext_hint">Time &amp; Date</string>
 
     <!-- Settings Activity String -->
     <string name="settings_label">Settings</string>
     <string name="action_settings">Settings</string>
+    <string name="default_preferences_title">Preference Title</string>
+    <string name="default_preferences_summary">Preference Description</string>
     
     <!-- General User Settings Activities w/ Keys -->
     <string name="settings_personal_info">Personal Info</string>
@@ -98,6 +104,10 @@
     <!-- Reports List Activity -->
     <string name="reports_filter_button">Sort &amp; Filter</string>
     <string name="filter_desc">Sorting and Filtering button</string>
+    <string name="default_report_item_title">Violation Type</string>
+    <string name="default_report_item_date">10:24pm 10/12/2019</string>
+    <string name="default_report_item_employee_name">Committed by Nicholas Caceres</string>
+    <string name="default_report_item_location">Location: USC Unit 1 Room 123</string>
     <string name="report_icon_desc">Report icon</string>
     <string name="search_label">Search</string>
     <string name="search_hint">Search by name, health practice, id, or more!</string>
