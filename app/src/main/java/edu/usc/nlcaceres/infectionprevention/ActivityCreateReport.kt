@@ -5,9 +5,12 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.transition.Slide
 import android.util.Log
+import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
+import android.view.Window
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.EditText
@@ -70,6 +73,11 @@ class ActivityCreateReport : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    with(window) {
+      requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+      enterTransition = Slide(Gravity.RIGHT)
+      exitTransition = Slide(Gravity.LEFT)
+    }
     viewBinding = ActivityCreateReportBinding.inflate(layoutInflater)
     setContentView(viewBinding.root) // apply may work above for quick setContentView setup
 
@@ -107,7 +115,7 @@ class ActivityCreateReport : AppCompatActivity() {
       android.R.id.home -> { // Could also override onBackPressed but better not to (i.e. app closes if no backStack + backButton)
         // If at this activity w/out a backStack then launch mainActivity, finish this one
         if (this.isTaskRoot) { startActivity(Intent(this, ActivityMain::class.java)) }
-        finish() // If there's a backstack!, should behave as normal (onBackPressed() to mainActivity)
+        finishAfterTransition() // If there's a backstack!, should behave as normal (onBackPressed() to mainActivity)
         true // Finally always return true (done working with menu items here)
       }
       else -> super.onOptionsItemSelected(item) // Defaults to false (meaning nothing happens)

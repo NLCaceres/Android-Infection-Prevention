@@ -4,7 +4,11 @@ import android.util.Log
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.transition.Slide
+import android.app.ActivityOptions
+import androidx.core.app.ActivityOptionsCompat
+import android.view.Window
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -44,6 +48,10 @@ class ActivityMain : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    with(window) {
+      requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS) // If did not set in styles.xml
+      exitTransition = Slide(Gravity.LEFT)
+    }
     viewBinding = ActivityMainBinding.inflate(layoutInflater)
     setContentView(viewBinding.root)
 
@@ -85,11 +93,15 @@ class ActivityMain : AppCompatActivity() {
   private fun setUpPrecautionRV() {
     precautionRecyclerView = viewBinding.precautionRV.apply {
       setHasFixedSize(true)
-      precautionAdapter = PrecautionAdapter { _, healthPractice ->
+      precautionAdapter = PrecautionAdapter { itemView, healthPractice ->
+        val reportTypeTV = itemView.findViewById<View>(R.id.precautionButtonTV)
         // Click Listener that creates an intent and launches the CreateReport Activity
         Intent(applicationContext, ActivityCreateReport::class.java).apply {
           putExtra(createReportPracticeExtra, healthPractice.name)
-        }.also { createReportActivityLauncher.launch(it) }
+        }.also {
+          createReportActivityLauncher
+            .launch(it, ActivityOptionsCompat.makeSceneTransitionAnimation(this@ActivityMain, reportTypeTV, "reportType"))
+        }
       }
       adapter = precautionAdapter
     }
@@ -137,7 +149,7 @@ class ActivityMain : AppCompatActivity() {
     val precautions = viewModel.precautionState.value?.second ?: emptyList() // Get current value or empty if not set yet
     // Add each as separate arrays to intent so sortFilterActivity can dynamically create filter options
     addPrecautionsAndHealthPractices(intent, precautions)
-    startActivity(intent)
+    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
   }
   private fun addPrecautionsAndHealthPractices(reportListIntent: Intent, precautionList: List<Precaution>) {
     val precautionNames = arrayListOf<String>()
