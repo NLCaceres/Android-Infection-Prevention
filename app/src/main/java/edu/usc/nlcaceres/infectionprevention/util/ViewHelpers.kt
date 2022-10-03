@@ -1,5 +1,8 @@
 package edu.usc.nlcaceres.infectionprevention.util
 
+import android.content.Context
+import android.content.res.Configuration.UI_MODE_NIGHT_MASK
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.content.res.Resources.getSystem
 import android.view.View
 import android.widget.EditText
@@ -12,6 +15,9 @@ import com.google.android.material.snackbar.Snackbar
 import edu.usc.nlcaceres.infectionprevention.R
 
 /* Dedicate reusable functions to use across Activities/Fragments */
+
+// Returns true if Android Dark Theme is on (Available Android 10 / API 29+)
+fun IsDarkMode(context: Context) = (context.resources.configuration.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES
 
 // Quick reusable Snackbar display func AND handles Espresso, a common pain point with snackbars/toasts
 fun ShowSnackbar(view: CoordinatorLayout, text: String, duration: Int) {
