@@ -1,25 +1,23 @@
 package edu.usc.nlcaceres.infectionprevention.util
 
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
-
-typealias NullableBlock = (() -> Unit)?
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
+import android.view.View
 
 // In debug/tests, we shouldn't run animations, so to disable, we make it last only a millisecond
 // Why? Tests can get held up by animations. They can even make clicks become longPresses which cause
 // tests to be flakey and fail for seemingly no reason
-fun createFlashingAnimation(animationStart: NullableBlock = null, animationEnd: NullableBlock = null,
-                            animationRepeat: NullableBlock = null): AlphaAnimation {
-  return AlphaAnimation(0.0f, 1.0f).apply {
-    duration = 1
-    setAnimationListener(CustomAnimationListener(animationStart, animationEnd, animationRepeat))
+
+// Could add an onAnimationEnd closure param BUT for this single animation, this implementation is good enough
+fun createFlashingAnimation(target: View): ObjectAnimator {
+  return ObjectAnimator.ofFloat(target, "alpha", 0.0f, 1.0f).apply {
+    duration = 1L // Quickly end animation and set view to GONE, no real interruption to UI tests
+    addListener(AnimationEndListener { target.visibility = View.GONE })
   }
 }
 
-// This way the animation listener be as versatile as possible, we decide what happens on each trigger
-class CustomAnimationListener(private val animationStart: NullableBlock = null, private val animationEnd: NullableBlock = null,
-                        private val animationRepeat: NullableBlock = null) : Animation.AnimationListener {
-  override fun onAnimationStart(p0: Animation?) { animationStart?.invoke() }
-  override fun onAnimationEnd(p0: Animation?) { animationEnd?.invoke() }
-  override fun onAnimationRepeat(p0: Animation?) { animationRepeat?.invoke() }
+// Could be more versatile by handling different animation timing callbacks but will build as needed
+class AnimationEndListener(private val onAnimationEnd: () -> Unit): AnimatorListenerAdapter() {
+  override fun onAnimationEnd(animation: Animator) { onAnimationEnd.invoke() }
 }

@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention.adapters
 
+import android.animation.AnimatorSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,13 +38,12 @@ class PrecautionAdapter(private val healthPracticeClickListener : HealthPractice
         // > 2 items means the rest may be off screen so animating the arrows SHOULD let users know they can scroll
         precaution.practices?.let { if (it.size > 2) { // Can use imageView.context w/ imageView.drawable.setTint to change arrows' color
           backwardIndicatorArrow.visibility = View.VISIBLE; forwardIndicatorArrow.visibility = View.VISIBLE
-          createFlashingAnimation(animationEnd = { // Arrows start visible above and end invisible
-            backwardIndicatorArrow.alpha = 0.0f; backwardIndicatorArrow.visibility = View.GONE
-            forwardIndicatorArrow.alpha = 0.0f; forwardIndicatorArrow.visibility = View.GONE
-          }).let { anim -> // Fire off animation created above
-            backwardIndicatorArrow.startAnimation(anim)
-            forwardIndicatorArrow.startAnimation(anim)
-          }
+          // Could call animate() on the indicators as a quicker way to animate the alpha property BUT
+          // animate() is better for animating multiple properties on 1 view, not coordinating two views w/ a single prop animation
+          val backArrowAnim = createFlashingAnimation(backwardIndicatorArrow)
+          val forwardArrowAnim = createFlashingAnimation(forwardIndicatorArrow)
+          // Arrows start visible and end invisible. Below fires off the animations at the same time
+          AnimatorSet().apply { playTogether(backArrowAnim, forwardArrowAnim); start() }
         }}
       }
     }
