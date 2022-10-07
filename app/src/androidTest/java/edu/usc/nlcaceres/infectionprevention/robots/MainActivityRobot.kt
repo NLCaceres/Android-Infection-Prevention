@@ -86,7 +86,7 @@ class MainActivityRobot : BaseRobot() {
     fun tapIsolationItem(text: String) = secondHorizontalRV().tapItemLabeled<PracticeViewHolder>(text)
 
     // Toolbar views
-    fun navDrawer(): ViewInteraction = onView(withId(R.id.myNavDrawer))
+    fun navDrawer(): ViewInteraction = onView(withId(R.id.navDrawer))
     fun navNormalReportListButton(): ViewInteraction = onView(withId(R.id.nav_reports))
     fun navFilterStandardReportListButton(): ViewInteraction = onView(withId(R.id.nav_standard_precautions))
     fun navFilterIsoReportListButton(): ViewInteraction = onView(withId(R.id.nav_isolation_precautions))

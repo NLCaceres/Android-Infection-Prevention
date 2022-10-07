@@ -1,35 +1,25 @@
 package edu.usc.nlcaceres.infectionprevention
 
 import android.util.Log
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.transition.Slide
 import android.app.ActivityOptions
-import androidx.core.app.ActivityOptionsCompat
 import android.view.Window
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import edu.usc.nlcaceres.infectionprevention.adapters.PrecautionAdapter
 import edu.usc.nlcaceres.infectionprevention.data.Precaution
 import edu.usc.nlcaceres.infectionprevention.databinding.ActivityMainBinding
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
 import edu.usc.nlcaceres.infectionprevention.util.SetupToolbar
-import edu.usc.nlcaceres.infectionprevention.util.ShowSnackbar
-import edu.usc.nlcaceres.infectionprevention.util.createReportPracticeExtra
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelMain
 
 /* Homepage that allows users to choose a type of health violation that occurred
@@ -38,13 +28,10 @@ import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelMain
 @AndroidEntryPoint
 class ActivityMain : AppCompatActivity() {
 
-  private val viewModel: ViewModelMain by viewModels()
+  private val viewModel: ViewModelMain by viewModels() // Still requires Hilt to retrieve the viewModel
   private lateinit var viewBinding : ActivityMainBinding
+  lateinit var coordinatorLayout: CoordinatorLayout
   private lateinit var navDrawer: DrawerLayout
-  private lateinit var progIndicator : ProgressBar
-  private lateinit var sorryMsgTextView : TextView
-  private lateinit var precautionRecyclerView : RecyclerView
-  private lateinit var precautionAdapter : PrecautionAdapter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -54,70 +41,14 @@ class ActivityMain : AppCompatActivity() {
     }
     viewBinding = ActivityMainBinding.inflate(layoutInflater)
     setContentView(viewBinding.root)
+    coordinatorLayout = viewBinding.mainCoordinatorLayout
 
     EspressoIdlingResource.increment() // ViewModel completion block handles the decrement since it runs even on error
-    setUpToolbarAndNavView()
-    setUpErrorMessaging()
-    setUpPrecautionRV()
-  }
 
-  private fun setUpToolbarAndNavView() {
     // Since MainLauncher Activity label gives the app icon AND the toolbar its title, we purposely remove it here
     SetupToolbar(this, viewBinding.toolbarLayout.homeToolbar, R.drawable.ic_menu, " ") // Via title = " "
 
-    navDrawer = viewBinding.myNavDrawer
-
-    viewBinding.navView.apply {
-      setNavigationItemSelectedListener(NavDrawerItemSelectedListener(::createNavDrawerIntent, ::finalizeNavDrawerItemSelection))
-      getHeaderView(0).findViewById<Button>(R.id.navCloseButton).setOnClickListener { navDrawer.closeDrawers() }
-    }
-
-    progIndicator = viewBinding.progressIndicatorLayout.appProgressbar
-    viewModel.isLoading.observe(this) { loading -> progIndicator.visibility = if (loading) View.VISIBLE else View.INVISIBLE }
-  }
-  private fun setUpErrorMessaging() { // Sets up sorryTextView and Snackbar to display useful error messaging
-    sorryMsgTextView = viewBinding.sorryTextView
-    viewModel.toastMessage.observe(this) { message ->
-      // This will ONLY ever receive a value if the precautionState liveData fails!
-      // SO NO POINT observing the message from precautionState, it couldn't ever receive it due to the flow crashing
-      if (message.isNotBlank()) { // Can't be empty ("") or just whitespace ("   ")
-        val listEmpty = viewModel.precautionState.value?.second?.isEmpty() ?: true
-        with(sorryMsgTextView) {
-          visibility = if (listEmpty) View.VISIBLE else View.INVISIBLE
-          text = message
-        }
-        ShowSnackbar(viewBinding.myCoordinatorLayout, message, Snackbar.LENGTH_SHORT)
-      }
-    }
-  }
-  private fun setUpPrecautionRV() {
-    precautionRecyclerView = viewBinding.precautionRV.apply {
-      setHasFixedSize(true)
-      precautionAdapter = PrecautionAdapter { itemView, healthPractice ->
-        val reportTypeTV = itemView.findViewById<View>(R.id.precautionButtonTV)
-        // Click Listener that creates an intent and launches the CreateReport Activity
-        Intent(applicationContext, ActivityCreateReport::class.java).apply {
-          putExtra(createReportPracticeExtra, healthPractice.name)
-        }.also {
-          createReportActivityLauncher
-            .launch(it, ActivityOptionsCompat.makeSceneTransitionAnimation(this@ActivityMain, reportTypeTV, "reportType"))
-        }
-      }
-      adapter = precautionAdapter
-    }
-
-    viewModel.precautionState.observe(this) { (loading, newList) ->
-      precautionAdapter.submitList(newList)
-      val listEmpty = newList.isEmpty()
-      with(sorryMsgTextView) {
-        visibility = if (listEmpty) View.VISIBLE else View.INVISIBLE
-        text = when {
-          loading -> "Looking up precautions"
-          listEmpty -> "Weird! Seems we don't have any available precautions to choose from!"
-          else -> "Please try again later!"
-        }
-      }
-    }
+    setupNavView()
   }
 
   /* Next 2 funs = Menu Setup */
@@ -136,13 +67,15 @@ class ActivityMain : AppCompatActivity() {
     }
   }
 
-  // Following handles navigation from NavDrawer
-  private val createReportActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-    if (result.resultCode == Activity.RESULT_OK) {
-      startActivity(Intent(applicationContext, ActivityReportList::class.java))
+  private fun setupNavView() {
+    navDrawer = viewBinding.navDrawer
+    viewBinding.navView.apply {
+      setNavigationItemSelectedListener(NavDrawerItemSelectedListener(::createNavDrawerIntent, ::finalizeNavDrawerItemSelection))
+      getHeaderView(0).findViewById<Button>(R.id.navCloseButton)
+        .setOnClickListener { navDrawer.closeDrawers() }
     }
   }
-
+  // Following handles navigation from NavDrawer + fills intent with current list of precaution types
   private fun createNavDrawerIntent() = Intent(applicationContext, ActivityReportList::class.java)
   private fun finalizeNavDrawerItemSelection(intent: Intent) {
     navDrawer.closeDrawers()

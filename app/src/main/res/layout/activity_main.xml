@@ -3,16 +3,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/myNavDrawer"
+    tools:context=".ActivityMain"
+    android:id="@+id/navDrawer"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".ActivityMain">
+    android:fitsSystemWindows="true">
 
+    <!-- Coordinator Layout allows Snackbars -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/mainCoordinatorLayout"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:id="@+id/myCoordinatorLayout">
+        android:layout_width="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -21,48 +22,22 @@
             <include layout="@layout/app_toolbar"
                 android:id="@+id/toolbar_layout"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/precautionRV" />
+                app:layout_constraintBottom_toTopOf="@+id/fragment_main_container" />
 
-            <include layout="@layout/app_progress_indicator"
-                android:id="@+id/progress_indicator_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/toolbar_layout" />
-            <!-- Height and width necessary if not just sitting at the top like toolbar is for INCLUDE tags -->
-
-            <androidx.recyclerview.widget.RecyclerView
+            <androidx.fragment.app.FragmentContainerView
+                tools:layout="@layout/fragment_main"
+                android:name="edu.usc.nlcaceres.infectionprevention.FragmentMain"
+                android:id="@+id/fragment_main_container"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:id="@+id/precautionRV"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <TextView
-                android:id="@+id/sorryTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="15dp"
-                android:text="@string/precautions_sorry_message"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textAlignment="center"
-                android:gravity="center"
-                android:alpha="0.8"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <!-- Coordinator Layout allows Snackbars -->
-
+    <!-- NavViews provide the menu for parent NavDrawer/DrawerLayout -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_height="match_parent"
@@ -70,7 +45,5 @@
         android:layout_gravity="start"
         app:menu="@menu/drawer_view"
         app:headerLayout="@layout/nav_header" />
-
-    <!-- Drawer Layout for the navDrawer above -->
 
 </androidx.drawerlayout.widget.DrawerLayout>
