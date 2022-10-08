@@ -13,15 +13,15 @@ import edu.usc.nlcaceres.infectionprevention.robots.RoboTest
 import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.RuleChain
 import java.io.IOException
 
 @UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
 class ActivityMainRenderProgressTest: RoboTest() {
-  @get:Rule
-  var rules: RuleChain = RuleChain.outerRule(HiltAndroidRule(this))
-    .around(ActivityScenarioRule(ActivityMain::class.java))
+  @get:Rule(order = 0)
+  val hiltRule = HiltAndroidRule(this)
+  @get:Rule(order = 1)
+  val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
 
   @BindValue @JvmField // Each test gets its own version of the repo so no variable pollution like the closures
   var precautionRepository: PrecautionRepository = FakePrecautionRepository()

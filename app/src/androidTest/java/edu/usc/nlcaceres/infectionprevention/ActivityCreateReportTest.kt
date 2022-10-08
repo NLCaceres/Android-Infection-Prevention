@@ -11,14 +11,14 @@ import org.junit.After
 import org.junit.Test
 import org.junit.Before
 import org.junit.Rule
-import org.junit.rules.RuleChain
 
 // @RunWith(AndroidJUnit4.class) // Not needed if set to default in build.gradle
 @HiltAndroidTest
 class ActivityCreateReportTest: RoboTest() {
-  @get:Rule // Best to start from MainActivity for a normal user Task experience
-  var rules = RuleChain.outerRule(HiltAndroidRule(this))
-    .around(ActivityScenarioRule(ActivityMain::class.java))
+  @get:Rule(order = 0) // Best to start from MainActivity for a normal user Task experience
+  val hiltRule = HiltAndroidRule(this)
+  @get:Rule(order = 1)
+  val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
 
   @Before
   fun navToCreateReportActivity() {

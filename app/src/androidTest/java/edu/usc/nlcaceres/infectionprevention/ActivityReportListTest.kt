@@ -10,13 +10,13 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.RuleChain
 
 @HiltAndroidTest
 class ActivityReportListTest: RoboTest() {
-  @get:Rule
-  var rules = RuleChain.outerRule(HiltAndroidRule(this))
-    .around(ActivityScenarioRule(ActivityMain::class.java))
+  @get:Rule(order = 0)
+  val hiltRule = HiltAndroidRule(this)
+  @get:Rule(order = 1)
+  val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
 
   @Before
   fun registerIdlingResource() {

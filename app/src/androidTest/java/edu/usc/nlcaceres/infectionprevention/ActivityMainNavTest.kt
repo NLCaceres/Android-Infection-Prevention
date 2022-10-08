@@ -10,7 +10,6 @@ import edu.usc.nlcaceres.infectionprevention.robots.RoboTest
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
 import org.junit.After
 import org.junit.Before
-import org.junit.rules.RuleChain
 
 // Best to remember: Turn off animations for instrumentedTests via devOptions in "About Emulated Device" (tap buildNum 10 times)
 // Settings > devOptions > Drawing section > Turn off windowAnimationScale, transitionAnimationScale, animationDurationScale
@@ -19,9 +18,10 @@ import org.junit.rules.RuleChain
 /* Tests MainActivity navigation interactions around the rest of the app */
 @HiltAndroidTest
 class ActivityMainNavTest: RoboTest() {
-  @get:Rule
-  var rules = RuleChain.outerRule(HiltAndroidRule(this))
-    .around(ActivityScenarioRule(ActivityMain::class.java)) // Runs launch(ActivityClass) that can be accessed via this prop instead!
+  @get:Rule(order = 0)
+  val hiltRule = HiltAndroidRule(this)
+  @get:Rule(order = 1) // This rule runs launch(ActivityClass) & can access the activity via this prop instead!
+  val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
 
   @Before
   fun registerIdlingResource() {

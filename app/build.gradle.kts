@@ -41,10 +41,10 @@ android {
 
 dependencies {
     implementation(fileTree(mapOf("include" to listOf("*.jar"), "dir" to "libs")))
-    implementation("androidx.test.ext:junit-ktx:1.1.3")
 
     // Test Dependencies - Unit Test Specific
     testImplementation("junit:junit:4.13.2")
+    testImplementation("androidx.test.ext:junit-ktx:1.1.3")
     testImplementation("org.robolectric:robolectric:4.8.1")
     testImplementation("org.mockito:mockito-core:4.4.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
@@ -53,16 +53,13 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4") // Mocks out Dispatcher.Main for coroutines/suspended funs
 
     // Instrumented Test Specific (Emulator based)
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit-ktx:1.1.3")
     androidTestImplementation("androidx.test:runner:1.4.0")
     androidTestImplementation("androidx.test:rules:1.4.0")
     androidTestImplementation("androidx.arch.core:core-testing:2.1.0")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.43.2")
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.43.2")
-    androidTestImplementation("org.mockito:mockito-core:4.4.0")
-//    androidTestImplementation 'org.mockito:mockito-android:4.4.0' // Shouldn't need thanks to dexmaker
-    androidTestImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0") // Provides helpers for a more Kotlin feel!
-    androidTestImplementation("com.linkedin.dexmaker:dexmaker-mockito-inline:2.28.1") // Enables instrumented test mocking
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.4.0")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.3.0") // 3.4.0 causes hamcrest dependency mismatch currently
