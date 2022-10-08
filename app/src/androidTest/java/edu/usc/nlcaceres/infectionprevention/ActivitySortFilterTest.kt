@@ -43,7 +43,7 @@ class ActivitySortFilterTest: RoboTest() {
     sortFilterActivity { goToSettings() }
     settingsActivity { checkInitLoad() }
   }
-  @Test fun navigateBackToReportList() {
+  @Test fun navigateBackUpToReportList() {
     sortFilterActivity { pressCloseButton() } // X button
     reportListActivity {
       checkInitListLoaded()

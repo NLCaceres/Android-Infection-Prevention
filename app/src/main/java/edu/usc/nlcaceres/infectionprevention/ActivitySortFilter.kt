@@ -97,8 +97,9 @@ class ActivitySortFilter : AppCompatActivity() {
     else -> { super.onOptionsItemSelected(item) }
   }
 
-  // Below uses normal back animation but otherwise same functionality (useful in fragments)
-//  override fun onSupportNavigateUp(): Boolean { finish(); return true }
+  // Following override prevents odd Hilt EntryPoint exception crash in instrumentedTests
+  // Close button causes test app to restart after test completes stopping rest of test suite
+  override fun onSupportNavigateUp(): Boolean { finish(); return true } // Despite override, works exactly the same as before
 
   private fun createGroupAndLists() {
     val sortByTitleStr = "Sort By"
