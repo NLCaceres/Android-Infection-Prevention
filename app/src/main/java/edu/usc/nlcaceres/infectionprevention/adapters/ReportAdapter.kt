@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention.adapters
 
+import java.util.TimeZone
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -7,8 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.ListAdapter
 import edu.usc.nlcaceres.infectionprevention.data.Report
 import edu.usc.nlcaceres.infectionprevention.databinding.ItemReportBinding
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 /* Adapter for ReportsListActivity RecyclerView */
 // If not specifying specific ViewHolder class, then some casting needed. See ln 37.
@@ -21,7 +20,7 @@ class ReportAdapter : ListAdapter<Report, RecyclerView.ViewHolder>(ReportDiffCal
       //TODO: Add reportTypeImageView?
       val reportTypeText = "${report.healthPractice?.name} Violation"
       viewBinding.reportTypeTitleTV.text = reportTypeText
-      viewBinding.reportDateTV.text = report.date?.let { SimpleDateFormat("MMM dd, yyyy h:mma", Locale.getDefault()).format(it) }
+      viewBinding.reportDateTV.text = report.formattedDate(TimeZone.getDefault().id)
       val reportEmployeeText = "Committed by ${report.employee?.fullName}"
       viewBinding.reportEmployeeNameTV.text = reportEmployeeText
       val locationText = "Location: ${report.location?.facilityName} Unit: ${report.location?.unitNum} Room: ${report.location?.roomNum}"

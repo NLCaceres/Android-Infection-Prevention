@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention.helpers.di
 
+import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 import edu.usc.nlcaceres.infectionprevention.data.Precaution
 import edu.usc.nlcaceres.infectionprevention.data.PrecautionRepository
 import kotlinx.coroutines.delay
@@ -24,6 +25,20 @@ class FakePrecautionRepository: PrecautionRepository {
       if (needDelay) { delay(3000) }
       // Could call following from helper function BUT this seems to be enough time to let tests set closure ref
       optionalClosure.invoke() // ALSO acts more like actual repository
+    }
+  }
+
+  fun populateList() { someList = makeList() }
+  fun clearList() { someList = emptyList() }
+
+  companion object Factory {
+    fun makeList(): List<Precaution> {
+      val precaution1 = Precaution(null, "Standard",
+        arrayListOf(HealthPractice(null, "Hand Hygiene", null), HealthPractice(null, "PPE", null)))
+      val precaution2 = Precaution(null, "Isolation",
+        arrayListOf(HealthPractice(null, "Contact", null), HealthPractice(null, "Droplet", null),
+          HealthPractice(null, "Airborne", null), HealthPractice(null, "Contact Enteric", null)))
+      return arrayListOf(precaution1, precaution2)
     }
   }
 }

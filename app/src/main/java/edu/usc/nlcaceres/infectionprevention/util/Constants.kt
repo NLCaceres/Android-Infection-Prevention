@@ -1,8 +1,9 @@
 package edu.usc.nlcaceres.infectionprevention.util
 
-import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.FieldNamingPolicy
+import edu.usc.nlcaceres.infectionprevention.data.Report
 
 // Backend Endpoints - Base URLS need to end with '/' for Retrofit!
 const val baseURL = "https://infection-prevention-express.herokuapp.com/api/"
@@ -23,8 +24,10 @@ const val reportCreationURL = "${baseURL}reports/create"
 const val reportCreationDevURL = "${baseDevURL}reports/create"
 
 // Gson Helper
-fun snakeCaseGson(): Gson = GsonBuilder().setFieldNamingPolicy(
-  FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create() // Catches underscored names e.g. first_name
+fun snakeCaseGson(): Gson = GsonBuilder()
+  .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+  .registerTypeAdapter(Report::class.java, ReportDeserializer()) // Needs to handle Profession nested in Employee field
+  .create() // Catches underscored names e.g. first_name
 
 // Volley
 const val TIMEOUT_MS = 5000

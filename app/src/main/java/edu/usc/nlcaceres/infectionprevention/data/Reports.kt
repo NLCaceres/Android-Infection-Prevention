@@ -1,7 +1,9 @@
 package edu.usc.nlcaceres.infectionprevention.data
 
 import com.google.gson.annotations.SerializedName
-import java.util.Date
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 // May have to refactor model to accommodate facilityName, UnitNum, and roomNum
 data class Location(@SerializedName("_id") val id : String?, val facilityName : String, val unitNum : String, val roomNum : String) {
@@ -46,5 +48,12 @@ data class HealthPractice(@SerializedName("_id") val id : String?, val name : St
 }
 
 // SerializedName for date prop ensures proper json format
-data class Report(val id : String?, val employee : Employee?, val healthPractice : HealthPractice?, val location : Location?,
-                  @SerializedName("date_reported") val date: Date?)
+data class Report(val id : String?, val employee : Employee?, val healthPractice : HealthPractice?,
+                  val location : Location?, @SerializedName("date_reported") val date: Instant) {
+  fun formattedDate(timeZoneId: String): String {
+    // TimeZone database ID can be grabbed from Android via TimeZone.getDefault().id
+    val zonedDateTime = date.atZone(ZoneId.of(timeZoneId))
+    val dateTimeFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy h:mma")
+    return zonedDateTime.format(dateTimeFormatter)
+  }
+}

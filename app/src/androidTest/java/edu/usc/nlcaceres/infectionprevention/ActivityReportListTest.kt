@@ -2,21 +2,34 @@ package edu.usc.nlcaceres.infectionprevention
 
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import edu.usc.nlcaceres.infectionprevention.data.PrecautionRepository
+import edu.usc.nlcaceres.infectionprevention.data.ReportRepository
+import edu.usc.nlcaceres.infectionprevention.helpers.di.FakePrecautionRepository
+import edu.usc.nlcaceres.infectionprevention.helpers.di.FakeReportRepository
 import edu.usc.nlcaceres.infectionprevention.robots.RoboTest
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
+import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
 class ActivityReportListTest: RoboTest() {
   @get:Rule(order = 0)
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1)
   val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
+
+  @BindValue @JvmField // Each test gets its own version of the repo so no variable pollution like the closures
+  var precautionRepository: PrecautionRepository = FakePrecautionRepository().apply { populateList() }
+  @BindValue @JvmField
+  var reportRepository: ReportRepository = FakeReportRepository().apply { populateList() }
 
   @Before
   fun registerIdlingResource() {
@@ -27,8 +40,8 @@ class ActivityReportListTest: RoboTest() {
       checkNavDrawerOpen(true) // Now Open
       goToReportList()
     }
-    reportListActivity {
-      checkInitListLoaded() // Verify made it to reportList (have to wait until RV loads)
+    reportListActivity { // Verify made it to reportList (have to wait until RV loads)
+      checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
     }
   }
   @After
@@ -45,7 +58,7 @@ class ActivityReportListTest: RoboTest() {
     reportListActivity { goToSettings() }
     settingsActivity { checkInitLoad() }
   }
-  @Test fun navigateBackToReportList() {
+  @Test fun navigateBackToHomePage() {
     reportListActivity { pressUpButton() } // Back button on toolbar
     mainActivity { checkViewLoaded() }
   }
@@ -70,7 +83,7 @@ class ActivityReportListTest: RoboTest() {
       expandSearchBar()
       checkFirstSearchBarExpansion()
       enterSearchQuery("USC")
-      checkListCount(1)
+      checkListCount(2)
       tapAwayFromSearchBar() // Since editText filled with "USC"
       checkSearchBarExpanded() // editText will stay open
       closeSearchBar() // True close by pressing "X" button
@@ -86,18 +99,18 @@ class ActivityReportListTest: RoboTest() {
       checkFirstSearchBarExpansion()
       checkListCount(5)
       enterSearchQuery("USC")
-      checkListCount(1) // Should only have one view left
+      checkListCount(2) // Only 2 views left
       closeSearchBar() // True close by pressing "X" button
       checkSearchBarClosed()
 
       expandSearchBar()
       enterQueryIntoFocusedItem("USC") // Retry but this time being sure our editText gets autofocused
-      checkListCount(1)
+      checkListCount(2)
       closeSearchBar()
 
       expandSearchBar()
       enterSearchQuery("HSC")
-      checkListCount(4)
+      checkListCount(3)
     }
   }
 
@@ -135,7 +148,9 @@ class ActivityReportListTest: RoboTest() {
     reportListActivity {
       checkFiltersLoaded("Hand Hygiene", "Employee Name (A-Z)")
       checkListCount(2) // Should only get two hand hygiene related reports
-      checkListOrder("Hand Hygiene" to "Edwin Toribio", "Hand Hygiene" to "Nicholas Caceres") // Should be in alpha order
+      val handHygieneReports = arrayOf(Triple("Hand Hygiene", "John Smith", "May 18"),
+        Triple("Hand Hygiene", "Melody Rios", "May 13"))
+      checkListOrder(*handHygieneReports) // Should be in alpha order
     }
   }
   @Test fun removeFilterAndReprocessList() {

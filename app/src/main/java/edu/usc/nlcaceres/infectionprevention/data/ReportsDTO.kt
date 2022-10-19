@@ -3,7 +3,7 @@ package edu.usc.nlcaceres.infectionprevention.data
 import edu.usc.nlcaceres.infectionprevention.util.HealthPracticeDeserializer
 import edu.usc.nlcaceres.infectionprevention.util.PrecautionDeserializer
 import edu.usc.nlcaceres.infectionprevention.util.ReportDeserializer
-import java.util.Date
+import java.time.Instant
 
 class PrecautionDTO(private val map: Map<String, Any>) {
   private val _id : String? by map
@@ -33,7 +33,7 @@ class ReportDTO(map: Map<String, Any>) {
   private val employee: Employee by map
   private val healthPractice : HealthPractice? by map
   private val location : Location? by map
-  private val date: Date? by map
+  private val date: Instant by map
 
   fun toReport() = Report(this._id, this.employee, this.healthPractice, this.location, this.date)
 

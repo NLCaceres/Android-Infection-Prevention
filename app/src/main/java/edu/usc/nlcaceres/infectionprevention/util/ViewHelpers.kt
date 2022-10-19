@@ -13,6 +13,13 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import edu.usc.nlcaceres.infectionprevention.R
+import androidx.core.widget.doOnTextChanged
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onStart
 
 /* Dedicate reusable functions to use across Activities/Fragments */
 
@@ -53,3 +60,16 @@ fun SetupToolbar(activity: AppCompatActivity, toolbar: Toolbar, upIndicator: Int
 // If a fun takes pixels but would like to use densityIndependentPixels (dp), then easy conversion helpers!
 fun dpUnits(desiredVal: Int) = (desiredVal * getSystem().displayMetrics.density).toInt()
 fun pixels(dpUnits: Int) = (dpUnits / getSystem().displayMetrics.density).toInt()
+
+// EditText Flow Helper
+fun EditText.textUpdates(): Flow<CharSequence?> = callbackFlow { // Runs by default on scope and context of consumer
+    // onTextChange params: text: CharSequence, start: 1st index of text (0 usually), before: previous count, count: size
+    val textChangedListener = doOnTextChanged { text, _, _, _ -> trySend(text) }
+    // awaitClose required! To remove listener later BUT ALSO ensure the flow lives as long as needed
+    // Calling it means only the consumer OR a callback API that sends a SendChannel.close signal can finish the flow
+    awaitClose { removeTextChangedListener(textChangedListener) }
+}.onStart { emit(text) }.flowOn(Dispatchers.Main) // All values from trySend, get emitted onStart
+// Can simply attach to a lifecycle via flowWithLifecycle AND launchIn
+// OR do something a bit more complicated like below:
+// editText.textChanges().filterNot { it.isNullOrBlank() }.debounce(300).distinctUntilChanged()
+//    .flatMapLatest { executeSearch(it) }.onEach { updateUI(it) }.launchIn(lifecycleScope)

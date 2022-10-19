@@ -5,10 +5,9 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
-import edu.usc.nlcaceres.infectionprevention.data.Precaution
-import edu.usc.nlcaceres.infectionprevention.data.PrecautionRepository
+import edu.usc.nlcaceres.infectionprevention.data.*
 import edu.usc.nlcaceres.infectionprevention.helpers.di.FakePrecautionRepository
+import edu.usc.nlcaceres.infectionprevention.helpers.di.FakeReportRepository
 import edu.usc.nlcaceres.infectionprevention.robots.RoboTest
 import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
 import org.junit.Rule
@@ -25,6 +24,8 @@ class ActivityMainRenderProgressTest: RoboTest() {
 
   @BindValue @JvmField // Each test gets its own version of the repo so no variable pollution like the closures
   var precautionRepository: PrecautionRepository = FakePrecautionRepository()
+  @BindValue @JvmField
+  var reportRepository: ReportRepository = FakeReportRepository()
 
   @Test fun viewLoading() { // Probably not a perfect test across devices BUT doesn't slow test suite
     // Freeze load/flow state to run the Espresso checks since EspressoIdling doesn't check during idle state

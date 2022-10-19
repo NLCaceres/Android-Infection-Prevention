@@ -27,12 +27,12 @@ class ReportListRobot: BaseRobot() {
   fun removeSelectedFilterLabeled(text: String) {
     removeFilterButtonLabeled(text).tap()
   }
-  fun checkInitListLoaded() {
-    val violationType = "Hand Hygiene"
-    val employeeName = "Nicholas Caceres"
-    goToReport(violationType, employeeName) // Scroll to a report with below matching text
+  fun checkInitListLoaded(violationType: String, employeeName: String, dateStr: String) {
+    // SorryMsg SHOULD be INVISIBLE once loaded BUT remains visible DESPITE identical logic in mainFragment that works
+    //sorryMessage().isHidden()
+    goToReport(violationType, employeeName, dateStr) // Scroll to a report with below matching text
     // Check if RV has children matching (therefore loaded)
-    reportRV().matching(reportMatcher(violationType, employeeName))
+    reportRV().matching(reportMatcher(violationType, employeeName, dateStr))
     checkListCount(5) // Should currently always start at 5
   }
   fun checkFirstSearchBarExpansion() { searchBar().isOnScreen(); searchBar().hasText(""); checkSearchBarFocused() }
@@ -40,9 +40,9 @@ class ReportListRobot: BaseRobot() {
   fun checkSearchBarFocused() { searchBar().isTheFocus() }
   fun checkSearchBarClosed() { searchBar().isNotInLayout() }
   fun checkListCount(viewCount: Int) { reportRV().matching(hasChildCount(viewCount)) }
-  fun checkListOrder(vararg reports: Pair<String, String>) {
-    reports.forEachIndexed { i, (violationType, employeeName) ->
-      reportRV().matching(hasItemAtPosition(i, reportMatcher(violationType, employeeName)))
+  fun checkListOrder(vararg reports: Triple<String, String, String>) {
+    reports.forEachIndexed { i, (violationType, employeeName, dateStr) ->
+      reportRV().matching(hasItemAtPosition(i, reportMatcher(violationType, employeeName, dateStr)))
     }
   }
 
@@ -56,6 +56,7 @@ class ReportListRobot: BaseRobot() {
   fun enterQueryIntoFocusedItem(text: String) { searchBar().enterTextIntoFocus(text) }
 
   companion object {
+    fun sorryMessage(): ViewInteraction = onView(withId(R.id.sorryTextView))
     fun selectedFilterRvID(): Matcher<View> = withId(R.id.selectedFilterRV)
     fun selectedFilterRV(): ViewInteraction = onView(selectedFilterRvID()) // Filters to specify desired set of reports
     fun goToFilter(text: String) = selectedFilterRV().swipeToLabeled<SelectedFilterViewHolder>(text) // Make sure we're at correct item!
@@ -64,12 +65,12 @@ class ReportListRobot: BaseRobot() {
 
     fun reportRV(): ViewInteraction = onView(withId(R.id.reportRV)) // Actual list of reports
     // Need allof since A LOT of overlap between items
-    fun reportMatcher(violationType: String, employeeName: String): Matcher<View> = allOf(childWithText(
-      "$violationType Violation"), childWithText("Committed by $employeeName"), childWithPrefix("May 19, 2019"))
-    fun goToReport(violationType: String, employeeName: String) = reportRV().swipeTo<ReportViewHolder>(
-      reportMatcher(violationType, employeeName)) // Make sure at correct item
-    fun tapReport(violationType: String, employeeName: String) = reportRV().tapItem<ReportViewHolder>(
-      reportMatcher(violationType, employeeName)) // Useful to go to a detailView soon
+    fun reportMatcher(violationType: String, employeeName: String, dateStr: String): Matcher<View> = allOf(childWithText(
+      "$violationType Violation"), childWithText("Committed by $employeeName"), childWithPrefix(dateStr))
+    fun goToReport(violationType: String, employeeName: String, dateStr: String) = reportRV().swipeTo<ReportViewHolder>(
+      reportMatcher(violationType, employeeName, dateStr)) // Make sure at correct item
+    fun tapReport(violationType: String, employeeName: String, dateStr: String) = reportRV().tapItem<ReportViewHolder>(
+      reportMatcher(violationType, employeeName, dateStr)) // Useful to go to a detailView soon
 
     fun filterButton(): ViewInteraction = onView(withId(R.id.sortFilterFloatingButton)) // Go to SortFilterView
 

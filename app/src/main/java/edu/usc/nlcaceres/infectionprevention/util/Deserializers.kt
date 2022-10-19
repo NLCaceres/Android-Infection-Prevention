@@ -10,14 +10,13 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
-import java.text.SimpleDateFormat
-import java.util.Locale
 import edu.usc.nlcaceres.infectionprevention.data.Location
 import edu.usc.nlcaceres.infectionprevention.data.PrecautionType
 import edu.usc.nlcaceres.infectionprevention.data.Employee
 import edu.usc.nlcaceres.infectionprevention.data.Report
 import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 import edu.usc.nlcaceres.infectionprevention.data.Precaution
+import java.time.Instant
 
 interface JsonDeserialization<T> {
   fun buildGson(): Gson
@@ -40,7 +39,8 @@ class ReportDeserializer : JsonDeserializer<Report> {
       val location = get("location").asJsonObject.run {
         Location(get("_id").asString, get("facilityName").asString, get("unitNum").asString, get("roomNum").asString)
       }
-      val date = SimpleDateFormat("MMM dd, yy, h:mma", Locale.getDefault()).parse(get("formatted_date_reported").asString)
+      // Example "2019-05-19T06:36:05.018Z" vs the formatted_date_reported kv-pair
+      val date = Instant.parse(get("date_reported").asString)
       return Report(id, employee, healthPractice, location, date)
     }
     return null

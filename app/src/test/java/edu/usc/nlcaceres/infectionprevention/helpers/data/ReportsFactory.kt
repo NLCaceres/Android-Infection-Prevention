@@ -3,13 +3,12 @@ package edu.usc.nlcaceres.infectionprevention.helpers.data
 import edu.usc.nlcaceres.infectionprevention.data.Location
 import edu.usc.nlcaceres.infectionprevention.data.Profession
 import edu.usc.nlcaceres.infectionprevention.data.Employee
-import edu.usc.nlcaceres.infectionprevention.data.PrecautionType
 import edu.usc.nlcaceres.infectionprevention.data.Precaution
+import edu.usc.nlcaceres.infectionprevention.data.PrecautionType
+import edu.usc.nlcaceres.infectionprevention.data.PrecautionType.Standard
 import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 import edu.usc.nlcaceres.infectionprevention.data.Report
-import java.util.Date
-import java.text.SimpleDateFormat
-import java.util.Locale
+import java.time.Instant
 
 class ReportsFactory {
   companion object Factory {
@@ -34,35 +33,35 @@ class ReportsFactory {
     fun buildProfessionArrJson(numProfessions: Int = 2) = buildArrJson(numProfessions, this::buildProfessionJson)
 
     private var createdEmployees = 0
-    fun buildEmployee(profession : Profession? = null) = Employee("employeeId$createdEmployees", "firstName$createdEmployees",
-      "surname$createdEmployees", profession ?: buildProfession()
-    )
+    fun buildEmployee(profession : Profession? = null) = Employee("employeeId$createdEmployees",
+      "firstName$createdEmployees", "surname${createdEmployees++}", profession ?: buildProfession())
     fun buildEmployeeJson() = """{ "_id": "employeeId$createdEmployees", "first_name": "facility$createdEmployees",
       |"surname": "unit${createdEmployees++}" }""".trimMargin().replace('\n', ' ')
     fun buildEmployeeArrJson(numEmployees: Int = 2) = buildArrJson(numEmployees, Factory::buildEmployeeJson) // Turns out the 'this' keyword isn't necessary!
 
     private var createdPrecautions = 0
-    fun buildPrecaution(precautionType : PrecautionType, numHealthPractices: Int = 2) = Precaution("precautionId$createdPrecautions",
-      "precaution${createdPrecautions++}", Array(numHealthPractices) { buildHealthPractice(precautionType) }.toCollection(ArrayList()))
+    fun buildPrecaution(precautionType : PrecautionType = Standard, numHealthPractices: Int = 2) =
+      Precaution("precautionId$createdPrecautions", "precaution${createdPrecautions++}",
+        Array(numHealthPractices) { buildHealthPractice(precautionType) }.toCollection(ArrayList()))
     fun buildPrecautionJson() = """{ "_id": "precautionId$createdPrecautions", "name": "facility${createdPrecautions++}",
       |"practices": [] }""".trimMargin().replace('\n', ' ')
     fun buildPrecautionArrJson(numPrecautions: Int = 2) = buildArrJson(numPrecautions, Factory::buildPrecautionJson)
 
     private var createdHealthPractices = 0
-    fun buildHealthPractice(precautionType : PrecautionType) = HealthPractice("healthPracticeId$createdHealthPractices",
-      "healthPractice${createdHealthPractices++}", precautionType)
+    fun buildHealthPractice(precautionType : PrecautionType = Standard) =
+      HealthPractice("healthPracticeId$createdHealthPractices", "healthPractice${createdHealthPractices++}", precautionType)
     fun buildHealthPracticeJson() = """{ "_id": "healthPracticeId$createdHealthPractices", "name": "healthPractice${createdHealthPractices++}",
       |"precautionType": { "name": "Standard" } }""".trimMargin().replace('\n', ' ')
     fun buildHealthPracticeArrJson(numHealthPractices: Int = 2) = buildArrJson(numHealthPractices, Factory::buildHealthPracticeJson)
 
     private var createdReports = 0
-    fun buildReport(employee : Employee?, healthPractice : HealthPractice?, location : Location?, date: Date = Date()) =
-      Report("reportId${createdReports++}", employee ?: buildEmployee(),
-        healthPractice ?: buildHealthPractice(PrecautionType.Standard),location ?: buildLocation(), date)
+    fun buildReport(employee: Employee? = null, healthPractice: HealthPractice? = null, location: Location? = null,
+                    date: Instant = Instant.now()) = Report("reportId${createdReports++}", employee ?: buildEmployee(),
+         healthPractice ?: buildHealthPractice(Standard), location ?: buildLocation(), date)
     fun buildReportJson() = """{ "_id": "reportId${createdReports++}", "employee": ${buildEmployeeJson()},
       |"healthPractice": ${buildHealthPracticeJson()}, "location": ${buildLocationJson()},
-      |"formatted_date_reported": "${dateWithFormat()}" }""".trimMargin().replace('\n', ' ')
-    fun dateWithFormat(): String = SimpleDateFormat("MMM dd, yy, h:mma", Locale.getDefault()).format(Date())
+      |"date_reported": "${dateWithFormat()}" }""".trimMargin().replace('\n', ' ')
+    fun dateWithFormat() = "2019-05-19T06:36:05.018Z"
     fun buildReportArrJson(numReports: Int = 2) = buildArrJson(numReports, Factory::buildReportJson)
   }
 }
