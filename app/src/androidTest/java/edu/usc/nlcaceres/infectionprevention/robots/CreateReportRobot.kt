@@ -48,9 +48,9 @@ class CreateReportRobot: BaseRobot() {
   }
   // Spinners
   fun checkSpinnersLoaded() { // Since adapters must use onData to be sure (not onView)
-    checkSelectedEmployee("Maria Caceres")
+    checkSelectedEmployee("Lionel Caceres")
     checkSelectedHealthPractice("Hand Hygiene")
-    checkSelectedFacility("HSC")
+    checkSelectedFacility("USC")
   }
   fun selectEmployee(text: String) {
     onData(withDataDescribedAs<Employee>(text)).tap() // Since withDataDescribedAs is an inline fun,

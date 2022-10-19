@@ -2,21 +2,34 @@ package edu.usc.nlcaceres.infectionprevention
 
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import edu.usc.nlcaceres.infectionprevention.data.PrecautionRepository
+import edu.usc.nlcaceres.infectionprevention.data.ReportRepository
+import edu.usc.nlcaceres.infectionprevention.helpers.di.FakePrecautionRepository
+import edu.usc.nlcaceres.infectionprevention.helpers.di.FakeReportRepository
 import edu.usc.nlcaceres.infectionprevention.robots.RoboTest
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
+import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
 class ActivitySortFilterTest: RoboTest() {
   @get:Rule(order = 0)
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1)
   val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
+
+  @BindValue @JvmField // Each test gets its own version of the repo so no variable pollution like the closures
+  var precautionRepository: PrecautionRepository = FakePrecautionRepository().apply { populateList() }
+  @BindValue @JvmField
+  var reportRepository: ReportRepository = FakeReportRepository().apply { populateList() }
 
   @Before
   fun registerIdlingResource() {
@@ -27,8 +40,8 @@ class ActivitySortFilterTest: RoboTest() {
       checkNavDrawerOpen(true) // Now Open
       goToReportList()
     }
-    reportListActivity {
-      checkInitListLoaded() // Verify made it to reportList (have to wait until RV loads)
+    reportListActivity {  // Verify made it to reportList (have to wait until RV loads)
+      checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
       startSelectingSortAndFilters()
     }
     sortFilterActivity { checkLoaded() } // Filters loaded and ready to tap
@@ -46,7 +59,7 @@ class ActivitySortFilterTest: RoboTest() {
   @Test fun navigateBackUpToReportList() {
     sortFilterActivity { pressCloseButton() } // X button
     reportListActivity {
-      checkInitListLoaded()
+      checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
       checkFiltersLoaded()
     }
   }

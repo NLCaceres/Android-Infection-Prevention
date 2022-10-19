@@ -2,23 +2,36 @@ package edu.usc.nlcaceres.infectionprevention
 
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import edu.usc.nlcaceres.infectionprevention.helpers.util.tapBackButton
 import edu.usc.nlcaceres.infectionprevention.robots.RoboTest
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
+import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
+import edu.usc.nlcaceres.infectionprevention.data.PrecautionRepository
+import edu.usc.nlcaceres.infectionprevention.data.ReportRepository
+import edu.usc.nlcaceres.infectionprevention.helpers.di.FakePrecautionRepository
+import edu.usc.nlcaceres.infectionprevention.helpers.di.FakeReportRepository
 import org.junit.After
 import org.junit.Test
 import org.junit.Before
 import org.junit.Rule
 
 // @RunWith(AndroidJUnit4.class) // Not needed if set to default in build.gradle
+@UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
 class ActivityCreateReportTest: RoboTest() {
   @get:Rule(order = 0) // Best to start from MainActivity for a normal user Task experience
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1)
   val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
+
+  @BindValue @JvmField // Each test gets its own version of the repo so no variable pollution like the closures
+  var precautionRepository: PrecautionRepository = FakePrecautionRepository().apply { populateList() }
+  @BindValue @JvmField
+  var reportRepository: ReportRepository = FakeReportRepository().apply { populateList() }
 
   @Before
   fun navToCreateReportActivity() {
@@ -119,8 +132,8 @@ class ActivityCreateReportTest: RoboTest() {
     // Technically goes through mainActivity to get to reportList BUT
     // Android seems to optimize around actually needing to nav to mainActivity
     // Instead, just running the resultHandler that launches the intent toward the reportList view
-    reportListActivity {
-      checkInitListLoaded() // Should be no filters BUT should be a list of reports!
+    reportListActivity { // Should be no filters BUT should be a list of reports!
+      checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
     }
   }
 }

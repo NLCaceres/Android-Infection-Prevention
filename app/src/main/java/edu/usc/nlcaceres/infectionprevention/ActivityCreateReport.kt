@@ -38,10 +38,12 @@ import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 import edu.usc.nlcaceres.infectionprevention.data.Employee
 import edu.usc.nlcaceres.infectionprevention.util.*
 import org.json.JSONObject
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
-import java.util.Locale
+import java.util.TimeZone
 import kotlin.collections.ArrayList
 
 /* Activity to File a New Health Report */
@@ -54,7 +56,7 @@ class ActivityCreateReport : AppCompatActivity() {
   private lateinit var headerTV : TextView
 
   private lateinit var dateET : EditText
-  private var selectedDate : Date? = null
+  private var selectedDate : Instant? = null
   private val dateTimeSetListener = DateTimeSetListener() // Save time recreating w/ every dateET click
 
   private lateinit var employeeSpinner : Spinner
@@ -133,7 +135,7 @@ class ActivityCreateReport : AppCompatActivity() {
       }
       val timeOfDay = String.format("%d:%02d", hourOfDay, minute) // Format to 12:00, 12:05 (NOT 12:5), 12:10 (NOT 12:1)
 
-      val dateStr = "$timeOfDay $amOrPM" // Don't concatenate in setText
+      val dateStr = "$timeOfDay $amOrPM" // Don't concatenate in setText below
       dateET.setText(dateStr)
 
       Calendar.getInstance().also { c -> // 'this' will reuse the listener currently calling onTimeSet
@@ -142,10 +144,13 @@ class ActivityCreateReport : AppCompatActivity() {
     }
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, day: Int) { // Month is 0 indexed, Day is not.
       // Instead of initing a Calendar obj w/ year, month & date then using SimpleDateFormat.format() to make the string
-      val fullDateTimeStr = "${dateET.text} ${month+1}/$day/$year" // Straight to a string! (+1 for month to be correct number)
-      dateET.setText(fullDateTimeStr)
-      val dateFormat = SimpleDateFormat("h:mm a MM/dd/yy", Locale.getDefault())
-      selectedDate = dateFormat.parse(fullDateTimeStr) // Returns a date obj
+      val fullTimeDateStr = "${dateET.text} ${month+1}/$day/$year" // Straight to a string! (+1 for month to be correct number)
+      dateET.setText(fullTimeDateStr)
+      // Need single 'd' and 'M' in pattern since it is never 0-padded aka 12/01/1996 vs 12/1/1996
+      println("ZoneID = ${ZoneId.of(TimeZone.getDefault().id)}")
+      val dateFormatter = DateTimeFormatter.ofPattern("h:mm a M/d/yyyy")
+        .withZone(ZoneId.of(TimeZone.getDefault().id))
+      selectedDate = ZonedDateTime.parse(fullTimeDateStr, dateFormatter).toInstant()
     }
   }
 
@@ -266,7 +271,7 @@ class ActivityCreateReport : AppCompatActivity() {
 
   private fun completeReportSubmission() {
     // Dialog OK triggers Date() vs selectedDate usage
-    val newReport = Report(null, selectedEmployee, selectedPractice, selectedLocation, selectedDate ?: Date())
+    val newReport = Report(null, selectedEmployee, selectedPractice, selectedLocation, selectedDate ?: Instant.now())
 
     JsonObjectRequest(Request.Method.POST, reportCreationURL, JSONObject(Gson().toJson(newReport)),
       { Log.d("New Report Success", "Successfully sent new report") },
