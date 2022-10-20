@@ -9,7 +9,8 @@ import edu.usc.nlcaceres.infectionprevention.helpers.util.MainDispatcherRule
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import org.junit.Before
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
@@ -33,7 +34,7 @@ class ViewModelMainTest {
   @Mock lateinit var loadingObserver: Observer<Boolean>
   @Mock lateinit var toastObserver: Observer<String>
 
-  @Test fun observePrecautionState() {
+  @Test fun `Observe Precaution State`() {
     val precautionsList = arrayListOf(ReportsFactory.buildPrecaution(PrecautionType.Standard),
       ReportsFactory.buildPrecaution(PrecautionType.Isolation))
     fakeRepository = mock() { on { fetchPrecautionList() } doReturn flow { emit(emptyList()); emit(precautionsList) } }
@@ -51,7 +52,20 @@ class ViewModelMainTest {
     val thirdExpectedPair = Pair(false, precautionsList) // OnCompletion called!
     inOrderCheck.verify(precautionObserver, times(1)).onChanged(thirdExpectedPair)
   }
-  @Test fun observeLoadingState() {
+  @Test fun `Check If Precaution List is Empty`() {
+    val precautionList = arrayListOf(ReportsFactory.buildPrecaution(), ReportsFactory.buildPrecaution())
+    fakeRepository = mock() { on { fetchPrecautionList() } doReturn flow { emit(precautionList) } }
+    val viewModel = ViewModelMain(fakeRepository)
+
+    assertEquals(viewModel.precautionState.value?.second?.size, null) // No default list so null
+    assert(viewModel.precautionListEmpty()) // Default elvis triggers so returns true as if empty since no observation or launching has happened
+
+    viewModel.precautionState.observeForever(precautionObserver)
+    assertEquals(viewModel.precautionState.value?.second?.size, 2)
+    assertFalse(viewModel.precautionListEmpty()) // Launched/Flowing so now we have a list!
+    viewModel.precautionState.removeObserver(precautionObserver)
+  }
+  @Test fun `Observe Loading State`() {
     fakeRepository = mock()
     val viewModel = ViewModelMain(fakeRepository)
 
@@ -61,12 +75,14 @@ class ViewModelMainTest {
     viewModel.precautionState.removeObserver(precautionObserver)
     viewModel.isLoading.removeObserver(loadingObserver)
 
-    // Very first time is "true" due to precautionLoad starting. 2nd value is from onComplete block so it == false
-    verify(loadingObserver, times(2)).onChanged(any())
-    verify(loadingObserver, times(1)).onChanged(true)
-    verify(loadingObserver, times(1)).onChanged(false)
+    verify(loadingObserver, times(3)).onChanged(any())
+    // 1st time == "false" by default. 2nd == "true" due to precautionLoad starting. 3rd == "false" from onComplete block
+    val inOrderCheck = inOrder(loadingObserver)
+    inOrderCheck.verify(loadingObserver, times(1)).onChanged(false)
+    inOrderCheck.verify(loadingObserver, times(1)).onChanged(true)
+    inOrderCheck.verify(loadingObserver, times(1)).onChanged(false)
   }
-  @Test fun observeToastMessage() {
+  @Test fun `Observe Toast Messages`() {
     // If we don't mock the returned flow, the combine func throws causing the flow's catch block to emit the generic toast message
     fakeRepository = mock() { on { fetchPrecautionList() } doReturn flow { emptyList<Precaution>() } }
     val viewModel = ViewModelMain(fakeRepository)
@@ -81,7 +97,7 @@ class ViewModelMainTest {
     verify(toastObserver, times(1)).onChanged(any()) // Only called on its initial observeForever
     verify(toastObserver, times(1)).onChanged("")
   }
-  @Test fun observeBasicExceptionToastMessage() {
+  @Test fun `Observe Basic Exception Toast Message`() {
     fakeRepository = mock() { on { fetchPrecautionList() } doReturn flow { throw Exception("Problem") } }
     val viewModel = ViewModelMain(fakeRepository)
 
@@ -97,7 +113,7 @@ class ViewModelMainTest {
     inOrderCheck.verify(toastObserver, times(1)).onChanged("")
     inOrderCheck.verify(toastObserver, times(1)).onChanged("Sorry! Seems we're having an issue on our end!")
   }
-  @Test fun observeIOExceptionToastMessage() {
+  @Test fun `Observe IO Exception Toast Message`() {
     fakeRepository = mock() { on { fetchPrecautionList() } doReturn flow { throw IOException("Problem") } }
     val viewModel = ViewModelMain(fakeRepository)
 

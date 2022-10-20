@@ -52,9 +52,8 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
       // This will ONLY ever receive a value if the precautionState liveData fails!
       // SO NO POINT observing the message from precautionState, it couldn't ever receive it due to the flow crashing
       if (message.isNotBlank()) { // Can't be empty ("") or just whitespace ("   ")
-        val listEmpty = viewModel.precautionState.value?.second?.isEmpty() ?: true
         with(sorryMsgTextView) {
-          visibility = if (listEmpty) View.VISIBLE else View.INVISIBLE
+          visibility = if (viewModel.precautionListEmpty()) View.VISIBLE else View.INVISIBLE
           text = message
         }
         ShowSnackbar((activity as ActivityMain).coordinatorLayout, message, Snackbar.LENGTH_SHORT)
@@ -85,12 +84,11 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
 
     viewModel.precautionState.observe(viewLifecycleOwner) { (loading, newList) ->
       precautionAdapter.submitList(newList)
-      val listEmpty = newList.isEmpty()
       with(sorryMsgTextView) {
-        visibility = if (listEmpty) View.VISIBLE else View.INVISIBLE
+        visibility = if (newList.isEmpty()) View.VISIBLE else View.INVISIBLE
         text = when {
           loading -> "Looking up precautions"
-          listEmpty -> "Weird! Seems we don't have any available precautions to choose from!"
+          newList.isEmpty() -> "Weird! Seems we don't have any available precautions to choose from!"
           else -> "Please try again later!"
         }
       }
