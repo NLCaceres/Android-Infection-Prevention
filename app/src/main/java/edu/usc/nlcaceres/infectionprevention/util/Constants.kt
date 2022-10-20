@@ -35,9 +35,7 @@ const val MAX_RETRIES = 3
 const val BACKOFF_MULTIPLIER = 1f // Used by Volley to make progressively longer intervals between retry requests!
 // Volley Cancel Tags
 const val VolleyRequestCancelTag = "CancelTag"
-const val MainActivityRequestCancelTag = "$VolleyRequestCancelTag.MainActivityRequest"
 const val CreateReportFragCancelTag = "$VolleyRequestCancelTag.CreateReportFragmentRequest"
-const val ReportListCancelTag = "$VolleyRequestCancelTag.ReportFragmentRequest"
 
 // Intents
 const val projectPkgName = "edu.usc.nlcaceres.infectionprevention"
@@ -48,7 +46,3 @@ const val createReportIntent = "$projectPkgName.new_report"
 const val createReportPracticeExtra = "$createReportIntent.health_practice"
 const val sortFilterIntent = "$projectPkgName.sortFilter"
 const val selectedFilterParcel = "$sortFilterIntent.filters"
-
-// Activity Result Request Codes
-const val CreateReportRequestCode = 36
-const val ReportListRequestCode = 24

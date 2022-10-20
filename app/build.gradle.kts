@@ -10,8 +10,8 @@ android {
     compileSdk = 33
     defaultConfig {
         applicationId = "edu.usc.nlcaceres.infectionprevention"
-        minSdk = 21
-        targetSdk = 32 // Robolectric can't handle 33 yet
+        minSdk = 26 // Android 8.0
+        targetSdk = 33 // Robolectric can't handle 33 yet
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "edu.usc.nlcaceres.infectionprevention.HiltTestRunner"
@@ -21,7 +21,6 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            // minSdk = 21 // 21 for release
         }
         getByName("debug") { // Not needed since usually automagically made BUT if you want to override it, must include "debuggable true"
             applicationIdSuffix = ".debug"
@@ -80,7 +79,7 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.5.3")
 
     // Google Dependencies
-    implementation("com.google.android.material:material:1.6.1")
+    implementation("com.google.android.material:material:1.7.0")
     implementation("com.google.android.flexbox:flexbox:3.0.0")
     implementation("com.android.volley:volley:1.2.1")
     implementation("com.google.code.gson:gson:2.8.9")

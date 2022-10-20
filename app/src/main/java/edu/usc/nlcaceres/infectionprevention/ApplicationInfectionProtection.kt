@@ -7,4 +7,4 @@ import dagger.hilt.android.HiltAndroidApp
 * In this case, it's for Hilt which needs an entry point to inject our dependencies
 * If needed to add functionality on start, we can override onCreate like any Activity would! */
 @HiltAndroidApp
-class InfectionProtectionApplication: Application() { }
+class InfectionProtectionApplication: Application()
