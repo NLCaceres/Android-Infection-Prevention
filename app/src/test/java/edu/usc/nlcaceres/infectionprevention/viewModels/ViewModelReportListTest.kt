@@ -18,7 +18,10 @@ import org.mockito.junit.MockitoRule
 import org.mockito.kotlin.*
 import org.mockito.quality.Strictness
 import java.io.IOException
+import org.junit.runner.RunWith
+import androidx.test.ext.junit.runners.AndroidJUnit4
 
+@RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
 class ViewModelReportListTest {
   @get:Rule

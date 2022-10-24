@@ -7,6 +7,7 @@ import android.content.res.Resources.getSystem
 import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -55,6 +56,10 @@ fun SetupToolbar(activity: AppCompatActivity, toolbar: Toolbar, upIndicator: Int
         }
     }
     return toolbar
+}
+fun ActionBar.setUpIndicator(upIndicator: Int) {
+  setHomeAsUpIndicator(upIndicator)
+  setDisplayHomeAsUpEnabled(true)
 }
 
 // If a fun takes pixels but would like to use densityIndependentPixels (dp), then easy conversion helpers!

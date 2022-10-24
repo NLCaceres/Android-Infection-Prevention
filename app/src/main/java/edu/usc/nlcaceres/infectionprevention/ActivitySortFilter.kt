@@ -26,7 +26,7 @@ import edu.usc.nlcaceres.infectionprevention.util.SetupToolbar
 import edu.usc.nlcaceres.infectionprevention.util.selectedFilterParcel
 
 /* Activity with 2 RecyclerViews - Top handles the selected filters, Bottom the filters to be selected
- Launches from: ActivityReportList */
+ Launches from: FragmentReportList */
 class ActivitySortFilter : AppCompatActivity() {
 
   private lateinit var viewBinding : ActivitySortFilterBinding

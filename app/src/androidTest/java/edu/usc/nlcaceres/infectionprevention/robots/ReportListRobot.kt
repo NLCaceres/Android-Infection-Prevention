@@ -28,8 +28,7 @@ class ReportListRobot: BaseRobot() {
     removeFilterButtonLabeled(text).tap()
   }
   fun checkInitListLoaded(violationType: String, employeeName: String, dateStr: String) {
-    // SorryMsg SHOULD be INVISIBLE once loaded BUT remains visible DESPITE identical logic in mainFragment that works
-    //sorryMessage().isHidden()
+    sorryMessage().isHidden()
     goToReport(violationType, employeeName, dateStr) // Scroll to a report with below matching text
     // Check if RV has children matching (therefore loaded)
     reportRV().matching(reportMatcher(violationType, employeeName, dateStr))

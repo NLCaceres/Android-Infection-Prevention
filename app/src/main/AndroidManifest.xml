@@ -35,15 +35,9 @@
         android:exported="true"> <!-- PreSDK 21/Android 4.0/IceCreamSandwich used Meta-Data tag instead -->
     </activity>
 
-    <activity android:name=".ActivityReportList" android:parentActivityName=".ActivityMain"
-        android:label=""
-        android:exported="false"
-        android:launchMode="singleTop"> <!-- Keeps it to a single instance of the activity -->
-    </activity>
-
     <activity android:name=".ActivitySortFilter"
       android:label=""
-      android:parentActivityName=".ActivityReportList">
+      android:parentActivityName=".ActivityMain">
     </activity>
 
     <activity android:name=".ActivitySettings"

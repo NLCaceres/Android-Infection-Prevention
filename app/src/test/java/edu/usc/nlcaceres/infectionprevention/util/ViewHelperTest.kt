@@ -7,14 +7,14 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withChild
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import edu.usc.nlcaceres.infectionprevention.ActivitySettings
-import edu.usc.nlcaceres.infectionprevention.ActivitySortFilter
 import edu.usc.nlcaceres.infectionprevention.InfectionProtectionApplication
+import edu.usc.nlcaceres.infectionprevention.ActivityMain
 import edu.usc.nlcaceres.infectionprevention.R
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -50,16 +50,18 @@ class ViewHelperTest {
     assertEquals(View.INVISIBLE, progressBar.visibility)
   }
 
-  @Test fun setupToolbar() { // Use specific activities as examples of SetupToolbar to test
-    launch(ActivitySettings::class.java).use { // Use() {} Ensures activity closes
+  @Test fun setupUpIndicator() {
+    launch(ActivityMain::class.java).use {
       onView(withId(R.id.home_toolbar)).check(matches(isDisplayed()))
       onView(withId(R.id.home_toolbar)).check(matches(withChild(withId(R.id.toolbar_logo))))
-    }
-    launch(ActivitySortFilter::class.java).use { // Check if Up indicator changed
-      onView(withId(R.id.home_toolbar)).check(matches(isDisplayed()))
-      // The toolbar's Up Indicator uses an ImageView in the button view
       onView(withContentDescription(R.string.abc_action_bar_up_description)).
-        check(matches(isDisplayed())).check(matches(withDrawable(R.drawable.ic_close)))
+        check(matches(isDisplayed())).check(matches(withDrawable(R.drawable.ic_menu)))
+
+      // Go to settings and check if toolbar updated up indicator
+      onView(withId(R.id.home_toolbar)).check(matches(isDisplayed()))
+      onView(withContentDescription("Settings")).perform(click())
+      onView(withContentDescription(R.string.abc_action_bar_up_description)).
+        check(matches(isDisplayed())).check(matches(withDrawable(R.drawable.ic_back_arrow)))
     }
   }
 }

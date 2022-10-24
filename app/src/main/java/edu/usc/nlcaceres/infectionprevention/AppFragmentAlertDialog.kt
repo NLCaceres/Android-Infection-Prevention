@@ -19,7 +19,7 @@ import android.view.WindowInsets
 
 /* Custom DialogFragment, overrides onCreateView NOT onCreateDialog.
 Guide: https://developer.android.com/guide/topics/ui/dialogs - Dialog with Custom Layout
-Use: Display network errors - Shown by ActivityReportList & ActivityMain */
+Use: Display network errors - Shown by FragmentReportList & ActivityMain */
 class AppFragmentAlertDialog : DialogFragment() {
   private lateinit var viewBinding : CustomAlertDialogBinding
   private lateinit var alertIcon : ImageView

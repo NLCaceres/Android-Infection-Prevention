@@ -1,9 +1,17 @@
 package edu.usc.nlcaceres.infectionprevention
 
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import dagger.hilt.android.testing.BindValue
+import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
+import edu.usc.nlcaceres.infectionprevention.data.PrecautionRepository
+import edu.usc.nlcaceres.infectionprevention.data.ReportRepository
+import edu.usc.nlcaceres.infectionprevention.helpers.di.FakePrecautionRepository
+import edu.usc.nlcaceres.infectionprevention.helpers.di.FakeReportRepository
 import edu.usc.nlcaceres.infectionprevention.robots.RoboTest
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
 import org.junit.After
@@ -11,12 +19,18 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
 class ActivitySettingsTest: RoboTest() {
   @get:Rule(order = 0)
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1)
   val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
+
+  @BindValue @JvmField // Each test gets its own version of the repo so no variable pollution like the closures
+  var precautionRepository: PrecautionRepository = FakePrecautionRepository().apply { populateList() }
+  @BindValue @JvmField
+  var reportRepository: ReportRepository = FakeReportRepository().apply { populateList() }
 
   @Before
   fun registerIdlingResource() {
@@ -27,6 +41,26 @@ class ActivitySettingsTest: RoboTest() {
   @After
   fun unregisterIdlingResource() {
     IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
+  }
+
+  @Test fun checkBackNavigation() { // Check nav from all views that can reach Settings view
+    settingsActivity { pressBack() } // 1st back to main, starting from Settings view
+    mainActivity { // Back at main, go to reportList
+      checkViewLoaded()
+      openNavDrawer()
+      goToReportList()
+    }
+    reportListActivity { // Go to settings and then back to reportList
+      checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
+      goToSettings()
+    }
+    settingsActivity { // Now need to make it back to reportList, NOT main like originally
+      checkInitLoad()
+      pressBack()
+    }
+    reportListActivity {
+      checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
+    }
   }
 
   @Test fun checkOneTimeDefinedPrefs() { // Check preferences made by preference.xml BUT defined on signup

@@ -19,7 +19,11 @@ import org.mockito.junit.MockitoRule
 import org.mockito.kotlin.*
 import org.mockito.quality.Strictness
 import java.io.IOException
+import org.junit.runner.RunWith
+import androidx.test.ext.junit.runners.AndroidJUnit4
 
+// Need to use this to run Robolectric so it can mock Android.TextUtils.isEmpty in the viewModels' public helper funcs
+@RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi // Allows us to use MainDispatcherRule safely
 class ViewModelMainTest {
   @get:Rule
