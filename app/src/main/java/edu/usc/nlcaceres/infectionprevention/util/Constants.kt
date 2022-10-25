@@ -37,10 +37,12 @@ const val BACKOFF_MULTIPLIER = 1f // Used by Volley to make progressively longer
 const val VolleyRequestCancelTag = "CancelTag"
 const val CreateReportFragCancelTag = "$VolleyRequestCancelTag.CreateReportFragmentRequest"
 
-// Intents
+// Intents/Bundles for sending data across activities/fragments
 const val projectPkgName = "edu.usc.nlcaceres.infectionprevention"
 const val mainActIntent = "$projectPkgName.main"
 const val preSelectedFilterExtra = "$mainActIntent.preselected_filter"
+const val precautionListExtra = "$mainActIntent.precaution_list"
+const val healthPracticeListExtra = "$mainActIntent.health_practice_list"
 const val settingsIntent = "$projectPkgName.settings"
 const val createReportIntent = "$projectPkgName.new_report"
 const val createReportPracticeExtra = "$createReportIntent.health_practice"

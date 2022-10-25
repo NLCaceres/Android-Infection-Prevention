@@ -23,6 +23,8 @@ import edu.usc.nlcaceres.infectionprevention.adapters.ExpandableFilterAdapter.Ex
 import edu.usc.nlcaceres.infectionprevention.adapters.OnFilterSelectedListener
 import edu.usc.nlcaceres.infectionprevention.adapters.SelectedFilterAdapter
 import edu.usc.nlcaceres.infectionprevention.util.SetupToolbar
+import edu.usc.nlcaceres.infectionprevention.util.healthPracticeListExtra
+import edu.usc.nlcaceres.infectionprevention.util.precautionListExtra
 import edu.usc.nlcaceres.infectionprevention.util.selectedFilterParcel
 
 /* Activity with 2 RecyclerViews - Top handles the selected filters, Bottom the filters to be selected
@@ -108,8 +110,8 @@ class ActivitySortFilter : AppCompatActivity() {
       FilterItem("Employee Name (A-Z)", false, sortByTitleStr),
       FilterItem("Employee Name (Z-A)", false, sortByTitleStr))
 
-    val tempPrecautionTypeList = intent.getStringArrayListExtra("PrecautionList")
-    val tempPracticeTypeList = intent.getStringArrayListExtra("PracticeList")
+    val tempPrecautionTypeList = intent.getStringArrayListExtra(precautionListExtra)
+    val tempPracticeTypeList = intent.getStringArrayListExtra(healthPracticeListExtra)
     val precautionName = "Precaution Type"
     val practiceName = "Health Practice Type"
     if (tempPracticeTypeList != null && tempPrecautionTypeList != null) {

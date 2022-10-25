@@ -38,6 +38,17 @@ class ViewModelMain @Inject constructor(private val precautionRepository: Precau
   val precautionState: LiveData<Pair<Boolean, List<Precaution>>> = _precautionState
 
   fun precautionListEmpty() = precautionState.value?.second?.isEmpty() ?: true
+  // Get all precautions' names in a list and each precaution's healthPractices' names in another list
+  fun getNamesLists(precautionList: List<Precaution> =
+                      precautionState.value?.second ?: emptyList()): Pair<ArrayList<String>, ArrayList<String>> {
+    val precautionNames = arrayListOf<String>()
+    val healthPracticeNames = arrayListOf<String>()
+    precautionList.forEach { precaution ->
+      precautionNames.add(precaution.name)
+      precaution.practices?.forEach { healthPractice -> healthPracticeNames.add(healthPractice.name) }
+    }
+    return Pair(precautionNames, healthPracticeNames)
+  }
 
   private val _toastMessage = MutableLiveData("")
   val toastMessage: LiveData<String> = _toastMessage // Err msg displayed as toast or alertDialog

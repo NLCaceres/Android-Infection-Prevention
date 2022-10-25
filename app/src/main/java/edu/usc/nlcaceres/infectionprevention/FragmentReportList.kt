@@ -108,8 +108,8 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
   private fun setupFloatButtonToSortFilterView() {
     filterFloatButton = viewBinding.sortFilterFloatingButton.apply { setOnClickListener {
       Intent(context, ActivitySortFilter::class.java).let {
-        it.putStringArrayListExtra("PrecautionList", requireArguments().getStringArrayList("PrecautionList"))
-        it.putStringArrayListExtra("PracticeList", requireArguments().getStringArrayList("PracticeList"))
+        it.putStringArrayListExtra(precautionListExtra, requireArguments().getStringArrayList(precautionListExtra))
+        it.putStringArrayListExtra(healthPracticeListExtra, requireArguments().getStringArrayList(healthPracticeListExtra))
         sortFilterActivityLauncher.launch(it)
       }
     }}

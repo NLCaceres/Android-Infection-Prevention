@@ -3,8 +3,9 @@ package edu.usc.nlcaceres.infectionprevention.viewModels
 import androidx.lifecycle.Observer
 import edu.usc.nlcaceres.infectionprevention.data.Precaution
 import edu.usc.nlcaceres.infectionprevention.data.PrecautionRepository
-import edu.usc.nlcaceres.infectionprevention.data.PrecautionType
-import edu.usc.nlcaceres.infectionprevention.helpers.data.ReportsFactory
+import edu.usc.nlcaceres.infectionprevention.data.PrecautionType.Standard
+import edu.usc.nlcaceres.infectionprevention.data.PrecautionType.Isolation
+import edu.usc.nlcaceres.infectionprevention.helpers.data.ReportsFactory.Factory.buildPrecaution
 import edu.usc.nlcaceres.infectionprevention.helpers.util.MainDispatcherRule
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,8 +40,7 @@ class ViewModelMainTest {
   @Mock lateinit var toastObserver: Observer<String>
 
   @Test fun `Observe Precaution State`() {
-    val precautionsList = arrayListOf(ReportsFactory.buildPrecaution(PrecautionType.Standard),
-      ReportsFactory.buildPrecaution(PrecautionType.Isolation))
+    val precautionsList = arrayListOf(buildPrecaution(Standard), buildPrecaution(Isolation))
     fakeRepository = mock() { on { fetchPrecautionList() } doReturn flow { emit(emptyList()); emit(precautionsList) } }
     val viewModel = ViewModelMain(fakeRepository)
 
@@ -57,7 +57,7 @@ class ViewModelMainTest {
     inOrderCheck.verify(precautionObserver, times(1)).onChanged(thirdExpectedPair)
   }
   @Test fun `Check If Precaution List is Empty`() {
-    val precautionList = arrayListOf(ReportsFactory.buildPrecaution(), ReportsFactory.buildPrecaution())
+    val precautionList = arrayListOf(buildPrecaution(), buildPrecaution())
     fakeRepository = mock() { on { fetchPrecautionList() } doReturn flow { emit(precautionList) } }
     val viewModel = ViewModelMain(fakeRepository)
 
@@ -68,6 +68,28 @@ class ViewModelMainTest {
     assertEquals(viewModel.precautionState.value?.second?.size, 2)
     assertFalse(viewModel.precautionListEmpty()) // Launched/Flowing so now we have a list!
     viewModel.precautionState.removeObserver(precautionObserver)
+  }
+  @Test fun `Check if Precaution and HealthPractice Names Split`() {
+    val precautionList = arrayListOf(buildPrecaution(numHealthPractices = 2), buildPrecaution(numHealthPractices = 3))
+    fakeRepository = mock() { on { fetchPrecautionList() } doReturn flow { emit(precautionList) } }
+    val viewModel = ViewModelMain(fakeRepository)
+
+    assertEquals(viewModel.precautionState.value?.second?.size, null) // No default list so null and
+    val (emptyPrecautionNames, emptyHealthPracticeNames) = viewModel.getNamesLists() // Default elvis emptyList() triggers!
+    assertEquals(0, emptyPrecautionNames.size)
+    assertEquals(0, emptyHealthPracticeNames.size)
+
+    viewModel.precautionState.observeForever(precautionObserver)
+    val (precautionNames, healthPracticeNames) = viewModel.getNamesLists()
+    assertEquals(2, precautionNames.size) // 2 built precautions from flow
+    assertEquals(5, healthPracticeNames.size) // 2 + 3 from each precaution in flow above!
+    viewModel.precautionState.removeObserver(precautionObserver)
+
+    val otherPrecautionList = arrayListOf(buildPrecaution(numHealthPractices = 1),
+      buildPrecaution(numHealthPractices = 2), buildPrecaution(numHealthPractices = 3))
+    val (otherPrecautionNames, otherHealthPracticeNames) = viewModel.getNamesLists(otherPrecautionList)
+    assertEquals(3, otherPrecautionNames.size) // 3 built precautions directly from otherList
+    assertEquals(6, otherHealthPracticeNames.size) // 1 + 2 + 3 from each precaution
   }
   @Test fun `Observe Loading State`() {
     fakeRepository = mock()

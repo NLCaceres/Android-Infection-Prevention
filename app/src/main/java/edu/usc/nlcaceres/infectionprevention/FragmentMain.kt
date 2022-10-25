@@ -23,9 +23,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import edu.usc.nlcaceres.infectionprevention.adapters.PrecautionAdapter
 import edu.usc.nlcaceres.infectionprevention.databinding.FragmentMainBinding
-import edu.usc.nlcaceres.infectionprevention.util.ShowSnackbar
-import edu.usc.nlcaceres.infectionprevention.util.createReportPracticeExtra
-import edu.usc.nlcaceres.infectionprevention.util.setUpIndicator
+import edu.usc.nlcaceres.infectionprevention.util.*
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelMain
 
 @AndroidEntryPoint
@@ -92,9 +90,8 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
 
   private val createReportActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
     if (result.resultCode == Activity.RESULT_OK) {
-      val bundle = bundleOf()
-      val precautions = viewModel.precautionState.value?.second ?: emptyList()
-      (activity as ActivityMain).addPrecautionsAndHealthPractices(bundle, precautions)
+      val (precautionNames, healthPracticeNames) = viewModel.getNamesLists()
+      val bundle = bundleOf(precautionListExtra to precautionNames, healthPracticeListExtra to healthPracticeNames)
       parentFragmentManager.commit {
         setReorderingAllowed(true)
         addToBackStack(null)

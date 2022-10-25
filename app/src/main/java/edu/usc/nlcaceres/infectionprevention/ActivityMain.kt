@@ -14,9 +14,10 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import dagger.hilt.android.AndroidEntryPoint
-import edu.usc.nlcaceres.infectionprevention.data.Precaution
 import edu.usc.nlcaceres.infectionprevention.databinding.ActivityMainBinding
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
+import edu.usc.nlcaceres.infectionprevention.util.healthPracticeListExtra
+import edu.usc.nlcaceres.infectionprevention.util.precautionListExtra
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelMain
 
 /* Homepage that allows users to choose a type of health violation that occurred
@@ -64,9 +65,10 @@ class ActivityMain : AppCompatActivity() {
   // Following handles navigation from NavDrawer + fills intent with current list of precaution types
   private fun finalizeNavDrawerItemSelection(bundle: Bundle) {
     navDrawer.closeDrawers()
-    val precautions = viewModel.precautionState.value?.second ?: emptyList() // Get current value or empty if not set yet
-    // Add each as separate arrays to intent so sortFilterActivity can dynamically create filter options
-    addPrecautionsAndHealthPractices(bundle, precautions)
+    // Add the names lists to bundle separately so sortFilterActivity can dynamically create filter options
+    val (precautionNames, healthPracticeNames) = viewModel.getNamesLists()
+    bundle.putStringArrayList(precautionListExtra, precautionNames)
+    bundle.putStringArrayList(healthPracticeListExtra, healthPracticeNames)
     supportFragmentManager.commit { // Handle fragment transaction from fragmentMain to fragmentReportList
       setReorderingAllowed(true) // Optimize state changes as the fragment change gets animated
 
@@ -77,17 +79,5 @@ class ActivityMain : AppCompatActivity() {
       replace<FragmentReportList>(R.id.fragment_main_container, args = bundle) // Add() just stacks the view on top
     }
     //startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
-  }
-  fun addPrecautionsAndHealthPractices(bundle: Bundle, precautionList: List<Precaution>) {
-    val precautionNames = arrayListOf<String>()
-    val healthPracticeNames = arrayListOf<String>()
-    for (currentPrecaution in precautionList) {
-      precautionNames.add(currentPrecaution.name)
-      currentPrecaution.practices?.let { healthPracticeList ->
-        for (currentHealthPractice in healthPracticeList) healthPracticeNames.add(currentHealthPractice.name)
-      }
-    }
-    bundle.putStringArrayList("PrecautionList", precautionNames)
-    bundle.putStringArrayList("PracticeList", healthPracticeNames)
   }
 }
