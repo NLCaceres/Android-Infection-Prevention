@@ -125,9 +125,9 @@ class ActivityReportListTest: RoboTest() {
       checkSelectedFilters("Isolation")
       finalizeFilters()
     }
-    reportListActivity {
+    reportListActivity { // Works thanks to Hilt stubs
       checkFiltersLoaded("Isolation")
-      checkListCount(0) // TODO: Currently broken. Backend needs to send precautionName with healthPractice in Report
+      checkListCount(2) // Backend still needs to send precautionType in production
     }
   }
   @Test fun addMultipleFilters() {

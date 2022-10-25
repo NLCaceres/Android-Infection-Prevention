@@ -67,7 +67,7 @@ class ActivityMainNavTest: RoboTest() {
       }
   }
 
-  // TODO: Following two tests fail since Precaution Type Filter currently filters out all reports
+  // Next 2 tests fail w/out Hilt stubs since backend currently DOESN'T send precautionTypes w/ reports
   @Test fun clickNavDrawerStandardReportFilterToLaunchReportListActivity() {
       mainActivity {
         checkNavDrawerOpen(false) // Not open
@@ -77,7 +77,7 @@ class ActivityMainNavTest: RoboTest() {
       }
       reportListActivity {
         checkFiltersLoaded("Standard")
-        checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
+        checkListCount(3)
       }
   }
   @Test fun clickNavDrawerIsoReportFilterToLaunchReportListActivity() {
@@ -89,7 +89,7 @@ class ActivityMainNavTest: RoboTest() {
       }
       reportListActivity {
         checkFiltersLoaded("Isolation")
-        checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
+        checkListCount(2)
       }
   }
 

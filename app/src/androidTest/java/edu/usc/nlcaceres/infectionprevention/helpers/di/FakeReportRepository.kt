@@ -1,6 +1,8 @@
 package edu.usc.nlcaceres.infectionprevention.helpers.di
 
 import edu.usc.nlcaceres.infectionprevention.data.*
+import edu.usc.nlcaceres.infectionprevention.data.PrecautionType.Standard
+import edu.usc.nlcaceres.infectionprevention.data.PrecautionType.Isolation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -30,23 +32,23 @@ class FakeReportRepository : ReportRepository {
     fun makeList(): List<Report> {
       val timestamp = Instant.parse("2019-05-19T06:36:05.018Z")
       val report1 = Report(null, Employee(null, "John", "Smith", null),
-        HealthPractice(null, "Hand Hygiene", null),
+        HealthPractice(null, "Hand Hygiene", Standard),
         Location(null, "USC", "4", "202"), timestamp
       )
       val report2 = Report(null, Employee(null, "Jill", "Chambers", null),
-        HealthPractice(null, "Contact", null),
+        HealthPractice(null, "Contact", Isolation),
         Location(null, "HSC", "3", "321"), timestamp.plus(1, ChronoUnit.DAYS)
       )
       val report3 = Report(null, Employee(null, "Victor", "Richards", null),
-        HealthPractice(null, "Droplet", null),
+        HealthPractice(null, "Droplet", Isolation),
         Location(null, "HSC", "3", "213"), timestamp.plus(7, ChronoUnit.DAYS)
       )
       val report4 = Report(null, Employee(null, "Melody", "Rios", null),
-        HealthPractice(null, "Hand Hygiene", null),
+        HealthPractice(null, "Hand Hygiene", Standard),
         Location(null, "HSC", "5", "121"), timestamp.minus(5, ChronoUnit.DAYS)
       )
       val report5 = Report(null, Employee(null, "Brian", "Ishida", null),
-        HealthPractice(null, "PPE", null),
+        HealthPractice(null, "PPE", Standard),
         Location(null, "USC", "2", "123"), timestamp.minus(27, ChronoUnit.DAYS)
       )
       return arrayListOf(report1, report2, report3, report4, report5)
