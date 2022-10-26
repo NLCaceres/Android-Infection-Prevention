@@ -1,8 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention
 
-import android.util.Log
 import android.app.Activity
-import androidx.fragment.app.Fragment
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts
 import android.os.Bundle
@@ -13,7 +11,6 @@ import android.view.*
 import android.widget.TextView
 import android.widget.EditText
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -23,11 +20,9 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.JustifyContent
 import androidx.core.view.MenuProvider
 import android.text.InputType.TYPE_CLASS_TEXT
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
-import androidx.fragment.app.viewModels
+import androidx.core.os.bundleOf
+import androidx.fragment.app.*
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
@@ -101,15 +96,15 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
           visibility = if (viewModel.reportListEmpty()) View.VISIBLE else View.INVISIBLE
           text = message
         }
-        ShowSnackbar((activity as ActivityMain).coordinatorLayout, message, Snackbar.LENGTH_SHORT)
+        setFragmentResult(SnackbarDisplay, bundleOf(SnackbarBundleMessage to message))
       }
     }
   }
   private fun setupFloatButtonToSortFilterView() {
     filterFloatButton = viewBinding.sortFilterFloatingButton.apply { setOnClickListener {
       Intent(context, ActivitySortFilter::class.java).let {
-        it.putStringArrayListExtra(precautionListExtra, requireArguments().getStringArrayList(precautionListExtra))
-        it.putStringArrayListExtra(healthPracticeListExtra, requireArguments().getStringArrayList(healthPracticeListExtra))
+        it.putStringArrayListExtra(PrecautionListExtra, requireArguments().getStringArrayList(PrecautionListExtra))
+        it.putStringArrayListExtra(HealthPracticeListExtra, requireArguments().getStringArrayList(HealthPracticeListExtra))
         sortFilterActivityLauncher.launch(it)
       }
     }}
@@ -118,10 +113,10 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
   private val sortFilterActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
     // Handles result from the Sorting/Filtering Activity
     if (it.resultCode == Activity.RESULT_OK) {
-      val selectedFiltersReceived = it.data?.fetchParcelableList<FilterItem>(selectedFilterParcel)
+      val selectedFiltersReceived = it.data?.fetchParcelableList<FilterItem>(SelectedFilterParcel)
 
       if (selectedFiltersReceived != null && selectedFiltersReceived.isNotEmpty()) {
-        ShowSnackbar((activity as ActivityMain).coordinatorLayout, "Filtering and Sorting!", Snackbar.LENGTH_SHORT)
+        setFragmentResult(SnackbarDisplay, bundleOf(SnackbarBundleMessage to "Filtering and Sorting!"))
 
         viewModel.selectedFilters.clear()
         viewModel.selectedFilters.addAll(selectedFiltersReceived)
@@ -132,7 +127,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
     }
   }
   private fun setupSortFilterViews() {
-    requireArguments().fetchParcelable<FilterItem>(preSelectedFilterExtra)?.let { viewModel.selectedFilters = arrayListOf(it) }
+    requireArguments().fetchParcelable<FilterItem>(PreSelectedFilterExtra)?.let { viewModel.selectedFilters = arrayListOf(it) }
 
     selectedFilterAdapter = SelectedFilterAdapter { _, _, position -> // RemoveButton() - View, FilterItem, Int
       viewModel.selectedFilters.removeAt(position) // First remove filter from selectedFilterList
@@ -217,13 +212,14 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
       }
     }
   }
-  // Needs access to inputManager via the activity so must be inner and declared in same file
+  // Needs access to fragment's setFragmentResult & requireActivity so must be inner and declared in same file
   private inner class ActionViewExpansionListener: MenuItem.OnActionExpandListener {
     private val focusListener = View.OnFocusChangeListener { view, isFocused ->
-      if (!isFocused) { // Whenever searchActionView loses focus close keyboard + close actionView if no query
-        (requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
-          .hideSoftInputFromWindow(view.windowToken, 0)
-        (view as? EditText)?.run { if (text.isEmpty()) (requireActivity() as ActivityMain).toolbar.collapseActionView() }
+      if (!isFocused) { // When searchActionView loses focus, ask activity to hide keyboard + close actionView if no query
+        setFragmentResult(KeyboardManager, bundleOf(KeyboardBundleCloser to true))
+        (view as? EditText)?.run {
+          if (text.isEmpty()) setFragmentResult(ActionViewManager, bundleOf(ActionViewBundleCloser to true))
+        }
       }
     }
     override fun onMenuItemActionExpand(searchIcon: MenuItem): Boolean { // Returning true lets expansion/collapse to happen
@@ -236,8 +232,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
       val searchBar = searchIcon.actionView as EditText
       if (requireActivity().currentFocus == searchBar && searchBar.text.isNotEmpty()) {
         searchBar.text.clear()
-        (requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
-          .hideSoftInputFromWindow(searchBar.windowToken, 0)
+        setFragmentResult(KeyboardManager, bundleOf(KeyboardBundleCloser to true)) // Hide keyboard
         searchBar.onFocusChangeListener = null // Prevents double collapse nullException call (listening restarts on next expansion)
         return true
       }
@@ -245,8 +240,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
         searchBar.clearFocus(); return false // Clear focus and let focusListener close actionView
       }
       // Made it here, either user didn't interact at all or above "else if" ran so clearFocus() let focusListener run collapse
-      (requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
-        .hideSoftInputFromWindow(searchIcon.actionView?.windowToken, 0)
+      setFragmentResult(KeyboardManager, bundleOf(KeyboardBundleCloser to true)) // Hide keyboard
       searchBar.text.clear(); return true
     }
   }

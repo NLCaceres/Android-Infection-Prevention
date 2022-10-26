@@ -91,7 +91,7 @@ class ActivityCreateReport : AppCompatActivity() {
 
     progressIndicator = viewBinding.progressIndicator.appProgressbar.apply { visibility = View.VISIBLE }
 
-    selectedPracticeName = intent.getStringExtra(createReportPracticeExtra)
+    selectedPracticeName = intent.getStringExtra(CreateReportPracticeExtra)
     headerTV = viewBinding.headerTV.apply { // Handle brief "New null Observation" b4 spinner loads to set TV to "New PPE..."
       text = if (selectedPracticeName != null) "New $selectedPracticeName Observation" else "New Observation"
     }

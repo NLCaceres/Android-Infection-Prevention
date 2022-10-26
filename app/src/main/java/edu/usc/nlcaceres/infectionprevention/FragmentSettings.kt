@@ -16,8 +16,7 @@ import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceCategory
 import androidx.preference.Preference
 import androidx.preference.forEach
-import edu.usc.nlcaceres.infectionprevention.util.dpUnits
-import edu.usc.nlcaceres.infectionprevention.util.setUpIndicator
+import edu.usc.nlcaceres.infectionprevention.util.*
 
 class FragmentSettings : PreferenceFragmentCompat() {
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) { // Called in onCreate
@@ -35,7 +34,7 @@ class FragmentSettings : PreferenceFragmentCompat() {
     setDividerHeight(dpUnits(4))
     // Can use insetDrawable w/ listView.addItemDecoration to add dividers between preferences but then
     // ALSO end up with an extra divider between the category title AND its preferences
-    childFragmentManager.setFragmentResultListener("EditTextDialog", this, dialogResultListener)
+    childFragmentManager.setFragmentResultListener(EditTextDialogManager, this, dialogResultListener)
   }
   private inner class SettingsMenu: MenuProvider { // Need inner for fragmentManager
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -48,9 +47,9 @@ class FragmentSettings : PreferenceFragmentCompat() {
   }
 
   private fun setupCommonPrefs() { // Preferences all users should see
-    findPreference<PreferenceCategory>("user")?.forEach {
+    findPreference<PreferenceCategory>(PreferenceCategoryUser)?.forEach {
       when (it.key) {
-        "phone" -> {
+        PreferencePhone -> {
           with(it as EditTextPreference) {
             dialogMessage = "Ex: (123) 456-7890"
             summaryProvider = Preference.SummaryProvider<EditTextPreference> { pref ->
@@ -58,7 +57,7 @@ class FragmentSettings : PreferenceFragmentCompat() {
             }
           }
         }
-        "password" -> {
+        PreferencePassword -> {
           with(it as EditTextPreference) {
             dialogMessage = "New password"
             summaryProvider = Preference.SummaryProvider<EditTextPreference> { pref ->
@@ -74,11 +73,11 @@ class FragmentSettings : PreferenceFragmentCompat() {
   private fun setupAdminPrefs() {
     val fragContext = requireContext()
     val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(fragContext) // reqContext best for lifecycle methods
-    sharedPrefs.getString("username", "")?.let { // Key, defaultVal
-      val userIsAdmin = true // TODO: Determine if user == admin
+    sharedPrefs.getString(PreferenceUsername, "")?.let { // Key, defaultVal
+      val userIsAdmin = true // TODO: Determine based on username if admin
       if (userIsAdmin) {
         val group = EditTextPreference(fragContext).apply {
-          key = "group"; title = "Healthcare Group or Clinic Name"
+          key = PreferenceHospitalGroup; title = "Healthcare Group or Clinic Name"
           layoutResource = R.layout.preference_divided
           dialogMessage = "New Name" // Used as editText hint in dialog
           summaryProvider = Preference.SummaryProvider<EditTextPreference> { pref ->
@@ -90,25 +89,25 @@ class FragmentSettings : PreferenceFragmentCompat() {
             if (pref.text.isNullOrBlank()) "Using default color" else pref.text
         }
         val toolbarColor = EditTextPreference(fragContext).apply {
-          key = "toolbar"; title = "Toolbar Color"
+          key = PreferenceToolbarColor; title = "Toolbar Color"
           layoutResource = R.layout.preference_divided
           dialogMessage = colorHint
           summaryProvider = colorSummaryProvider
         }
         val backgroundColor = EditTextPreference(fragContext).apply {
-          key = "background"; title = "Background Color"
+          key = PreferenceBackgroundColor; title = "Background Color"
           layoutResource = R.layout.preference_divided
           dialogMessage = colorHint
           summaryProvider = colorSummaryProvider
         }
         val reportTitleColor = EditTextPreference(fragContext).apply {
-          key = "report_title"; title = "Report Title Text Color"
+          key = PreferenceReportTitleColor; title = "Report Title Text Color"
           layoutResource = R.layout.preference_divided
           dialogMessage = colorHint
           summaryProvider = colorSummaryProvider
         }
         val adminCategory = PreferenceCategory(fragContext).apply {
-          key = "admin_cat"; title = "Hospital-wide Admin Settings"
+          key = PreferenceCategoryAdmin; title = "Hospital-wide Admin Settings"
           layoutResource = R.layout.preferences_category
         }
         preferenceManager.preferenceScreen.addPreference(adminCategory)
@@ -132,9 +131,9 @@ class FragmentSettings : PreferenceFragmentCompat() {
   }
   private val dialogResultListener = FragmentResultListener { requestKey, bundle ->
     when (requestKey) {
-      "EditTextDialog" -> { // Get key from pref that finished to update UI with latest text value
-        findPreference<EditTextPreference>(bundle.getString("key", ""))?.let {
-          it.text = bundle.getString("newVal", "")
+      EditTextDialogManager -> { // Get key from pref that finished to update UI with latest text value
+        findPreference<EditTextPreference>(bundle.getString(EditTextDialogPreferenceKey, ""))?.let {
+          it.text = bundle.getString(EditTextDialogPreferenceValue, "")
         }
       }
     }

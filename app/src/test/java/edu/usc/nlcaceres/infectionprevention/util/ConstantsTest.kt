@@ -26,15 +26,35 @@ class ConstantsTest {
   }
 
   @Test fun intentStrings() { // Check tricky strings with concatenation
-    assertEquals("edu.usc.nlcaceres.infectionprevention", projectPkgName)
+    assertEquals("edu.usc.nlcaceres.infectionprevention", ProjectPkgName)
 
-    assertEquals("edu.usc.nlcaceres.infectionprevention.main", mainActIntent)
-    assertEquals("edu.usc.nlcaceres.infectionprevention.main.preselected_filter", preSelectedFilterExtra)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.main", MainActIntent)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.main.preselected_filter", PreSelectedFilterExtra)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.main.precaution_list", PrecautionListExtra)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.main.health_practice_list", HealthPracticeListExtra)
 
-    assertEquals("edu.usc.nlcaceres.infectionprevention.new_report", createReportIntent)
-    assertEquals("edu.usc.nlcaceres.infectionprevention.new_report.health_practice", createReportPracticeExtra)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.new_report", CreateReportIntent)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.new_report.health_practice", CreateReportPracticeExtra)
 
-    assertEquals("edu.usc.nlcaceres.infectionprevention.sortFilter", sortFilterIntent)
-    assertEquals("edu.usc.nlcaceres.infectionprevention.sortFilter.filters", selectedFilterParcel)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.sortFilter", SortFilterIntent)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.sortFilter.filters", SelectedFilterParcel)
+  }
+
+  @Test fun fragmentResultKeys() {
+    assertEquals("edu.usc.nlcaceres.infectionprevention.action_view", ActionViewManager)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.action_view.closer", ActionViewBundleCloser)
+
+    assertEquals("edu.usc.nlcaceres.infectionprevention.edit_text_dialog", EditTextDialogManager)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.edit_text_dialog.preference_key", EditTextDialogPreferenceKey)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.edit_text_dialog.preference_value", EditTextDialogPreferenceValue)
+
+    assertEquals("edu.usc.nlcaceres.infectionprevention.keyboard", KeyboardManager)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.keyboard.closer", KeyboardBundleCloser)
+
+    assertEquals("edu.usc.nlcaceres.infectionprevention.nav_drawer", NavDrawerManager)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.nav_drawer.opener", NavDrawerBundleOpener)
+
+    assertEquals("edu.usc.nlcaceres.infectionprevention.snackbar", SnackbarDisplay)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.snackbar.message", SnackbarBundleMessage)
   }
 }

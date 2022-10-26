@@ -1,6 +1,5 @@
 package edu.usc.nlcaceres.infectionprevention
 
-import android.util.Log
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -11,15 +10,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
-import androidx.core.view.GravityCompat
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
+import androidx.fragment.app.*
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import edu.usc.nlcaceres.infectionprevention.adapters.PrecautionAdapter
 import edu.usc.nlcaceres.infectionprevention.databinding.FragmentMainBinding
@@ -57,7 +51,7 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
       menuInflater.inflate(R.menu.action_buttons, menu)
     }
     override fun onMenuItemSelected(item: MenuItem) = when (item.itemId) {
-      android.R.id.home -> { (activity as? ActivityMain)?.navDrawer?.openDrawer(GravityCompat.START); true }
+      android.R.id.home -> { setFragmentResult(NavDrawerManager, bundleOf(NavDrawerBundleOpener to true)); true }
       R.id.action_settings -> {
         parentFragmentManager.commit {
           setReorderingAllowed(true)
@@ -83,7 +77,7 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
           visibility = if (viewModel.precautionListEmpty()) View.VISIBLE else View.INVISIBLE
           text = message
         }
-        ShowSnackbar((activity as ActivityMain).coordinatorLayout, message, Snackbar.LENGTH_SHORT)
+        setFragmentResult(SnackbarDisplay, bundleOf(SnackbarBundleMessage to message))
       }
     }
   }
@@ -91,7 +85,7 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
   private val createReportActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
     if (result.resultCode == Activity.RESULT_OK) {
       val (precautionNames, healthPracticeNames) = viewModel.getNamesLists()
-      val bundle = bundleOf(precautionListExtra to precautionNames, healthPracticeListExtra to healthPracticeNames)
+      val bundle = bundleOf(PrecautionListExtra to precautionNames, HealthPracticeListExtra to healthPracticeNames)
       parentFragmentManager.commit {
         setReorderingAllowed(true)
         addToBackStack(null)
@@ -106,7 +100,7 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
         val reportTypeTV = itemView.findViewById<View>(R.id.precautionButtonTV)
         // Click Listener that creates an intent and launches the CreateReport Activity
         Intent(context, ActivityCreateReport::class.java).apply {
-          putExtra(createReportPracticeExtra, healthPractice.name)
+          putExtra(CreateReportPracticeExtra, healthPractice.name)
         }.also {
           createReportActivityLauncher.launch(it,
             ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), reportTypeTV, "reportType"))

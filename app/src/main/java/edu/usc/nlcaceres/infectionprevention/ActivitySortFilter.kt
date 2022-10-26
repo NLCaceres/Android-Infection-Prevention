@@ -23,9 +23,9 @@ import edu.usc.nlcaceres.infectionprevention.adapters.ExpandableFilterAdapter.Ex
 import edu.usc.nlcaceres.infectionprevention.adapters.OnFilterSelectedListener
 import edu.usc.nlcaceres.infectionprevention.adapters.SelectedFilterAdapter
 import edu.usc.nlcaceres.infectionprevention.util.SetupToolbar
-import edu.usc.nlcaceres.infectionprevention.util.healthPracticeListExtra
-import edu.usc.nlcaceres.infectionprevention.util.precautionListExtra
-import edu.usc.nlcaceres.infectionprevention.util.selectedFilterParcel
+import edu.usc.nlcaceres.infectionprevention.util.HealthPracticeListExtra
+import edu.usc.nlcaceres.infectionprevention.util.PrecautionListExtra
+import edu.usc.nlcaceres.infectionprevention.util.SelectedFilterParcel
 
 /* Activity with 2 RecyclerViews - Top handles the selected filters, Bottom the filters to be selected
  Launches from: FragmentReportList */
@@ -75,7 +75,7 @@ class ActivitySortFilter : AppCompatActivity() {
   }
   override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
     R.id.set_filters_action -> {
-      setResult(Activity.RESULT_OK, Intent().putParcelableArrayListExtra(selectedFilterParcel, selectedFilterList))
+      setResult(Activity.RESULT_OK, Intent().putParcelableArrayListExtra(SelectedFilterParcel, selectedFilterList))
       finish()
       true
     }
@@ -110,8 +110,8 @@ class ActivitySortFilter : AppCompatActivity() {
       FilterItem("Employee Name (A-Z)", false, sortByTitleStr),
       FilterItem("Employee Name (Z-A)", false, sortByTitleStr))
 
-    val tempPrecautionTypeList = intent.getStringArrayListExtra(precautionListExtra)
-    val tempPracticeTypeList = intent.getStringArrayListExtra(healthPracticeListExtra)
+    val tempPrecautionTypeList = intent.getStringArrayListExtra(PrecautionListExtra)
+    val tempPracticeTypeList = intent.getStringArrayListExtra(HealthPracticeListExtra)
     val precautionName = "Precaution Type"
     val practiceName = "Health Practice Type"
     if (tempPracticeTypeList != null && tempPrecautionTypeList != null) {

@@ -6,7 +6,7 @@ import android.view.MenuItem
 import androidx.core.os.bundleOf
 import com.google.android.material.navigation.NavigationView
 import edu.usc.nlcaceres.infectionprevention.data.FilterItem
-import edu.usc.nlcaceres.infectionprevention.util.preSelectedFilterExtra
+import edu.usc.nlcaceres.infectionprevention.util.PreSelectedFilterExtra
 
 class NavDrawerItemSelectedListener(private val finalizeBundle: (Bundle) -> Unit)
   : NavigationView.OnNavigationItemSelectedListener {
@@ -18,11 +18,11 @@ class NavDrawerItemSelectedListener(private val finalizeBundle: (Bundle) -> Unit
           Log.d("Nav Item Selected", "Clicked General Report Item")
         }
         R.id.nav_standard_precautions -> {
-          reportListBundle.putParcelable(preSelectedFilterExtra, FilterItem("Standard", true, "Precaution Type"))
+          reportListBundle.putParcelable(PreSelectedFilterExtra, FilterItem("Standard", true, "Precaution Type"))
           Log.d("Nav Item Selected", "Clicked Standard Precautions Report Item")
         }
         R.id.nav_isolation_precautions -> {
-          reportListBundle.putParcelable(preSelectedFilterExtra, FilterItem("Isolation", true, "Precaution Type"))
+          reportListBundle.putParcelable(PreSelectedFilterExtra, FilterItem("Isolation", true, "Precaution Type"))
           Log.d("Nav Item Selected", "Clicked Isolation Precautions Report Item")
         }
         else -> return false
