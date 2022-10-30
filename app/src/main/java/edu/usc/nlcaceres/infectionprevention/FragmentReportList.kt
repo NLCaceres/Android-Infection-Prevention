@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.*
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
@@ -199,7 +200,8 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
     private fun startSearchBarListener(searchBar: EditText) {
       viewLifecycleOwner.lifecycleScope.launch { // This flow is bound to the lifecycle of the activity!
         searchBar.textUpdates().onEach { EspressoIdlingResource.increment() }
-          .debounce(500) // No flowWithLifecycle() needed! unless we need to reset onStart
+          .debounce(500) // Using flowWithLifecycle w/ its default minState STARTED is the best option!
+          .flowWithLifecycle(lifecycle) // It'll guaranteed cancel collection onStop & no double firing like w/ RESUMED
           .collectLatest { newText -> // Flow version of Handler w/ postDelayed + cancelling last Runnable block!
             // collectLatest kills previous computation if a new value arrives!
 
