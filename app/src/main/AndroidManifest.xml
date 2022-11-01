@@ -35,16 +35,6 @@
         android:exported="true"> <!-- PreSDK 21/Android 4.0/IceCreamSandwich used Meta-Data tag instead -->
     </activity>
 
-    <activity android:name=".ActivitySortFilter"
-      android:label=""
-      android:parentActivityName=".ActivityMain">
-    </activity>
-
-    <activity android:name=".ActivitySettings"
-        android:label="@string/settings_label"
-        android:parentActivityName=".ActivityMain">
-    </activity>
-
   </application>
 
 </manifest>
