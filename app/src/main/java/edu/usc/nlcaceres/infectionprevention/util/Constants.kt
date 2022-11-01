@@ -46,8 +46,8 @@ const val HealthPracticeListExtra = "$MainActIntent.health_practice_list"
 const val SettingsIntent = "$ProjectPkgName.settings"
 const val CreateReportIntent = "$ProjectPkgName.new_report"
 const val CreateReportPracticeExtra = "$CreateReportIntent.health_practice"
-const val SortFilterIntent = "$ProjectPkgName.sortFilter"
-const val SelectedFilterParcel = "$SortFilterIntent.filters"
+const val SortFilterRequestKey = "$ProjectPkgName.sortFilter"
+const val SelectedFilterParcel = "$SortFilterRequestKey.filters"
 
 // FragmentResultListener
 const val ActionViewManager = "$ProjectPkgName.action_view"

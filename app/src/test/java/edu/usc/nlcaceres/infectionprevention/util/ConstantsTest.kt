@@ -36,7 +36,7 @@ class ConstantsTest {
     assertEquals("edu.usc.nlcaceres.infectionprevention.new_report", CreateReportIntent)
     assertEquals("edu.usc.nlcaceres.infectionprevention.new_report.health_practice", CreateReportPracticeExtra)
 
-    assertEquals("edu.usc.nlcaceres.infectionprevention.sortFilter", SortFilterIntent)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.sortFilter", SortFilterRequestKey)
     assertEquals("edu.usc.nlcaceres.infectionprevention.sortFilter.filters", SelectedFilterParcel)
   }
 

@@ -1,8 +1,5 @@
 package edu.usc.nlcaceres.infectionprevention
 
-import android.app.Activity
-import android.content.Intent
-import androidx.activity.result.contract.ActivityResultContracts
 import android.os.Bundle
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
@@ -79,6 +76,8 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
 
     setupSortFilterViews()
     setupReportRV()
+
+    setupSortFilterResultListener()
   }
 
   private fun setupRefresh() {
@@ -103,30 +102,30 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
   }
   private fun setupFloatButtonToSortFilterView() {
     filterFloatButton = viewBinding.sortFilterFloatingButton.apply { setOnClickListener {
-      Intent(context, ActivitySortFilter::class.java).let {
-        it.putStringArrayListExtra(PrecautionListExtra, requireArguments().getStringArrayList(PrecautionListExtra))
-        it.putStringArrayListExtra(HealthPracticeListExtra, requireArguments().getStringArrayList(HealthPracticeListExtra))
-        sortFilterActivityLauncher.launch(it)
+      parentFragmentManager.commit {
+        setReorderingAllowed(true)
+        addToBackStack(null)
+        val bundle = bundleOf(PrecautionListExtra to requireArguments().getStringArrayList(PrecautionListExtra),
+          HealthPracticeListExtra to requireArguments().getStringArrayList(HealthPracticeListExtra))
+        replace<FragmentSortFilter>(R.id.fragment_main_container, args = bundle)
       }
     }}
   }
-  /* How to handle Activity switches as of SDK 30 - Request Codes are gone! Just simple ResultCodes! */
-  private val sortFilterActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-    // Handles result from the Sorting/Filtering Activity
-    if (it.resultCode == Activity.RESULT_OK) {
-      val selectedFiltersReceived = it.data?.fetchParcelableList<FilterItem>(SelectedFilterParcel)
-
-      if (selectedFiltersReceived != null && selectedFiltersReceived.isNotEmpty()) {
+  private fun setupSortFilterResultListener() {
+    parentFragmentManager.setFragmentResultListener(SortFilterRequestKey, viewLifecycleOwner) { requestKey, result ->
+      if (requestKey != SortFilterRequestKey) { return@setFragmentResultListener } // Early break if key is incorrect
+      result.fetchParcelableList<FilterItem>(SelectedFilterParcel)?.let { newFiltersList -> // Make sure not null
         setFragmentResult(SnackbarDisplay, bundleOf(SnackbarBundleMessage to "Filtering and Sorting!"))
 
         viewModel.selectedFilters.clear()
-        viewModel.selectedFilters.addAll(selectedFiltersReceived)
-        selectedFilterAdapter.notifyItemRangeInserted(0, selectedFiltersReceived.size)
+        viewModel.selectedFilters.addAll(newFiltersList) // Update filters for display
+        selectedFilterAdapter.notifyItemRangeInserted(0, newFiltersList.size)
 
-        reportsAdapter.submitList(viewModel.sortedFilteredList())
+        reportsAdapter.submitList(viewModel.sortedFilteredList()) // Update report list based on displayed filters
       }
     }
   }
+
   private fun setupSortFilterViews() {
     requireArguments().fetchParcelable<FilterItem>(PreSelectedFilterExtra)?.let { viewModel.selectedFilters = arrayListOf(it) }
 

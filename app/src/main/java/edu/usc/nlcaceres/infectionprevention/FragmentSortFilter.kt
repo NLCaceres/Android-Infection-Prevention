@@ -1,16 +1,15 @@
 package edu.usc.nlcaceres.infectionprevention
 
 import android.util.Log
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.core.view.MenuProvider
+import androidx.fragment.app.*
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -20,25 +19,23 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import dagger.hilt.android.AndroidEntryPoint
-import edu.usc.nlcaceres.infectionprevention.databinding.ActivitySortFilterBinding
 import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 import edu.usc.nlcaceres.infectionprevention.adapters.ExpandableFilterAdapter
 import edu.usc.nlcaceres.infectionprevention.adapters.ExpandableFilterAdapter.ExpandableFilterViewHolder
 import edu.usc.nlcaceres.infectionprevention.adapters.OnFilterSelectedListener
 import edu.usc.nlcaceres.infectionprevention.adapters.SelectedFilterAdapter
-import edu.usc.nlcaceres.infectionprevention.util.SetupToolbar
-import edu.usc.nlcaceres.infectionprevention.util.HealthPracticeListExtra
-import edu.usc.nlcaceres.infectionprevention.util.PrecautionListExtra
-import edu.usc.nlcaceres.infectionprevention.util.SelectedFilterParcel
+import edu.usc.nlcaceres.infectionprevention.databinding.FragmentSortFilterBinding
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelSortFilter
+import edu.usc.nlcaceres.infectionprevention.util.*
 import kotlinx.coroutines.launch
 
 /* Activity with 2 RecyclerViews - Top handles the selected filters, Bottom the filters to be selected
  Launches from: FragmentReportList */
 @AndroidEntryPoint
-class ActivitySortFilter : AppCompatActivity() {
+class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
 
-  private lateinit var viewBinding : ActivitySortFilterBinding
+  private var _viewBinding: FragmentSortFilterBinding? = null
+  private val viewBinding get() = _viewBinding!!
   private val viewModel: ViewModelSortFilter by viewModels()
 
   private lateinit var selectedFilterRV : RecyclerView
@@ -47,51 +44,58 @@ class ActivitySortFilter : AppCompatActivity() {
   private lateinit var expandableFilterRV : RecyclerView
   private lateinit var expandableFilterAdapter : ExpandableFilterAdapter
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    viewBinding = ActivitySortFilterBinding.inflate(layoutInflater)
-    setContentView(viewBinding.root)
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    _viewBinding = FragmentSortFilterBinding.inflate(inflater, container, false)
+    return viewBinding.root
+  }
 
-    SetupToolbar(this, viewBinding.toolbarLayout.homeToolbar, R.drawable.ic_close)
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+
+    (activity as AppCompatActivity).supportActionBar?.setUpIndicator(R.drawable.ic_close)
+    requireActivity().addMenuProvider(SortFilterMenu(), viewLifecycleOwner, Lifecycle.State.RESUMED)
 
     // Since doneButtonEnabled is distinct(), invalidate() always needed so onPrepareOptionsMenu can update doneButton
-    viewModel.doneButtonEnabled.observe(this) { invalidateOptionsMenu() }
-
+    viewModel.doneButtonEnabled.observe(viewLifecycleOwner) { requireActivity().invalidateOptionsMenu() }
     setUpSelectedFilterRV()
 
     setupExpandableRecyclerView()
   }
 
-  // Next 3 setup options menu in toolbar
-  override fun onCreateOptionsMenu(menu: Menu): Boolean { menuInflater.inflate(R.menu.sorting_actions, menu); return true }
-  override fun onPrepareOptionsMenu(menu: Menu): Boolean { // Called after onCreate and in lifecycle when invalidateOptionsMenu is called!
-    menu[1].apply { // Get() doneButton
-      isEnabled = viewModel.doneButtonEnabled.value!! // Since invalidate() called from observe, value should be ready to use
-      icon?.alpha = if (isEnabled) 255 else 130 // Full brightness when enabled. Just over half when disabled
+  private inner class SortFilterMenu: MenuProvider {
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+      menuInflater.inflate(R.menu.sorting_actions, menu)
     }
-    return true
+    override fun onPrepareMenu(menu: Menu) {
+      menu[1].apply { // Get() doneButton
+        isEnabled = viewModel.doneButtonEnabled.value!! // Since invalidate() called from observe, value should be ready to use
+        icon?.alpha = if (isEnabled) 255 else 130 // Full brightness when enabled. Just over half when disabled
+      }
+    }
+    override fun onMenuItemSelected(menuItem: MenuItem) = when (menuItem.itemId) {
+      android.R.id.home -> { parentFragmentManager.popBackStack(); true }
+      R.id.set_filters_action -> {
+        val selectedFilters = ArrayList(viewModel.selectedFilterList.value ?: listOf())
+        // setFragmentResult will deliver its result to 1 listener! BUT only once it's in STARTED
+        setFragmentResult(SortFilterRequestKey, bundleOf(SelectedFilterParcel to selectedFilters))
+        parentFragmentManager.popBackStack() // Pop off this fragment back to reportList (like activity.finish())
+        true
+      }
+      R.id.reset_filters_action -> {
+        viewModel.resetFilters().forEach { index -> expandableFilterAdapter.notifyItemChanged(index) }
+        true
+      }
+      R.id.settings_action -> {
+        parentFragmentManager.commit {
+          setReorderingAllowed(true)
+          addToBackStack(null)
+          replace<FragmentSettings>(R.id.fragment_main_container)
+        }
+        true
+      }
+      else -> false
+    }
   }
-  override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-    R.id.set_filters_action -> {
-      val selectedFilters = ArrayList(viewModel.selectedFilterList.value ?: listOf())
-      setResult(Activity.RESULT_OK, Intent().putParcelableArrayListExtra(SelectedFilterParcel, selectedFilters))
-      finish()
-      true
-    }
-    R.id.reset_filters_action -> { // Reset selectedFilters & use returned indices to update specific items' state
-      viewModel.resetFilters().forEach { index -> expandableFilterAdapter.notifyItemChanged(index) }
-      true
-    }
-    R.id.settings_action -> {
-      startActivity(Intent(this, ActivitySettings::class.java))
-      true
-    }
-    else -> { super.onOptionsItemSelected(item) }
-  }
-
-  // Following override prevents odd Hilt EntryPoint exception crash in instrumentedTests
-  // Close button causes test app to restart after test completes stopping rest of test suite
-  override fun onSupportNavigateUp(): Boolean { finish(); return true } // Despite override, works exactly the same as before
 
   private fun setupExpandableRecyclerView() {
     // ExpandableListView = alt choice BUT RecyclerViews CAN save on memory
@@ -105,8 +109,8 @@ class ActivitySortFilter : AppCompatActivity() {
     lifecycleScope.launch { viewModel.filterGroupList.flowWithLifecycle(lifecycle).collect { newList ->
       expandableFilterAdapter.submitList(newList)
     }}
-    val precautionTypeList = intent.getStringArrayListExtra(PrecautionListExtra) ?: emptyList()
-    val practiceTypeList = intent.getStringArrayListExtra(HealthPracticeListExtra) ?: emptyList()
+    val precautionTypeList = requireArguments().getStringArrayList(PrecautionListExtra) ?: emptyList()
+    val practiceTypeList = requireArguments().getStringArrayList(HealthPracticeListExtra) ?: emptyList()
     viewModel.initializeFilterList(precautionTypeList, practiceTypeList)
   }
 
@@ -126,7 +130,7 @@ class ActivitySortFilter : AppCompatActivity() {
       adapter = selectedFilterAdapter
       layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW, FlexWrap.WRAP).apply { justifyContent = JustifyContent.CENTER }
     }
-    viewModel.selectedFilterList.observe(this) { newList -> selectedFilterAdapter.submitList(newList) }
+    viewModel.selectedFilterList.observe(viewLifecycleOwner) { newList -> selectedFilterAdapter.submitList(newList) }
   }
 
   private inner class FilterSelectionListener : OnFilterSelectedListener {
