@@ -20,7 +20,7 @@ import org.junit.Test
 
 @UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
-class ActivitySortFilterTest: RoboTest() {
+class FragmentSortFilterTest: RoboTest() {
   @get:Rule(order = 0)
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1)
@@ -32,7 +32,7 @@ class ActivitySortFilterTest: RoboTest() {
   var reportRepository: ReportRepository = FakeReportRepository().apply { populateList() }
 
   @Before
-  fun registerIdlingResource() {
+  fun register_Idling_Resource() {
     IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
     mainActivity {
       checkNavDrawerOpen(false) // Not open
@@ -40,41 +40,41 @@ class ActivitySortFilterTest: RoboTest() {
       checkNavDrawerOpen(true) // Now Open
       goToReportList()
     }
-    reportListActivity {  // Verify made it to reportList (have to wait until RV loads)
+    reportListFragment {  // Verify made it to reportList (have to wait until RV loads)
       checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
       startSelectingSortAndFilters()
     }
-    sortFilterActivity { checkLoaded() } // Filters loaded and ready to tap
+    sortFilterFragment { checkLoaded() } // Filters loaded and ready to tap
   }
   @After
-  fun unregisterIdlingResource() {
+  fun unregister_Idling_Resource() {
     IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
   }
 
   // Navigation
-  @Test fun navigateToSettings() {
-    sortFilterActivity { goToSettings() }
-    settingsActivity { checkInitLoad() }
+  @Test fun navigate_To_Settings() {
+    sortFilterFragment { goToSettings() }
+    settingsFragment { checkInitLoad() }
   }
-  @Test fun navigateBackUpToReportList() {
-    sortFilterActivity { pressCloseButton() } // X button
-    reportListActivity {
+  @Test fun navigate_Back_Up_To_Report_List() {
+    sortFilterFragment { pressCloseButton() } // X button
+    reportListFragment {
       checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
       checkFiltersLoaded()
     }
   }
 
   // Important Features (Select - Single/Multiselect and Removal)
-  @Test fun selectFilter() {
-    sortFilterActivity {
+  @Test fun select_Filter() {
+    sortFilterFragment {
       openFilterGroupLabeled("Health Practice Type")
       selectFilterLabeled("Hand Hygiene")
       checkSelectedFilters("Hand Hygiene")
       checkMarkedFiltersIn(mapOf("Health Practice Type" to arrayListOf("Hand Hygiene"))) // Many different ways to make a map!
     }
   }
-  @Test fun selectFilterSingleSelection() { // RadioButton Single Selection Style (only 1 filter added)
-    sortFilterActivity {
+  @Test fun select_Filter_Single_Selection() { // RadioButton Single Selection Style (only 1 filter added)
+    sortFilterFragment {
       openFilterGroupLabeled("Sort By")
       selectFilterLabeled("New Reports")
       checkSelectedFilters("New Reports") // Should be New Reports
@@ -87,8 +87,8 @@ class ActivitySortFilterTest: RoboTest() {
       checkMarkedFiltersIn(selectedFilterMap)
     }
   }
-  @Test fun selectFilterMultiSelection() { // Checkbox multiple choice style (all checked added as filters)
-    sortFilterActivity {
+  @Test fun select_Filter_Multi_Selection() { // Checkbox multiple choice style (all checked added as filters)
+    sortFilterFragment {
       openFilterGroupLabeled("Health Practice Type")
       selectFilterLabeled("Hand Hygiene")
       val selectedFilterMap = buildMap { put("Health Practice Type", arrayListOf("Hand Hygiene")) }
@@ -101,8 +101,8 @@ class ActivitySortFilterTest: RoboTest() {
       checkMarkedFiltersIn(selectedFilterMap)
     }
   }
-  @Test fun removeSelectedFilter() { // Remove by X button, not by unchecking filters
-    sortFilterActivity {
+  @Test fun remove_Selected_Filter() { // Remove by X button, not by unchecking filters
+    sortFilterFragment {
       openFilterGroupLabeled("Health Practice Type")
       selectFilterLabeled("Hand Hygiene")
       checkSelectedFilters("Hand Hygiene")
@@ -138,8 +138,8 @@ class ActivitySortFilterTest: RoboTest() {
   }
 
   // Toolbar Features
-  @Test fun resetFiltersChosen() {
-    sortFilterActivity {
+  @Test fun reset_Filters_Chosen() {
+    sortFilterFragment {
       // Select filters, reset and check no filters still there
       openFilterGroupLabeled("Health Practice Type")
       selectFilterLabeled("Hand Hygiene")
@@ -159,8 +159,8 @@ class ActivitySortFilterTest: RoboTest() {
       checkAllFiltersUnmarked() // All filters must be unchecked
     }
   }
-  @Test fun finalizeFiltersChosen() { // Select filters, finalize choices, see them in reportList
-    sortFilterActivity {
+  @Test fun finalize_Filters_Chosen() { // Select filters, finalize choices, see them in reportList
+    sortFilterFragment {
       openFilterGroupLabeled("Health Practice Type")
       selectFilterLabeled("Hand Hygiene")
       selectFilterLabeled("PPE")
@@ -172,6 +172,6 @@ class ActivitySortFilterTest: RoboTest() {
       checkMarkedFiltersIn(selectedFilterMap)
       finalizeFilters()
     }
-    reportListActivity { checkFiltersLoaded("Hand Hygiene", "PPE") }
+    reportListFragment { checkFiltersLoaded("Hand Hygiene", "PPE") }
   }
 }

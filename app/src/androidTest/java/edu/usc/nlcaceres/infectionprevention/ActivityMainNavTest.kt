@@ -37,15 +37,16 @@ class ActivityMainNavTest: RoboTest() {
   var reportRepository: ReportRepository = FakeReportRepository().apply { populateList() }
 
   @Before
-  fun registerIdlingResource() {
+  fun register_Idling_Resource() {
     IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
   }
   @After
-  fun unregisterIdlingResource() {
+  fun unregister_Idling_Resource() {
     IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
   }
 
-  @Test fun clickHealthPracticeToLaunchCreateActivity() {
+  // androidTest dir DOESN'T allow `Back tick function names`() like test dir does! Snake case is fine for now!
+  @Test fun click_Health_Practice_To_Go_To_Create_Report_Activity() {
       mainActivity {
         checkViewLoaded()
         goCreateIsoReportLabeled("Contact Enteric")
@@ -55,49 +56,49 @@ class ActivityMainNavTest: RoboTest() {
       }
   }
 
-  @Test fun clickNavDrawerReportButtonToLaunchReportListActivity() {
+  @Test fun click_NavDrawer_Generic_Report_Button_To_Go_To_Report_List_Fragment() {
       mainActivity {
         checkNavDrawerOpen(false) // Not open
         openNavDrawer()
         checkNavDrawerOpen(true) // Now Open
         goToReportList()
       }
-      reportListActivity { // Verify in reportList (have to wait until RV loads)
+      reportListFragment { // Verify in reportList (have to wait until RV loads)
         checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
       }
   }
 
   // Next 2 tests fail w/out Hilt stubs since backend currently DOESN'T send precautionTypes w/ reports
-  @Test fun clickNavDrawerStandardReportFilterToLaunchReportListActivity() {
+  @Test fun click_NavDrawer_Standard_Report_Only_Filter_To_Go_To_Report_List_Fragment() {
       mainActivity {
         checkNavDrawerOpen(false) // Not open
         openNavDrawer()
         checkNavDrawerOpen(true) // Now Open
         goToFilteredStandardReportList()
       }
-      reportListActivity {
+      reportListFragment {
         checkFiltersLoaded("Standard")
         checkListCount(3)
       }
   }
-  @Test fun clickNavDrawerIsoReportFilterToLaunchReportListActivity() {
+  @Test fun click_NavDrawer_Isolation_Reports_Only_Filter_To_Go_To_Report_List_Fragment() {
       mainActivity {
         checkNavDrawerOpen(false) // Not open
         openNavDrawer()
         checkNavDrawerOpen(true) // Now Open
         goToFilteredIsolationReportList()
       }
-      reportListActivity {
+      reportListFragment {
         checkFiltersLoaded("Isolation")
         checkListCount(2)
       }
   }
 
-  @Test fun clickSettingsToolbarButtonToLaunchSettingsActivity() {
+  @Test fun click_Settings_Toolbar_Button_To_Go_To_Settings_Fragment() {
     mainActivity {
       checkNavDrawerOpen(false) // Not open
       goToSettings()
     }
-    settingsActivity { checkInitLoad() }
+    settingsFragment { checkInitLoad() }
   }
 }

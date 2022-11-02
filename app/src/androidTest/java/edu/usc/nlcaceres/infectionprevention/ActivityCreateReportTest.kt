@@ -34,7 +34,7 @@ class ActivityCreateReportTest: RoboTest() {
   var reportRepository: ReportRepository = FakeReportRepository().apply { populateList() }
 
   @Before
-  fun navToCreateReportActivity() {
+  fun navigate_To_Create_Report_Activity() {
     IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
     mainActivity {
       checkViewLoaded()
@@ -46,27 +46,27 @@ class ActivityCreateReportTest: RoboTest() {
     }
   }
   @After
-  fun unregisterIdlingResource() {
+  fun unregister_Idling_Resource() {
       IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
   }
 
   // Checking Initial Loading
-  @Test fun checkDefaultHeader() { // Double Check!
+  @Test fun check_Default_Header() { // Double Check!
     createReportActivity { checkCorrectTitle("New Hand Hygiene Observation") }
   }
 
   // Navigation
-  @Test fun handleBackNavigation() { // May fail if not coming from mainActivity (which in this case is just closing app)
+  @Test fun handle_Back_Navigation() { // May fail if not coming from mainActivity (which in this case is just closing app)
     tapBackButton()
     mainActivity { checkViewLoaded() }
   }
-  @Test fun handleUpNavigation() {
+  @Test fun handle_Up_Navigation() {
     createReportActivity { pressUpButton() }
     mainActivity { checkViewLoaded() }
   }
 
   // Time and Date
-  @Test fun selectTime() {
+  @Test fun select_Time() {
     createReportActivity {
       openTimeDialog()
       setTime(15, 24) // 3PM 24 minutes
@@ -75,7 +75,7 @@ class ActivityCreateReportTest: RoboTest() {
       checkTimeDateET("3:24 PM") // BUT editText still updated!
     }
   }
-  @Test fun selectTimeAndDate() {
+  @Test fun select_Time_And_Date() {
     createReportActivity {
       openTimeDialog()
       setTime(15, 24) // 3PM 24 minutes
@@ -87,14 +87,14 @@ class ActivityCreateReportTest: RoboTest() {
   }
 
   // Spinners
-  @Test fun selectEmployee() {
+  @Test fun select_Employee() {
     createReportActivity {
       openEmployeeSpinner()
       selectEmployee("Nicholas Caceres")
       checkSelectedEmployee("Nicholas Caceres")
     }
   }
-  @Test fun selectHealthPractice() {
+  @Test fun select_Health_Practice() {
     createReportActivity {
       openHealthPracticeSpinner()
       selectHealthPractice("Droplet")
@@ -102,7 +102,7 @@ class ActivityCreateReportTest: RoboTest() {
       checkCorrectTitle("New Droplet Observation")
     }
   }
-  @Test fun selectLocation() {
+  @Test fun select_Location() {
     createReportActivity {
       openFacilitySpinner()
       selectFacility("USC")
@@ -111,7 +111,7 @@ class ActivityCreateReportTest: RoboTest() {
   }
 
   // Finalizing New Report
-  @Test fun submitWithoutDate() {
+  @Test fun submit_Without_Date() {
     createReportActivity {
       pressSubmitButton() // Should open dialog since no date selected
       checkAlertDialog()
@@ -119,7 +119,7 @@ class ActivityCreateReportTest: RoboTest() {
       checkSnackBar() // Cancel button opens snackbar telling user to set time/date
     }
   }
-  @Test fun submitWithDate() {
+  @Test fun submit_With_Date() {
     createReportActivity {
       openTimeDialog()
       setTime(5, 45) // 3PM 24 minutes
@@ -132,7 +132,7 @@ class ActivityCreateReportTest: RoboTest() {
     // Technically goes through mainActivity to get to reportList BUT
     // Android seems to optimize around actually needing to nav to mainActivity
     // Instead, just running the resultHandler that launches the intent toward the reportList view
-    reportListActivity { // Should be no filters BUT should be a list of reports!
+    reportListFragment { // Should be no filters BUT should be a list of reports!
       checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
     }
   }

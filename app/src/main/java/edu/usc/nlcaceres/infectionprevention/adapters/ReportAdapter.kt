@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import edu.usc.nlcaceres.infectionprevention.data.Report
 import edu.usc.nlcaceres.infectionprevention.databinding.ItemReportBinding
 
-/* Adapter for ReportsListActivity RecyclerView */
+/* Adapter for ReportsList RecyclerView */
 // If not specifying specific ViewHolder class, then some casting needed. See ln 37.
 class ReportAdapter : ListAdapter<Report, RecyclerView.ViewHolder>(ReportDiffCallback()) {
 

@@ -37,7 +37,7 @@ import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelReportList
 import edu.usc.nlcaceres.infectionprevention.util.*
 
 /* Lists all reports returned using a complex RecyclerView - Easily one of the most complex views
- Navigates to a Sorting/Filter View (ActivitySortFilter) on click of Floating Filter Button */
+ Navigates to a Sorting/Filter View (FragmentSortFilter) on click of Floating Filter Button */
 @AndroidEntryPoint
 class FragmentReportList: Fragment(R.layout.fragment_report_list) {
   private val viewModel: ViewModelReportList by viewModels()

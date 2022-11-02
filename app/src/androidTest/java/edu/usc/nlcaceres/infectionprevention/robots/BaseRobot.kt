@@ -9,9 +9,9 @@ abstract class BaseRobot // Common Base for Robots (Might be best as interface u
 abstract class RoboTest {
   val mainActivity = robotRunner(MainActivityRobot::class)
   val createReportActivity = robotRunner(CreateReportRobot::class)
-  val reportListActivity = robotRunner(ReportListRobot::class)
-  val sortFilterActivity = robotRunner(SortFilterRobot::class)
-  val settingsActivity = robotRunner(SettingsRobot::class)
+  val reportListFragment = robotRunner(ReportListRobot::class)
+  val sortFilterFragment = robotRunner(SortFilterRobot::class)
+  val settingsFragment = robotRunner(SettingsRobot::class)
 
   private fun <T : BaseRobot> robotRunner(cls: KClass<T>) = { func: T.() -> Unit ->
     cls.createInstance().apply { func() } // Create instance of robot, then run our closures

@@ -20,7 +20,7 @@ import org.junit.Test
 
 @UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
-class ActivityReportListTest: RoboTest() {
+class FragmentReportListTest: RoboTest() {
   @get:Rule(order = 0)
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1)
@@ -32,7 +32,7 @@ class ActivityReportListTest: RoboTest() {
   var reportRepository: ReportRepository = FakeReportRepository().apply { populateList() }
 
   @Before
-  fun registerIdlingResource() {
+  fun register_Idling_Resource() {
     IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
     mainActivity {
       checkNavDrawerOpen(false) // Not open
@@ -40,32 +40,32 @@ class ActivityReportListTest: RoboTest() {
       checkNavDrawerOpen(true) // Now Open
       goToReportList()
     }
-    reportListActivity { // Verify made it to reportList (have to wait until RV loads)
+    reportListFragment { // Verify made it to reportList (have to wait until RV loads)
       checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
     }
   }
   @After
-  fun unregisterIdlingResource() {
+  fun unregister_Idling_Resource() {
     IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
   }
 
   // Navigation
-  @Test fun navigateToSortFilterActivity() {
-    reportListActivity { startSelectingSortAndFilters() }
-    sortFilterActivity { checkLoaded() }
+  @Test fun navigate_To_Sort_Filter_Fragment() {
+    reportListFragment { startSelectingSortAndFilters() }
+    sortFilterFragment { checkLoaded() }
   }
-  @Test fun navigateToSettings() {
-    reportListActivity { goToSettings() }
-    settingsActivity { checkInitLoad() }
+  @Test fun navigate_To_Settings() {
+    reportListFragment { goToSettings() }
+    settingsFragment { checkInitLoad() }
   }
-  @Test fun navigateBackToHomePage() {
-    reportListActivity { pressUpButton() } // Back button on toolbar
+  @Test fun navigate_Back_To_Home_Page() {
+    reportListFragment { pressUpButton() } // Back button on toolbar
     mainActivity { checkViewLoaded() }
   }
 
   // SearchBar filter
-  @Test fun expandSearchActionBarViewWhenEmpty() {
-    reportListActivity {
+  @Test fun expand_Search_ActionBar_View_When_Empty() {
+    reportListFragment {
       // Normal flow - Tap search icon, use searchBar, press x to close
       expandSearchBar()
       checkFirstSearchBarExpansion()
@@ -78,8 +78,8 @@ class ActivityReportListTest: RoboTest() {
       checkSearchBarClosed()
     }
   }
-  @Test fun expandSearchActionBarViewWithText() {
-    reportListActivity {
+  @Test fun expand_Search_ActionBar_View_With_Text() {
+    reportListFragment {
       expandSearchBar()
       checkFirstSearchBarExpansion()
       enterSearchQuery("USC")
@@ -93,8 +93,8 @@ class ActivityReportListTest: RoboTest() {
       checkFirstSearchBarExpansion() // EditText empty despite previously being filled with "USC"
     }
   }
-  @Test fun filterWithSearchbar() {
-    reportListActivity {
+  @Test fun filter_With_Search_Bar() {
+    reportListFragment {
       expandSearchBar()
       checkFirstSearchBarExpansion()
       checkListCount(5)
@@ -114,10 +114,10 @@ class ActivityReportListTest: RoboTest() {
     }
   }
 
-  // ForResult Features (SortFilterActivity)
-  @Test fun addOneFilter() {
-    reportListActivity { startSelectingSortAndFilters() }
-    sortFilterActivity {
+  // ForResult Features (SortFilterFragment)
+  @Test fun add_One_Filter() {
+    reportListFragment { startSelectingSortAndFilters() }
+    sortFilterFragment {
       checkLoaded()
 
       openFilterGroupLabeled("Precaution Type")
@@ -125,14 +125,14 @@ class ActivityReportListTest: RoboTest() {
       checkSelectedFilters("Isolation")
       finalizeFilters()
     }
-    reportListActivity { // Works thanks to Hilt stubs
+    reportListFragment { // Works thanks to Hilt stubs
       checkFiltersLoaded("Isolation")
       checkListCount(2) // Backend still needs to send precautionType in production
     }
   }
-  @Test fun addMultipleFilters() {
-    reportListActivity { startSelectingSortAndFilters() }
-    sortFilterActivity {
+  @Test fun add_Multiple_Filters() {
+    reportListFragment { startSelectingSortAndFilters() }
+    sortFilterFragment {
       checkLoaded()
 
       openFilterGroupLabeled("Health Practice Type")
@@ -145,7 +145,7 @@ class ActivityReportListTest: RoboTest() {
       checkSelectedFilters("Hand Hygiene", "Employee Name (A-Z)")
       finalizeFilters()
     }
-    reportListActivity {
+    reportListFragment {
       checkFiltersLoaded("Hand Hygiene", "Employee Name (A-Z)")
       checkListCount(2) // Should only get two hand hygiene related reports
       val handHygieneReports = arrayOf(Triple("Hand Hygiene", "John Smith", "May 18"),
@@ -153,9 +153,9 @@ class ActivityReportListTest: RoboTest() {
       checkListOrder(*handHygieneReports) // Should be in alpha order
     }
   }
-  @Test fun removeFilterAndReprocessList() {
-    reportListActivity { startSelectingSortAndFilters() }
-    sortFilterActivity {
+  @Test fun remove_Filter_And_Reprocess_List() {
+    reportListFragment { startSelectingSortAndFilters() }
+    sortFilterFragment {
       checkLoaded()
 
       openFilterGroupLabeled("Health Practice Type")
@@ -165,7 +165,7 @@ class ActivityReportListTest: RoboTest() {
 
       finalizeFilters()
     }
-    reportListActivity {
+    reportListFragment {
       checkFiltersLoaded("Hand Hygiene")
       checkListCount(2) // Only two reports that are hand hygiene based
       removeSelectedFilterLabeled("Hand Hygiene")

@@ -27,7 +27,7 @@ class ActivityMainRenderProgressTest: RoboTest() {
   @BindValue @JvmField
   var reportRepository: ReportRepository = FakeReportRepository()
 
-  @Test fun viewLoading() { // Probably not a perfect test across devices BUT doesn't slow test suite
+  @Test fun view_Loading() { // Probably not a perfect test across devices BUT doesn't slow test suite
     // Freeze load/flow state to run the Espresso checks since EspressoIdling doesn't check during idle state
     (precautionRepository as FakePrecautionRepository).needDelay = true
     mainActivity {
@@ -36,7 +36,7 @@ class ActivityMainRenderProgressTest: RoboTest() {
     }
   }
 
-  @Test fun viewUnexpectedlyReceivesNoData() { // Should expect a list of data but not getting any! Likely err thrown
+  @Test fun view_Unexpectedly_Receives_No_Data() { // Should expect a list of data but not getting any! Likely err thrown
     // WHEN exception thrown THEN submit emptyList by default AND throw err, updating screen
     val newClosure: () -> Unit =  { throw Exception("Error!") }
     (precautionRepository as FakePrecautionRepository).optionalClosure = newClosure
@@ -45,7 +45,7 @@ class ActivityMainRenderProgressTest: RoboTest() {
       checkProgressBar()
     }
   }
-  @Test fun viewUnexpectedlyHasNetworkIssues() { // Should expect a list of data but not getting any! Likely err thrown
+  @Test fun view_Unexpectedly_Has_Network_Issues() { // Should expect a list of data but not getting any! Likely err thrown
     // WHEN exception thrown THEN submit emptyList by default AND throw err, updating screen
     val newClosure: () -> Unit =  { throw IOException("Error!") }
     (precautionRepository as FakePrecautionRepository).optionalClosure = newClosure
@@ -54,14 +54,14 @@ class ActivityMainRenderProgressTest: RoboTest() {
       checkProgressBar()
     }
   }
-  @Test fun viewReceivesNoData() {
+  @Test fun view_Receives_No_Data() {
     (precautionRepository as FakePrecautionRepository).someList = emptyList()
     mainActivity {
       checkSorryMessage("Weird! Seems we don't have any available precautions to choose from!")
       checkProgressBar()
     }
   }
-  @Test fun viewReceivesSomeData() {
+  @Test fun view_Receives_Some_Data() {
     val precaution1 = Precaution(null, "Standard", arrayListOf(HealthPractice(null, "Hand Hygiene", null)))
     val precaution2 = Precaution(null, "Isolation", arrayListOf(HealthPractice(null, "Foobar", null)))
     (precautionRepository as FakePrecautionRepository).someList = arrayListOf(precaution1, precaution2)

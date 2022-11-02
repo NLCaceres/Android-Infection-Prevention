@@ -20,7 +20,7 @@ import edu.usc.nlcaceres.infectionprevention.util.dpUnits
 class ExpandableFilterAdapter(private val filterSelectedListener: OnFilterSelectedListener) :
   ListAdapter<FilterGroup, ExpandableFilterAdapter.ExpandableFilterViewHolder>(ExpandableFilterDiffCallback()) {
 
-  /* Not private so ActivitySortFilter can grab viewHolder, cast it and notify a change occurred (onSelection)
+  /* Not private so FragmentSortFilter can grab viewHolder, cast it and notify a change occurred (onSelection)
   * Inner class used here to allow access to Adapter members (notifyItemChanged). Note: Inner means ExFilterViewHolder gets
   * a ref to the parent aka the Adapter SO best to think about memory usage */
   inner class ExpandableFilterViewHolder(val viewBinding : ItemExpandableFilterBinding) : RecyclerView.ViewHolder(viewBinding.root) {

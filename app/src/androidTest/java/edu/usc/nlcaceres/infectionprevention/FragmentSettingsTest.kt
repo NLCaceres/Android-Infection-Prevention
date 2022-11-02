@@ -21,7 +21,7 @@ import org.junit.Test
 
 @UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
-class ActivitySettingsTest: RoboTest() {
+class FragmentSettingsTest: RoboTest() {
   @get:Rule(order = 0)
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1)
@@ -33,38 +33,38 @@ class ActivitySettingsTest: RoboTest() {
   var reportRepository: ReportRepository = FakeReportRepository().apply { populateList() }
 
   @Before
-  fun registerIdlingResource() {
+  fun register_Idling_Resource() {
     IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
     mainActivity { goToSettings() }
-    settingsActivity { checkInitLoad() }
+    settingsFragment { checkInitLoad() }
   }
   @After
-  fun unregisterIdlingResource() {
+  fun unregister_Idling_Resource() {
     IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
   }
 
-  @Test fun checkBackNavigation() { // Check nav from all views that can reach Settings view
-    settingsActivity { pressBack() } // 1st back to main, starting from Settings view
+  @Test fun check_Back_Navigation() { // Check nav from all views that can reach Settings view
+    settingsFragment { pressBack() } // 1st back to main, starting from Settings view
     mainActivity { // Back at main, go to reportList
       checkViewLoaded()
       openNavDrawer()
       goToReportList()
     }
-    reportListActivity { // Go to settings and then back to reportList
+    reportListFragment { // Go to settings and then back to reportList
       checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
       goToSettings()
     }
-    settingsActivity { // Now need to make it back to reportList, NOT main like originally
+    settingsFragment { // Now need to make it back to reportList, NOT main like originally
       checkInitLoad()
       pressBack()
     }
-    reportListActivity {
+    reportListFragment {
       checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
     }
   }
 
-  @Test fun checkOneTimeDefinedPrefs() { // Check preferences made by preference.xml BUT defined on signup
-    settingsActivity { // These do NOT launch dialogs
+  @Test fun check_One_Time_Defined_Preferences() { // Check preferences made by preference.xml BUT defined on signup
+    settingsFragment { // These do NOT launch dialogs
       findAndOpenPreference("Username")
       checkDialogNotLoaded("Username")
 
@@ -75,8 +75,8 @@ class ActivitySettingsTest: RoboTest() {
       checkDialogNotLoaded("Employee ID")
     }
   }
-  @Test fun checkCommonlyChangedPrefs() { // Normal users should be able to see these. Defined in xml
-    settingsActivity { // Launch EditTextDialogs, so should check for EditText hint too
+  @Test fun check_Commonly_Changed_Preferences() { // Normal users should be able to see these. Defined in xml
+    settingsFragment { // Launch EditTextDialogs, so should check for EditText hint too
       findAndOpenPreference("Phone Number")
       eraseOldPrefValue()
       checkDialogLoaded("Phone Number", "", "Ex: (123) 456-7890")
@@ -87,8 +87,8 @@ class ActivitySettingsTest: RoboTest() {
       checkDialogLoaded("Password", "", "New password")
     }
   }
-  @Test fun checkAdminPrefs() {
-    settingsActivity {
+  @Test fun check_Admin_Preferences() {
+    settingsFragment {
       findAndOpenPreference("Healthcare Group or Clinic Name")
       checkDialogLoaded("Healthcare Group or Clinic Name", "", "New Name")
       dismissDialog()
@@ -113,8 +113,8 @@ class ActivitySettingsTest: RoboTest() {
   // Also check that values are getting correctly set or formatted
   // Basic Process: 1. findAndOpen to enter new value 2. Check updated summary
   // 3. Open dialog again, enter empty value. 4. Check default summary
-  @Test fun updateNormalPreferences() {
-    settingsActivity {
+  @Test fun update_Normal_Preferences() {
+    settingsFragment {
       findAndOpenPreference("Phone Number") // Step 1
       enterNewPrefValue("123 456 7890")
       tapDialogOkButton()
@@ -134,8 +134,8 @@ class ActivitySettingsTest: RoboTest() {
       findPreference("Password", "Unable to find password")
     }
   }
-  @Test fun updateAdminPreferences() {
-    settingsActivity {
+  @Test fun update_Admin_Preferences() {
+    settingsFragment {
       findAndOpenPreference("Healthcare Group or Clinic Name")
       enterNewPrefValue("Some New Name")
       tapDialogOkButton()
