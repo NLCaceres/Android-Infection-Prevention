@@ -6,7 +6,8 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 // May have to refactor model to accommodate facilityName, UnitNum, and roomNum
-data class Location(@SerializedName("_id") val id : String?, val facilityName : String, val unitNum : String, val roomNum : String) {
+data class Location(@SerializedName("_id") val id : String?, @SerializedName("facilityName") val facilityName : String,
+                    @SerializedName("unitNum") val unitNum : String, @SerializedName("roomNum") val roomNum : String) {
   override fun toString(): String = "$facilityName $unitNum $roomNum"
 }
 

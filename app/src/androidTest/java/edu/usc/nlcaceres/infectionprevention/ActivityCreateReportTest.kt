@@ -6,18 +6,17 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import edu.usc.nlcaceres.infectionprevention.data.*
 import edu.usc.nlcaceres.infectionprevention.helpers.util.tapBackButton
 import edu.usc.nlcaceres.infectionprevention.robots.RoboTest
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
 import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
-import edu.usc.nlcaceres.infectionprevention.data.PrecautionRepository
-import edu.usc.nlcaceres.infectionprevention.data.ReportRepository
-import edu.usc.nlcaceres.infectionprevention.helpers.di.FakePrecautionRepository
-import edu.usc.nlcaceres.infectionprevention.helpers.di.FakeReportRepository
+import edu.usc.nlcaceres.infectionprevention.helpers.di.*
 import org.junit.After
 import org.junit.Test
 import org.junit.Before
 import org.junit.Rule
+import java.time.LocalDate
 
 // @RunWith(AndroidJUnit4.class) // Not needed if set to default in build.gradle
 @UninstallModules(RepositoryModule::class)
@@ -28,10 +27,16 @@ class ActivityCreateReportTest: RoboTest() {
   @get:Rule(order = 1)
   val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
 
-  @BindValue @JvmField // Each test gets its own version of the repo so no variable pollution like the closures
-  var precautionRepository: PrecautionRepository = FakePrecautionRepository().apply { populateList() }
   @BindValue @JvmField
-  var reportRepository: ReportRepository = FakeReportRepository().apply { populateList() }
+  var employeeRepository: EmployeeRepository = FakeEmployeeRepository()
+  @BindValue @JvmField
+  var healthPracticeRepository: HealthPracticeRepository = FakeHealthPracticeRepository()
+  @BindValue @JvmField
+  var locationRepository: LocationRepository = FakeLocationRepository()
+  @BindValue @JvmField
+  var precautionRepository: PrecautionRepository = FakePrecautionRepository()
+  @BindValue @JvmField
+  var reportRepository: ReportRepository = FakeReportRepository()
 
   @Before
   fun navigate_To_Create_Report_Activity() {
@@ -72,7 +77,9 @@ class ActivityCreateReportTest: RoboTest() {
       setTime(15, 24) // 3PM 24 minutes
       pressOkButton() // Goes to dateDialog
       pressCancelButton() // Cancel setting date half
-      checkTimeDateET("3:24 PM") // BUT editText still updated!
+      val localDate = LocalDate.now()
+      val expectedDateTimeString = "3:24 PM ${localDate.monthValue}/${localDate.dayOfMonth}/${localDate.year}"
+      checkTimeDateET(expectedDateTimeString) // BUT editText still updated, using today's date as a default!
     }
   }
   @Test fun select_Time_And_Date() {
@@ -80,7 +87,8 @@ class ActivityCreateReportTest: RoboTest() {
       openTimeDialog()
       setTime(15, 24) // 3PM 24 minutes
       pressOkButton() // Opens dateDialog
-      setDate(2021, 4, 12) // Set it to 2021, MARCH (0 indexed month), 12 (1 index day)
+      setDate(2021, 4, 12) // This sets 2021, APRIL, 12th based on an 1-indexed month & day!
+      // BUT the listener still receives a 0-indexed month so it must compensate for it!
       pressOkButton() // Finalize date
       checkTimeDateET("3:24 PM 4/12/2021") // American date
     }
@@ -90,8 +98,8 @@ class ActivityCreateReportTest: RoboTest() {
   @Test fun select_Employee() {
     createReportActivity {
       openEmployeeSpinner()
-      selectEmployee("Nicholas Caceres")
-      checkSelectedEmployee("Nicholas Caceres")
+      selectEmployee("Melody Rios")
+      checkSelectedEmployee("Melody Rios")
     }
   }
   @Test fun select_Health_Practice() {
@@ -105,13 +113,16 @@ class ActivityCreateReportTest: RoboTest() {
   @Test fun select_Location() {
     createReportActivity {
       openFacilitySpinner()
-      selectFacility("USC")
+      selectFacility("USC 2 123")
       checkSelectedFacility("USC 2 123")
     }
   }
 
   // Finalizing New Report
   @Test fun submit_Without_Date() {
+    // Since our Snackbar helper uses EspressoIdling to wait the 1500 to 2750ms its on screen,
+    // Need to unregister the Idler if we want Espresso to be able to check if its on screen
+    IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
     createReportActivity {
       pressSubmitButton() // Should open dialog since no date selected
       checkAlertDialog()

@@ -29,14 +29,6 @@ fun snakeCaseGson(): Gson = GsonBuilder()
   .registerTypeAdapter(Report::class.java, ReportDeserializer()) // Needs to handle Profession nested in Employee field
   .create() // Catches underscored names e.g. first_name
 
-// Volley
-const val TIMEOUT_MS = 5000
-const val MAX_RETRIES = 3
-const val BACKOFF_MULTIPLIER = 1f // Used by Volley to make progressively longer intervals between retry requests!
-// Volley Cancel Tags
-const val VolleyRequestCancelTag = "CancelTag"
-const val CreateReportFragCancelTag = "$VolleyRequestCancelTag.CreateReportFragmentRequest"
-
 // Intents/Bundles for sending data across activities/fragments
 const val ProjectPkgName = "edu.usc.nlcaceres.infectionprevention"
 const val MainActIntent = "$ProjectPkgName.main"

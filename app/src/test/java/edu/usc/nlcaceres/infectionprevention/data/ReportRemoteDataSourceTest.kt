@@ -20,7 +20,7 @@ class ReportRemoteDataSourceTest {
 
   private lateinit var reportAPI: ReportService.ReportAPI
 
-  @Test fun fetchReportList() = runTest { // Works like runBlocking{} BUT skips delays in any suspend funcs it calls
+  @Test fun `Fetch Report List`() = runTest { // Works like runBlocking{} BUT skips delays in any suspend funcs it calls
     // BUT using runTest won't stub out Dispatchers in those funcs UNLESS we inject new Dispatchers in our tests
     val reportList = arrayListOf(ReportsFactory.buildReport(null, null, null))
     reportAPI = mock() { onBlocking { fetchReportList() } doReturn Response.success(reportList) }
@@ -37,9 +37,63 @@ class ReportRemoteDataSourceTest {
     verify(reportAPI, times(2)).fetchReportList()
   }
 
+  private lateinit var employeeAPI: ReportService.EmployeeAPI
+
+  @Test fun `Fetch Employee List`() = runTest {
+    val employeeList = arrayListOf(ReportsFactory.buildEmployee())
+    employeeAPI = mock() { onBlocking { fetchEmployeeList() } doReturn Response.success(employeeList) }
+
+    val reportRemoteDataSource = EmployeeRemoteDataSource(employeeAPI)
+    val actualResult = reportRemoteDataSource.fetchEmployeeList()
+    assertEquals(Result.success(employeeList), actualResult)
+    verify(employeeAPI, times(1)).fetchEmployeeList()
+
+    whenever(employeeAPI.fetchEmployeeList()).thenReturn(Response.error(403, ResponseBody.create(null, "Problem!")))
+    val errorResult = reportRemoteDataSource.fetchEmployeeList()
+    assertEquals(Result.failure<List<Employee>>(Exception("Problem!"))
+      .exceptionOrNull()!!.message, errorResult.exceptionOrNull()!!.message)
+    verify(employeeAPI, times(2)).fetchEmployeeList()
+  }
+
+  private lateinit var healthPracticeAPI: ReportService.HealthPracticeAPI
+
+  @Test fun `Fetch Health Practice List`() = runTest {
+    val healthPracticeList = arrayListOf(ReportsFactory.buildHealthPractice())
+    healthPracticeAPI = mock() { onBlocking { fetchHealthPracticeList() } doReturn Response.success(healthPracticeList) }
+
+    val healthPracticeRemoteDataSource = HealthPracticeRemoteDataSource(healthPracticeAPI)
+    val actualResult = healthPracticeRemoteDataSource.fetchHealthPracticeList()
+    assertEquals(Result.success(healthPracticeList), actualResult)
+    verify(healthPracticeAPI, times(1)).fetchHealthPracticeList()
+
+    whenever(healthPracticeAPI.fetchHealthPracticeList()).thenReturn(Response.error(403, ResponseBody.create(null, "Problem!")))
+    val errorResult = healthPracticeRemoteDataSource.fetchHealthPracticeList()
+    assertEquals(Result.failure<List<HealthPractice>>(Exception("Problem!"))
+      .exceptionOrNull()!!.message, errorResult.exceptionOrNull()!!.message)
+    verify(healthPracticeAPI, times(2)).fetchHealthPracticeList()
+  }
+
+  private lateinit var locationAPI: ReportService.LocationAPI
+
+  @Test fun `Fetch Location List`() = runTest {
+    val locationList = arrayListOf(ReportsFactory.buildLocation())
+    locationAPI = mock() { onBlocking { fetchLocationList() } doReturn Response.success(locationList) }
+
+    val locationRemoteDataSource = LocationRemoteDataSource(locationAPI)
+    val actualResult = locationRemoteDataSource.fetchLocationList()
+    assertEquals(Result.success(locationList), actualResult)
+    verify(locationAPI, times(1)).fetchLocationList()
+
+    whenever(locationAPI.fetchLocationList()).thenReturn(Response.error(403, ResponseBody.create(null, "Problem!")))
+    val errorResult = locationRemoteDataSource.fetchLocationList()
+    assertEquals(Result.failure<List<Location>>(Exception("Problem!"))
+      .exceptionOrNull()!!.message, errorResult.exceptionOrNull()!!.message)
+    verify(locationAPI, times(2)).fetchLocationList()
+  }
+
   private lateinit var precautionAPI: ReportService.PrecautionAPI
 
-  @Test fun fetchPrecautionList() = runTest {
+  @Test fun `Fetch Precaution List`() = runTest {
     val precautionList = arrayListOf(ReportsFactory.buildPrecaution(PrecautionType.Standard))
     precautionAPI = mock() { onBlocking { fetchPrecautionList() } doReturn Response.success(precautionList) }
 
@@ -56,7 +110,7 @@ class ReportRemoteDataSourceTest {
   }
 
   // Generic Function that handles most responses
-  @Test fun successfulGenericGetResponse() = runTest {
+  @Test fun `Successful Generic Get Response`() = runTest {
     val responseBody = 1
     val actualResult = getResponse { Response.success(responseBody) }
     assertEquals(Result.success(1), actualResult)

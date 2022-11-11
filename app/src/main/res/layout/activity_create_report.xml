@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/headerTV"
                 android:transitionName="reportType"
-                android:text="@string/create_report"
+                android:text="@string/default_create_report_header"
                 android:textSize="22sp"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold"

@@ -38,6 +38,7 @@
     <!-- Create New Report Activity -->
     <string name="create_new_report_label">Create New Report</string>
     <string name="date_edittext_hint">Time &amp; Date</string>
+    <string name="missing_date_hint">Tap the Time &amp; Date text box above to set them up!</string>
 
     <!-- Settings Activity String -->
     <string name="settings_label">Settings</string>
@@ -86,7 +87,7 @@
     
     
     <!-- Creating a report strings -->
-    <string name="create_report">New Hand Hygiene Observation</string>
+    <string name="default_create_report_header">New Observation</string>
     <string name="create_report_date">Date of Observation</string>
     <string name="create_report_employee_prompt">Select an Employee</string>
     <string name="create_report_health_practice_prompt">Select a Health Practice</string>

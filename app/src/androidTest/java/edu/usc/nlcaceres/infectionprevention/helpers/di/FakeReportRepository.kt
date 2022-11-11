@@ -9,11 +9,13 @@ import kotlinx.coroutines.flow.flow
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-class FakeReportRepository : ReportRepository {
+class FakeReportRepository: ReportRepository {
   var someList: List<Report> = emptyList()
 
   var needDelay: Boolean = false
   var optionalClosure: () -> Unit = { } // COULD add suspend keyword without affecting tests BUT seemingly unneeded
+
+  init { populateList() }
 
   override fun fetchReportList(): Flow<List<Report>> {
     return flow { // Can't return inside flow builder
@@ -24,6 +26,8 @@ class FakeReportRepository : ReportRepository {
       optionalClosure.invoke() // ALSO acts more like actual repository
     }
   }
+
+  override fun createReport() { }
 
   fun populateList() { someList = makeList() }
   fun clearList() { someList = emptyList() }

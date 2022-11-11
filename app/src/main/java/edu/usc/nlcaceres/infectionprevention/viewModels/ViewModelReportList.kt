@@ -37,8 +37,8 @@ class ViewModelReportList @Inject constructor(private val reportRepository: Repo
 
   private val _reportState by lazy { loadingReportsFlow.asLiveData() }
   val reportState: LiveData<Pair<Boolean, List<Report>>> = _reportState
-
-  fun refreshReportList() { loadingReportsFlow.launchIn(viewModelScope) }
+  // Below is an example of the ONLY way to restart a flow in a LiveData if it completes successfully or due to Exception
+  fun refreshReportList() { loadingReportsFlow.launchIn(viewModelScope) } // SINCE this'll re-activate the LiveData and emit new values
   fun reportListEmpty() = reportState.value?.second?.isEmpty() ?: true
   fun sortedFilteredList(list: List<Report> = reportState.value?.second ?: emptyList()) =
     sortFilterUseCase.beginSortAndFilter(list, selectedFilters)

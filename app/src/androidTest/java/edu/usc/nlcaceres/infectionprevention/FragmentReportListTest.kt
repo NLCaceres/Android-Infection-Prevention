@@ -6,10 +6,8 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import edu.usc.nlcaceres.infectionprevention.data.PrecautionRepository
-import edu.usc.nlcaceres.infectionprevention.data.ReportRepository
-import edu.usc.nlcaceres.infectionprevention.helpers.di.FakePrecautionRepository
-import edu.usc.nlcaceres.infectionprevention.helpers.di.FakeReportRepository
+import edu.usc.nlcaceres.infectionprevention.data.*
+import edu.usc.nlcaceres.infectionprevention.helpers.di.*
 import edu.usc.nlcaceres.infectionprevention.robots.RoboTest
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
 import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
@@ -26,10 +24,16 @@ class FragmentReportListTest: RoboTest() {
   @get:Rule(order = 1)
   val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
 
-  @BindValue @JvmField // Each test gets its own version of the repo so no variable pollution like the closures
-  var precautionRepository: PrecautionRepository = FakePrecautionRepository().apply { populateList() }
   @BindValue @JvmField
-  var reportRepository: ReportRepository = FakeReportRepository().apply { populateList() }
+  var employeeRepository: EmployeeRepository = FakeEmployeeRepository()
+  @BindValue @JvmField
+  var healthPracticeRepository: HealthPracticeRepository = FakeHealthPracticeRepository()
+  @BindValue @JvmField
+  var locationRepository: LocationRepository = FakeLocationRepository()
+  @BindValue @JvmField
+  var precautionRepository: PrecautionRepository = FakePrecautionRepository()
+  @BindValue @JvmField
+  var reportRepository: ReportRepository = FakeReportRepository()
 
   @Before
   fun register_Idling_Resource() {

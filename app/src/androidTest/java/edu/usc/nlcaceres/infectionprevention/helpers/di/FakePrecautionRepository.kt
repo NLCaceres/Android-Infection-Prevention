@@ -18,6 +18,8 @@ class FakePrecautionRepository: PrecautionRepository {
   var needDelay: Boolean = false
   var optionalClosure: () -> Unit = { } // COULD add suspend keyword without affecting tests BUT seemingly unneeded
 
+  init { populateList() }
+
   override fun fetchPrecautionList(): Flow<List<Precaution>> {
     return flow { // Can't return inside flow builder
       emit(emptyList())

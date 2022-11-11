@@ -5,16 +5,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import edu.usc.nlcaceres.infectionprevention.data.AppReportRepository
-import edu.usc.nlcaceres.infectionprevention.data.ReportRepository
-import edu.usc.nlcaceres.infectionprevention.data.ReportRemoteDataSource
-import edu.usc.nlcaceres.infectionprevention.data.ReportDataSource
-import edu.usc.nlcaceres.infectionprevention.data.AppPrecautionRepository
-import edu.usc.nlcaceres.infectionprevention.data.PrecautionRepository
-import edu.usc.nlcaceres.infectionprevention.data.PrecautionRemoteDataSource
-import edu.usc.nlcaceres.infectionprevention.data.PrecautionDataSource
-import edu.usc.nlcaceres.infectionprevention.data.ReportService.PrecautionAPI
-import edu.usc.nlcaceres.infectionprevention.data.ReportService.ReportAPI
+import edu.usc.nlcaceres.infectionprevention.data.*
+import edu.usc.nlcaceres.infectionprevention.data.ReportService.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import retrofit2.Retrofit
@@ -44,11 +36,24 @@ object AppModule {
         .build()
   }
   @Singleton
+  @Provides // Use above retrofitInstance in this func parameter then let Retrofit create instance of our Report API
+  fun provideReportAPI(retrofit: Retrofit) = retrofit.create(ReportAPI::class.java)
+
+  @Singleton
+  @Provides // Similarly, grab above provided retrofit instance and let it create Employee API from interface
+  fun provideEmployeeAPI(retrofit: Retrofit) = retrofit.create(EmployeeAPI::class.java)
+
+  @Singleton
+  @Provides
+  fun provideHealthPracticeAPI(retrofit: Retrofit) = retrofit.create(HealthPracticeAPI::class.java)
+
+  @Singleton
+  @Provides
+  fun provideLocationAPI(retrofit: Retrofit) = retrofit.create(LocationAPI::class.java)
+
+  @Singleton
   @Provides // Use above retrofitInstance in this func parameter then let Retrofit create instance of our Precaution API
   fun providePrecautionAPI(retrofit: Retrofit) = retrofit.create(PrecautionAPI::class.java)
-  @Singleton
-  @Provides // Similarly, grab above provided retrofit instance and let it create Report API from interface
-  fun provideReportAPI(retrofit: Retrofit) = retrofit.create(ReportAPI::class.java)
 }
 
 @Module
@@ -72,6 +77,21 @@ abstract class DataSourceModule {
   @Singleton
   @RemoteDataSource
   @Binds
+  abstract fun bindEmployeeRemoteDataSource(employeeRemoteDataSource: EmployeeRemoteDataSource): EmployeeDataSource
+
+  @Singleton
+  @RemoteDataSource
+  @Binds
+  abstract fun bindHealthPracticeRemoteDataSource(precautionRemoteDataSource: HealthPracticeRemoteDataSource): HealthPracticeDataSource
+
+  @Singleton
+  @RemoteDataSource
+  @Binds
+  abstract fun bindLocationRemoteDataSource(locationRemoteDataSource: LocationRemoteDataSource): LocationDataSource
+
+  @Singleton
+  @RemoteDataSource
+  @Binds
   abstract fun bindPrecautionRemoteDataSource(precautionRemoteDataSource: PrecautionRemoteDataSource): PrecautionDataSource
 }
 
@@ -84,6 +104,25 @@ object RepositoryModule {
   fun provideReportRepository(@DataSourceModule.RemoteDataSource reportRemoteDataSource: ReportDataSource,
                               ioDispatcher: CoroutineDispatcher): ReportRepository =
     AppReportRepository(reportRemoteDataSource, ioDispatcher)
+
+  @Singleton
+  @Provides
+  fun provideEmployeeRepository(@DataSourceModule.RemoteDataSource employeeRemoteDataSource: EmployeeDataSource,
+                                  ioDispatcher: CoroutineDispatcher): EmployeeRepository =
+    AppEmployeeRepository(employeeRemoteDataSource, ioDispatcher)
+
+  @Singleton
+  @Provides
+  fun provideHealthPracticeRepository(@DataSourceModule.RemoteDataSource healthPracticeRemoteDataSource: HealthPracticeDataSource,
+                                  ioDispatcher: CoroutineDispatcher): HealthPracticeRepository =
+    AppHealthPracticeRepository(healthPracticeRemoteDataSource, ioDispatcher)
+
+  @Singleton
+  @Provides
+  fun provideLocationRepository(@DataSourceModule.RemoteDataSource locationRemoteDataSource: LocationDataSource,
+                                  ioDispatcher: CoroutineDispatcher): LocationRepository =
+    AppLocationRepository(locationRemoteDataSource, ioDispatcher)
+
   @Singleton
   @Provides
   fun providePrecautionRepository(@DataSourceModule.RemoteDataSource precautionRemoteDataSource: PrecautionDataSource,

@@ -48,7 +48,7 @@ class CreateReportRobot: BaseRobot() {
   }
   // Spinners
   fun checkSpinnersLoaded() { // Since adapters must use onData to be sure (not onView)
-    checkSelectedEmployee("Lionel Caceres")
+    checkSelectedEmployee("John Smith")
     checkSelectedHealthPractice("Hand Hygiene")
     checkSelectedFacility("USC")
   }
@@ -115,10 +115,8 @@ class CreateReportRobot: BaseRobot() {
     fun snackbar(): ViewInteraction = onView(withId(com.google.android.material.R.id.snackbar_text))
     fun alertDialog(): ViewInteraction = onView(allOf(withId(R.id.parentPanel),
       hasDescendant(withText(R.string.date_alert_dialog_title))))
-    // R.id.button2 == Cancel, R.id.button1 == OK // isDescendant (within) > withParent (directly within)
+    // -1 = no ID, R.id.button2 == Cancel, R.id.button1 == OK // isDescendant == within vs withParent == directly within
     fun dialogCancelButton(): ViewInteraction = onView(allOf(withParent(withId(-1)), withText("Cancel")))
-//    fun dialogCancelButton(): ViewInteraction = onView(allOf(isDescendantOfA(withId(R.id.buttonPanel)),
-//      withText("Cancel"))) // Alternatively for layout parents with no ID, -1 works!
     fun dialogOkButton(): ViewInteraction = onView(allOf(withParent(withId(-1)),
       withText(R.string.alert_dialog_ok)))
     fun submitButton(): ViewInteraction = onView(withId(R.id.createReportButton))
