@@ -73,7 +73,7 @@ class FragmentEditPreferenceDialog: DialogFragment() {
   }
 
   private fun setUpDimensions(window: Window) {
-    val windowSize = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+    val windowSize = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) { // Q == SDK 29 Android 10
       val windowMetrics = window.windowManager.currentWindowMetrics
       // Gets all insets (system bars, nav bars, display cutouts)
       val insets = windowMetrics.windowInsets.getInsetsIgnoringVisibility(
