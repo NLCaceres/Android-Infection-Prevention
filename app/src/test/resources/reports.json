@@ -1,0 +1,142 @@
+[
+  {
+    "_id": "1",
+    "employee": {
+      "_id": "1",
+      "first_name": "John",
+      "surname": "Smith",
+      "profession": "",
+      "__v": 0
+    },
+    "healthPractice": {
+      "_id": "1",
+      "name": "Hand Hygiene",
+      "__v": 0,
+      "precautionType": [
+        ""
+      ]
+    },
+    "location": {
+      "_id": "1",
+      "facilityName": "USC",
+      "unitNum": "2",
+      "roomNum": "123",
+      "__v": 0
+    },
+    "date_reported": "2021-04-12T06:36:05.017Z",
+    "__v": 0,
+    "url": "/records/report/1"
+  },
+  {
+    "_id": "2",
+    "employee": {
+      "_id": "2",
+      "first_name": "Jill",
+      "surname": "Chambers",
+      "profession": "",
+      "__v": 0
+    },
+    "healthPractice": {
+      "_id": "2",
+      "name": "Contact",
+      "__v": 0,
+      "precautionType": [
+        ""
+      ]
+    },
+    "location": {
+      "_id": "2",
+      "facilityName": "USC",
+      "unitNum": "4",
+      "roomNum": "202",
+      "__v": 0
+    },
+    "date_reported": "2021-04-13T06:36:05.017Z",
+    "__v": 0,
+    "url": "/records/report/2"
+  },
+  {
+    "_id": "3",
+    "employee": {
+      "_id": "3",
+      "first_name": "Victor",
+      "surname": "Richards",
+      "profession": "",
+      "__v": 0
+    },
+    "healthPractice": {
+      "_id": "3",
+      "name": "Droplet",
+      "__v": 0,
+      "precautionType": [
+        ""
+      ]
+    },
+    "location": {
+      "_id": "3",
+      "facilityName": "HSC",
+      "unitNum": "3",
+      "roomNum": "213",
+      "__v": 0
+    },
+    "date_reported": "2021-04-17T06:36:05.017Z",
+    "__v": 0,
+    "url": "/records/report/3"
+  },
+  {
+    "_id": "4",
+    "employee": {
+      "_id": "4",
+      "first_name": "Brian",
+      "surname": "Ishida",
+      "profession": "",
+      "__v": 0
+    },
+    "healthPractice": {
+      "_id": "4",
+      "name": "Hand Hygiene",
+      "__v": 0,
+      "precautionType": [
+        ""
+      ]
+    },
+    "location": {
+      "_id": "4",
+      "facilityName": "HSC",
+      "unitNum": "3",
+      "roomNum": "321",
+      "__v": 0
+    },
+    "date_reported": "2021-04-19T06:36:05.017Z",
+    "__v": 0,
+    "url": "/records/report/4"
+  },
+  {
+    "_id": "5",
+    "employee": {
+      "_id": "5",
+      "first_name": "Melody",
+      "surname": "Rios",
+      "profession": "",
+      "__v": 0
+    },
+    "healthPractice": {
+      "_id": "5",
+      "name": "PPE",
+      "__v": 0,
+      "precautionType": [
+        ""
+      ]
+    },
+    "location": {
+      "_id": "5",
+      "facilityName": "HSC",
+      "unitNum": "5",
+      "roomNum": "121",
+      "__v": 0
+    },
+    "date_reported": "2021-04-22T06:36:05.017Z",
+    "__v": 0,
+    "url": "/records/report/5"
+  }
+]
