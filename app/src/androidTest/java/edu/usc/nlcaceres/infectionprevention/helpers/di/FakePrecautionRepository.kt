@@ -1,8 +1,8 @@
 package edu.usc.nlcaceres.infectionprevention.helpers.di
 
-import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 import edu.usc.nlcaceres.infectionprevention.data.Precaution
 import edu.usc.nlcaceres.infectionprevention.data.PrecautionRepository
+import edu.usc.nlcaceres.infectionprevention.helpers.di.FakeHealthPracticeRepository.HealthPracticeFactory
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -35,11 +35,14 @@ class FakePrecautionRepository: PrecautionRepository {
 
   companion object Factory {
     fun makeList(): List<Precaution> {
-      val precaution1 = Precaution(null, "Standard",
-        arrayListOf(HealthPractice(null, "Hand Hygiene", null), HealthPractice(null, "PPE", null)))
-      val precaution2 = Precaution(null, "Isolation",
-        arrayListOf(HealthPractice(null, "Contact", null), HealthPractice(null, "Droplet", null),
-          HealthPractice(null, "Airborne", null), HealthPractice(null, "Contact Enteric", null)))
+      val healthPracticeList = HealthPracticeFactory.makeList()
+
+      val standardPractices = healthPracticeList.slice(0 until 2)
+      val precaution1 = Precaution(null, "Standard", standardPractices)
+
+      val isolationPractices = healthPracticeList.slice(2 until healthPracticeList.size)
+      val precaution2 = Precaution(null, "Isolation", isolationPractices)
+
       return arrayListOf(precaution1, precaution2)
     }
   }

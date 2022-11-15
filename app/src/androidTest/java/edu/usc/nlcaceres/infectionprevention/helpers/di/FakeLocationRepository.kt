@@ -26,7 +26,7 @@ class FakeLocationRepository: LocationRepository {
   fun populateList() { someList = makeList() }
   fun clearList() { someList = emptyList() }
 
-  companion object Factory {
+  companion object LocationFactory {
     fun makeList(): List<Location> {
       val id: String? = null // Simple default null ID
       val usc = "USC"; val hsc = "HSC" // Facility Names

@@ -28,7 +28,7 @@ class FakeHealthPracticeRepository: HealthPracticeRepository {
   fun populateList() { someList = makeList() }
   fun clearList() { someList = emptyList() }
 
-  companion object Factory {
+  companion object HealthPracticeFactory {
     fun makeList(): List<HealthPractice> {
       return arrayListOf(HealthPractice(null, "Hand Hygiene", Standard), HealthPractice(null, "PPE", Standard),
         HealthPractice(null, "Airborne", Isolation), HealthPractice(null, "Droplet", Isolation),

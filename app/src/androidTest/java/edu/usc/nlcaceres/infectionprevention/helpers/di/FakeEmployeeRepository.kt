@@ -26,7 +26,7 @@ class FakeEmployeeRepository: EmployeeRepository {
   fun populateList() { someList = makeList() }
   fun clearList() { someList = emptyList() }
 
-  companion object Factory {
+  companion object EmployeeFactory {
     fun makeList(): List<Employee> {
       return arrayListOf(Employee(null, "John", "Smith", null),
         Employee(null, "Jill", "Chambers", null),

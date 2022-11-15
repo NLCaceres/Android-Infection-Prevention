@@ -1,8 +1,9 @@
 package edu.usc.nlcaceres.infectionprevention.helpers.di
 
 import edu.usc.nlcaceres.infectionprevention.data.*
-import edu.usc.nlcaceres.infectionprevention.data.PrecautionType.Standard
-import edu.usc.nlcaceres.infectionprevention.data.PrecautionType.Isolation
+import edu.usc.nlcaceres.infectionprevention.helpers.di.FakeEmployeeRepository.EmployeeFactory
+import edu.usc.nlcaceres.infectionprevention.helpers.di.FakeHealthPracticeRepository.HealthPracticeFactory
+import edu.usc.nlcaceres.infectionprevention.helpers.di.FakeLocationRepository.LocationFactory
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -34,28 +35,25 @@ class FakeReportRepository: ReportRepository {
 
   companion object Factory {
     fun makeList(): List<Report> {
+      val employeeList = EmployeeFactory.makeList()
+
+      // Hand Hygiene, Contact, Droplet, Hand Hygiene, PPE
+      val healthPracticeList = with(HealthPracticeFactory.makeList()) { listOf(get(0), get(4), get(3), get(0), get(1)) }
+
+      // USC Unit 4 Room: 202 --> HSC Unit 3 Room: 321 --> HSC Unit 3 Room: 213 --> HSC Unit 5 Room: 121 --> USC Unit 2 Room: 123
+      val locationList = with(LocationFactory.makeList()) { listOf(get(1), get(3), get(2), get(4), get(0)) }
+
+      // May 18 11:36PM PST, May 19..., May 25..., May 13..., April 21... (All same time PM PST)
       val timestamp = Instant.parse("2019-05-19T06:36:05.018Z")
-      val report1 = Report(null, Employee(null, "John", "Smith", null),
-        HealthPractice(null, "Hand Hygiene", Standard),
-        Location(null, "USC", "4", "202"), timestamp
-      )
-      val report2 = Report(null, Employee(null, "Jill", "Chambers", null),
-        HealthPractice(null, "Contact", Isolation),
-        Location(null, "HSC", "3", "321"), timestamp.plus(1, ChronoUnit.DAYS)
-      )
-      val report3 = Report(null, Employee(null, "Victor", "Richards", null),
-        HealthPractice(null, "Droplet", Isolation),
-        Location(null, "HSC", "3", "213"), timestamp.plus(7, ChronoUnit.DAYS)
-      )
-      val report4 = Report(null, Employee(null, "Melody", "Rios", null),
-        HealthPractice(null, "Hand Hygiene", Standard),
-        Location(null, "HSC", "5", "121"), timestamp.minus(5, ChronoUnit.DAYS)
-      )
-      val report5 = Report(null, Employee(null, "Brian", "Ishida", null),
-        HealthPractice(null, "PPE", Standard),
-        Location(null, "USC", "2", "123"), timestamp.minus(27, ChronoUnit.DAYS)
-      )
-      return arrayListOf(report1, report2, report3, report4, report5)
+      val timestampList = listOf(timestamp, timestamp.plus(1, ChronoUnit.DAYS),
+        timestamp.plus(7, ChronoUnit.DAYS), timestamp.minus(5, ChronoUnit.DAYS),
+        timestamp.minus(27, ChronoUnit.DAYS))
+
+      val finalList = arrayListOf<Report>()
+      for (i in 0..4) {
+        finalList.add(Report(null, employeeList[i], healthPracticeList[i], locationList[i], timestampList[i]))
+      }
+      return finalList
     }
   }
 }
