@@ -17,7 +17,7 @@ class AnimationsTest {
   /* Unfortunately testing animations is limited to starting values and ending values since Robolectric is fairly limited
   * UI Tests can handle testing animations a bit better but are also still fairly limited and more black-boxy */
   @Test
-  fun testFlashingAnimation() {
+  fun `Check Flashing Animation Changes Visibility and Alpha`() {
     val mockContext = getApplicationContext<InfectionProtectionApplication>()
     val imageView = ImageView(mockContext)
     assertEquals(View.VISIBLE, imageView.visibility) // Robolectric starts views as VISIBLE & 1.0f alpha

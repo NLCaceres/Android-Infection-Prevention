@@ -8,7 +8,7 @@ import org.junit.Assert.assertTrue
 
 class AdapterDiffCallbackTest {
   // Only test FilterCallback since used by two different classes (only non-private one)
-  @Test fun checkDiffCallbacks() {
+  @Test fun `Check Diff Callbacks Differentiate Objects Properly`() {
     val filterDiffCallback = FilterDiffCallback()
     val oldFilter = FiltersFactory.buildFilterItem()
     assertFalse(filterDiffCallback.areItemsTheSame(oldFilter, FiltersFactory.buildFilterItem()))

@@ -27,7 +27,7 @@ import edu.usc.nlcaceres.infectionprevention.helpers.util.withDrawable
 @RunWith(AndroidJUnit4::class) // AndroidJUnit4Runner works thanks to Robolectric in UnitTests (Eliminating need to use RobolectricTestRunner)
 class ViewHelperTest {
 
-  @Test fun checkDarkMode() {
+  @Test fun `Check Dark Mode Updates Correctly`() {
     val app = getApplicationContext<InfectionProtectionApplication>()
     // Currently app starts as not in dark mode
     val notDarkMode = IsDarkMode(app)
@@ -40,7 +40,7 @@ class ViewHelperTest {
     assertEquals(true, isDarkMode) // So now that we've changed it, we get darkMode == true!
   }
 
-  @Test fun progressIndicatorVisibility() {
+  @Test fun `Check Progress Indicator Visibility Updates Correctly`() {
     // val mockContext: Context = RuntimeEnvironment.getApplication() // Easier BUT semi-deprecated SINCE
     val mockContext = getApplicationContext<InfectionProtectionApplication>() // AndroidX prefers to infer Context via activity, application, etc.
     val progressBar = ProgressBar(mockContext)
@@ -50,7 +50,7 @@ class ViewHelperTest {
     assertEquals(View.INVISIBLE, progressBar.visibility)
   }
 
-  @Test fun setupUpIndicator() {
+  @Test fun `Check Up Indicator Updated Correctly`() {
     launch(ActivityMain::class.java).use {
       onView(withId(R.id.home_toolbar)).check(matches(isDisplayed()))
       onView(withId(R.id.home_toolbar)).check(matches(withChild(withId(R.id.toolbar_logo))))

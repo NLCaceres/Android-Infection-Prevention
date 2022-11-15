@@ -16,7 +16,7 @@ import java.util.TimeZone
 class SortFilterReportsUseCaseTest {
   private lateinit var sortFilterListUseCase: SortFilterReportsUseCase
   @Before
-  fun setupUseCase() {
+  fun `Setup Use Case`() {
     sortFilterListUseCase = SortFilterReportsUseCase()
   }
   // Sort Reports Function
@@ -253,7 +253,7 @@ class SortFilterReportsUseCaseTest {
   }
 
   // Main driver function. Rest all tested so just verify they are called as expected!
-  @Test fun beginSortAndFilterTest() {
+  @Test fun `Check SortAndFilter Func Calls Expected Helper Funcs`() {
     sortFilterListUseCase = mock() { on { beginSortAndFilter(any(), any()) }.thenCallRealMethod()  }
     val reportList = listOf(buildReport(), buildReport(), buildReport())
     val filterList = arrayListOf(FilterItem("SomeSorter", false, "Sort By"))

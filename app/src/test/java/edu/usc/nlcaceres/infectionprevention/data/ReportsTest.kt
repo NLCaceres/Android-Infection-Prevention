@@ -1,6 +1,5 @@
 package edu.usc.nlcaceres.infectionprevention.data
 
-import com.google.gson.Gson
 import edu.usc.nlcaceres.infectionprevention.helpers.data.ReportsFactory.Factory.buildEmployee
 import edu.usc.nlcaceres.infectionprevention.helpers.data.ReportsFactory.Factory.buildReport
 import edu.usc.nlcaceres.infectionprevention.helpers.data.ReportsFactory.Factory.buildHealthPractice
@@ -9,12 +8,10 @@ import org.junit.Test
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assert.assertFalse
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.StringContains // Hamcrest ships with jUnit 4.4 by default!
 import java.time.Instant
 
 class ReportsTest {
-  @Test fun toStringOutput() {
+  @Test fun `Check Models' String Overriden Output`() {
     val fooLocation = Location(null, "FacilityName", "UnitNum", "RoomNum")
     assertEquals("FacilityName UnitNum RoomNum", fooLocation.toString())
     val fooProfession = Profession(null, "ObservedOccupation", "ServiceDiscipline")
@@ -25,12 +22,7 @@ class ReportsTest {
     assertEquals("HealthPractice", fooHealthPractice.toString())
   }
 
-  @Test fun serializationString() {
-    val fooLocation = Location("123", "FacilityName", "UnitNum", "RoomNum")
-    assertThat(Gson().toJson(fooLocation), StringContains("_id"))
-  }
-
-  @Test fun virtualFields() {
+  @Test fun `Check Virtual Fields of Each Model`() {
     // Employee names
     val fooEmployee = Employee("123", "FirstName", "Surname", Profession(null,
       "ObservedOccupation", "ServiceDiscipline"))
@@ -45,7 +37,7 @@ class ReportsTest {
     assertEquals(expectedFormattedDate, formattedDateString)
   }
 
-  @Test fun precautionClassOverrides() {
+  @Test fun `Check Overriden Equals Method of Precaution Class`() {
     val precaution1 = Precaution("123", "FooPrecaution", null)
     val precaution2 = Precaution("234", "BarPrecaution", null)
     assertFalse(precaution1 == precaution2)

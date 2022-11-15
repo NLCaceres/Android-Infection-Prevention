@@ -157,7 +157,7 @@ class ViewModelReportListTest {
     viewModel.reportState.removeObserver(reportObserver)
   }
 
-  @Test fun observeLoadingState() {
+  @Test fun `Observe Loading State`() {
     fakeRepository = mock()
     val viewModel = ViewModelReportList(fakeRepository)
 
@@ -174,7 +174,7 @@ class ViewModelReportListTest {
     inOrderCheck.verify(loadingObserver, times(1)).onChanged(true)
     inOrderCheck.verify(loadingObserver, times(1)).onChanged(false)
   }
-  @Test fun observeToastMessage() {
+  @Test fun `Observe Toast Message`() {
     // If we don't mock the returned flow, the combine func throws causing the flow's catch block to emit the generic toast message
     fakeRepository = mock() { on { fetchReportList() } doReturn flow { emptyList<Report>() } }
     val viewModel = ViewModelReportList(fakeRepository)
@@ -188,7 +188,7 @@ class ViewModelReportListTest {
     verify(toastObserver, times(1)).onChanged(any()) // Only called on its initial observeForever
     verify(toastObserver, times(1)).onChanged("")
   }
-  @Test fun observeBasicExceptionToastMessage() {
+  @Test fun `Observe Toast Message from Basic Exception Thrown`() {
     fakeRepository = mock() { on { fetchReportList() } doReturn flow { throw Exception("Problem") } }
     val viewModel = ViewModelReportList(fakeRepository)
 
@@ -204,7 +204,7 @@ class ViewModelReportListTest {
     inOrderCheck.verify(toastObserver, times(1)).onChanged("")
     inOrderCheck.verify(toastObserver, times(1)).onChanged("Sorry! Seems we're having an issue on our end!")
   }
-  @Test fun observeIOExceptionToastMessage() {
+  @Test fun `Observe Toast Message from IO Exception Thrown`() {
     fakeRepository = mock() { on { fetchReportList() } doReturn flow { throw IOException("Problem") } }
     val viewModel = ViewModelReportList(fakeRepository)
 
