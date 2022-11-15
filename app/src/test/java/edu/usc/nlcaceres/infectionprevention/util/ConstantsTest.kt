@@ -4,28 +4,20 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ConstantsTest {
-  @Test fun endpointStrings() { // May drop due to Retrofit usage (along with Volley constants)
-    assertEquals("https://infection-prevention-express.herokuapp.com/api/", baseURL)
-    assertEquals("http://10.0.2.2:3000/api/", baseDevURL)
+  @Test fun `Check Endpoint Strings Correct`() {
+    assertEquals("https://infection-prevention-express.herokuapp.com/api/", BaseURL)
+    assertEquals("http://10.0.2.2:3000/api/", BaseDevURL)
 
-    assertEquals("https://infection-prevention-express.herokuapp.com/api/precautions", precautionsURL)
-    assertEquals("https://infection-prevention-express.herokuapp.com/api/healthpractices", practicesURL)
-    assertEquals("https://infection-prevention-express.herokuapp.com/api/locations", locationsURL)
-    assertEquals("https://infection-prevention-express.herokuapp.com/api/professions", professionsURL)
-    assertEquals("https://infection-prevention-express.herokuapp.com/api/employees", employeesURL)
-    assertEquals("https://infection-prevention-express.herokuapp.com/api/reports", reportsURL)
-    assertEquals("https://infection-prevention-express.herokuapp.com/api/reports/create", reportCreationURL)
-
-    assertEquals("http://10.0.2.2:3000/api/precautions", precautionsDevURL)
-    assertEquals("http://10.0.2.2:3000/api/healthpractices", practicesDevURL)
-    assertEquals("http://10.0.2.2:3000/api/locations", locationsDevURL)
-    assertEquals("http://10.0.2.2:3000/api/professions", professionsDevURL)
-    assertEquals("http://10.0.2.2:3000/api/employees", employeesDevURL)
-    assertEquals("http://10.0.2.2:3000/api/reports", reportsDevURL)
-    assertEquals("http://10.0.2.2:3000/api/reports/create", reportCreationDevURL)
+    assertEquals("precautions", PrecautionsPath)
+    assertEquals("healthpractices", HealthPracticesPath)
+    assertEquals("locations", LocationsPath)
+    assertEquals("professions", ProfessionsPath)
+    assertEquals("employees", EmployeesPath)
+    assertEquals("reports", ReportsPath)
+    assertEquals("reports/create", ReportCreationPath)
   }
 
-  @Test fun intentStrings() { // Check tricky strings with concatenation
+  @Test fun `Check Intent Strings Correctly Templated`() { // Check tricky strings with concatenation
     assertEquals("edu.usc.nlcaceres.infectionprevention", ProjectPkgName)
 
     assertEquals("edu.usc.nlcaceres.infectionprevention.main", MainActIntent)
@@ -40,7 +32,7 @@ class ConstantsTest {
     assertEquals("edu.usc.nlcaceres.infectionprevention.sortFilter.filters", SelectedFilterParcel)
   }
 
-  @Test fun fragmentResultKeys() {
+  @Test fun `Check Fragment Result Keys and Values Correctly Templated`() {
     assertEquals("edu.usc.nlcaceres.infectionprevention.action_view", ActionViewManager)
     assertEquals("edu.usc.nlcaceres.infectionprevention.action_view.closer", ActionViewBundleCloser)
 

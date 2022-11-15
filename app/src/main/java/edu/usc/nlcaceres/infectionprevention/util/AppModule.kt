@@ -31,7 +31,7 @@ object AppModule {
   @Singleton
   @Provides
   fun provideBaseRetrofitInstance(): Retrofit {
-    return Retrofit.Builder().baseUrl(baseURL) // BaseUrl must end in '/'
+    return Retrofit.Builder().baseUrl(BaseURL) // BaseUrl must end in '/'
         .addConverterFactory(GsonConverterFactory.create(snakeCaseGson())) // Custom Gson factory based on a GsonBuilder instance
         .build()
   }

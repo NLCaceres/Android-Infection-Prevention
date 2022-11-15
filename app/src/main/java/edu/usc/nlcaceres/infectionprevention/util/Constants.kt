@@ -6,22 +6,15 @@ import com.google.gson.FieldNamingPolicy
 import edu.usc.nlcaceres.infectionprevention.data.Report
 
 // Backend Endpoints - Base URLS need to end with '/' for Retrofit!
-const val baseURL = "https://infection-prevention-express.herokuapp.com/api/"
-const val baseDevURL = "http://10.0.2.2:3000/api/" // LocalHost
-const val precautionsURL = "${baseURL}precautions"
-const val precautionsDevURL = "${baseDevURL}precautions"
-const val practicesURL = "${baseURL}healthpractices"
-const val practicesDevURL = "${baseDevURL}healthpractices"
-const val locationsURL = "${baseURL}locations"
-const val locationsDevURL = "${baseDevURL}locations"
-const val professionsURL = "${baseURL}professions"
-const val professionsDevURL = "${baseDevURL}professions"
-const val employeesURL = "${baseURL}employees"
-const val employeesDevURL = "${baseDevURL}employees"
-const val reportsURL = "${baseURL}reports"
-const val reportsDevURL = "${baseDevURL}reports"
-const val reportCreationURL = "${baseURL}reports/create"
-const val reportCreationDevURL = "${baseDevURL}reports/create"
+const val BaseURL = "https://infection-prevention-express.herokuapp.com/api/"
+const val BaseDevURL = "http://10.0.2.2:3000/api/" // LocalHost if connecting to locally spun up dev server
+const val ReportsPath = "reports"
+const val ReportCreationPath = "reports/create"
+const val EmployeesPath = "employees"
+const val HealthPracticesPath = "healthpractices"
+const val LocationsPath = "locations"
+const val PrecautionsPath = "precautions"
+const val ProfessionsPath = "professions"
 
 // Gson Helper
 fun snakeCaseGson(): Gson = GsonBuilder()
