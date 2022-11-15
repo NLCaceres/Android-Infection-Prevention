@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention.data
 
+import edu.usc.nlcaceres.infectionprevention.helpers.data.ReportsFactory.Factory.buildPrecaution
 import edu.usc.nlcaceres.infectionprevention.helpers.util.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
@@ -24,16 +25,14 @@ class PrecautionRepositoryTest {
   private lateinit var remoteDataSource: PrecautionDataSource
   @Mock lateinit var precautionListCollector: FlowCollector<List<Precaution>>
 
-  @Test fun fetchSuccessfulPrecautionList() = runTest {
-    val precautionList = arrayListOf(Precaution(null, "Foobar", null))
+  @Test fun `Fetch Successful Precaution List`() = runTest {
+    val precautionList = arrayListOf(buildPrecaution())
     val successfulResult = Result.success(precautionList)
     remoteDataSource = mock() { onBlocking { fetchPrecautionList() } doReturn successfulResult }
 
-    // Following uses UnconfinedTestDispatcher from the mainDispatcherRule via its testDispatcher prop
-    // BUT could pass in StandardTestDispatcher so our tests don't eager launch coroutines
-    val reportRepository = AppPrecautionRepository(remoteDataSource, mainDispatcherRule.testDispatcher)
+    val precautionRepository = AppPrecautionRepository(remoteDataSource, mainDispatcherRule.testDispatcher)
 
-    reportRepository.fetchPrecautionList().collect(precautionListCollector)
+    precautionRepository.fetchPrecautionList().collect(precautionListCollector)
 
     verifyBlocking(precautionListCollector, times(2)) { emit(any()) }
     verifyBlocking(precautionListCollector, times(1)) { emit(emptyList()) } // Initial empty list emitted
@@ -41,7 +40,7 @@ class PrecautionRepositoryTest {
     verifyBlocking(remoteDataSource, times(1)) { fetchPrecautionList() }
   }
 
-  @Test fun fetchFailurePrecautionList() = runTest {
+  @Test fun `Fetch Failure Precaution List`() = runTest {
     val failureResult: Result<List<Precaution>> = Result.failure(Exception("Problem"))
     remoteDataSource = mock() { onBlocking { fetchPrecautionList() } doReturn failureResult }
 

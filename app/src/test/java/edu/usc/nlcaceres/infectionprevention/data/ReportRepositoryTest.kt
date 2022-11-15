@@ -1,6 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention.data
 
-import edu.usc.nlcaceres.infectionprevention.helpers.data.ReportsFactory
+import edu.usc.nlcaceres.infectionprevention.helpers.data.ReportsFactory.Factory.buildReport
 import edu.usc.nlcaceres.infectionprevention.helpers.util.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
@@ -25,8 +25,8 @@ class ReportRepositoryTest {
   private lateinit var remoteDataSource: ReportDataSource
   @Mock lateinit var reportListCollector: FlowCollector<List<Report>>
 
-  @Test fun fetchSuccessfulReportList() = runTest {
-    val reportList = arrayListOf(ReportsFactory.buildReport(null, null, null))
+  @Test fun `Fetch Successful Report List`() = runTest {
+    val reportList = arrayListOf(buildReport())
     val successfulResult = Result.success(reportList)
     remoteDataSource = mock() { onBlocking { fetchReportList() } doReturn successfulResult }
 
@@ -40,7 +40,7 @@ class ReportRepositoryTest {
     verifyBlocking(remoteDataSource, times(1)) { fetchReportList() }
   }
 
-  @Test fun fetchFailureReportList() = runTest {
+  @Test fun `Fetch Failure Report List`() = runTest {
     val failureResult: Result<List<Report>> = Result.failure(Exception("Problem"))
     remoteDataSource = mock() { onBlocking { fetchReportList() } doReturn failureResult }
 
