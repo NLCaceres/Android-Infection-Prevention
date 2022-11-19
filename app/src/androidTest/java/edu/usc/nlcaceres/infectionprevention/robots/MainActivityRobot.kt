@@ -40,11 +40,11 @@ class MainActivityRobot : BaseRobot() {
   }
   fun goCreateStandardReportLabeled(text: String) {
     goToStandardItem(text) // Make sure its visible!
-    tapStandardItem(text) // then tap, triggering change to ActivityCreateReport
+    tapStandardItem(text) // then tap, triggering change to FragmentCreateReport
   }
   fun goCreateIsoReportLabeled(text: String) {
     goToIsolationItem(text) // Make sure its visible
-    tapIsolationItem(text) // then tap, triggering change to ActivityCreateReport
+    tapIsolationItem(text) // then tap, triggering change to FragmentCreateReport
   }
 
   // Toolbar Actions (menu button, settings button available)

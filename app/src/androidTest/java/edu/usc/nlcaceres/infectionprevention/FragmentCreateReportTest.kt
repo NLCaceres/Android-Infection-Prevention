@@ -21,7 +21,7 @@ import java.time.LocalDate
 // @RunWith(AndroidJUnit4.class) // Not needed if set to default in build.gradle
 @UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
-class ActivityCreateReportTest: RoboTest() {
+class FragmentCreateReportTest: RoboTest() {
   @get:Rule(order = 0) // Best to start from MainActivity for a normal user Task experience
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1)

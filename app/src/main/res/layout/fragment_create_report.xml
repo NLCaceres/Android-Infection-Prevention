@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include android:id="@+id/progress_indicator"
+        layout="@layout/app_progress_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/headerTV"
+        android:text="@string/default_create_report_header"
+        android:textSize="22sp"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/dateTV"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/startGuideline"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.075" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dateTV"
+        android:text="@string/create_report_date"
+        android:textSize="20sp"
+        android:textColor="@color/darkMode"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/headerTV"
+        app:layout_constraintBottom_toTopOf="@+id/dateEditText"
+        app:layout_constraintStart_toStartOf="@+id/startGuideline" />
+    <EditText
+        android:id="@+id/dateEditText"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
+        android:textColor="@color/colorPrimary"
+        android:inputType="datetime"
+        android:hint="@string/date_edittext_hint"
+        android:importantForAutofill="no"
+        android:textColorHint="@color/textHintColor"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:layout_marginStart="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/dateTV"
+        app:layout_constraintStart_toStartOf="@+id/startGuideline" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/employeeTV"
+        android:text="@string/create_report_employee_spinner_label"
+        android:textSize="20sp"
+        android:textColor="@color/darkMode"
+        android:textStyle="bold"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@+id/dateEditText"
+        app:layout_constraintStart_toStartOf="@+id/startGuideline" />
+    <Spinner
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:paddingEnd="50dp"
+        android:id="@+id/employeeSpinner"
+        android:background="@drawable/custom_spinner"
+        android:contentDescription="@string/create_report_employee_spinner_description"
+        android:dropDownWidth="297dp"
+        android:dropDownVerticalOffset="45dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/employeeTV"
+        app:layout_constraintStart_toStartOf="@+id/startGuideline"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/healthPracticeTV"
+        android:text="@string/create_report_health_practice_spinner_label"
+        android:textSize="20sp"
+        android:textColor="@color/darkMode"
+        android:textStyle="bold"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@+id/employeeSpinner"
+        app:layout_constraintBottom_toTopOf="@+id/healthPracticeSpinner"
+        app:layout_constraintStart_toStartOf="@+id/startGuideline" />
+    <Spinner
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:paddingEnd="50dp"
+        android:id="@+id/healthPracticeSpinner"
+        android:background="@drawable/custom_spinner"
+        android:contentDescription="@string/create_report_health_practice_spinner_description"
+        android:dropDownWidth="297dp"
+        android:dropDownVerticalOffset="45dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/healthPracticeTV"
+        app:layout_constraintBottom_toTopOf="@+id/facilityTV"
+        app:layout_constraintStart_toStartOf="@+id/startGuideline"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/facilityTV"
+        android:text="@string/create_report_facility_location_spinner_label"
+        android:textSize="20sp"
+        android:textColor="@color/darkMode"
+        android:textStyle="bold"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@+id/healthPracticeSpinner"
+        app:layout_constraintBottom_toTopOf="@+id/facilitySpinner"
+        app:layout_constraintStart_toStartOf="@+id/startGuideline" />
+    <Spinner
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:paddingEnd="50dp"
+        android:id="@+id/facilitySpinner"
+        android:background="@drawable/custom_spinner"
+        android:contentDescription="@string/create_report_facility_location_spinner_description"
+        android:dropDownWidth="297dp"
+        android:dropDownVerticalOffset="45dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/facilityTV"
+        app:layout_constraintStart_toStartOf="@+id/startGuideline"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:id="@+id/see_assignment_button"
+        android:text="@string/create_report_assignments_button"
+        android:textColor="@color/hypertextColor"
+        android:background="?attr/selectableItemBackground"
+        android:textSize="12sp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/facilityTV"
+        app:layout_constraintStart_toEndOf="@+id/facilityTV" />
+
+    <!-- Filler for Unit and Room Spinners -->
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/createReportButton"
+        android:text="@string/create_report_button"
+        android:textSize="20sp"
+        android:textColor="@color/colorPrimary"
+        android:background="@color/colorLight"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.85" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

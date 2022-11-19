@@ -25,7 +25,7 @@ class ConstantsTest {
     assertEquals("edu.usc.nlcaceres.infectionprevention.main.precaution_list", PrecautionListExtra)
     assertEquals("edu.usc.nlcaceres.infectionprevention.main.health_practice_list", HealthPracticeListExtra)
 
-    assertEquals("edu.usc.nlcaceres.infectionprevention.new_report", CreateReportIntent)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.new_report", CreateReportRequestKey)
     assertEquals("edu.usc.nlcaceres.infectionprevention.new_report.health_practice", CreateReportPracticeExtra)
 
     assertEquals("edu.usc.nlcaceres.infectionprevention.sortFilter", SortFilterRequestKey)

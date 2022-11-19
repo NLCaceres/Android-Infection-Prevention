@@ -2,9 +2,6 @@ package edu.usc.nlcaceres.infectionprevention
 
 import android.app.Activity
 import android.os.Bundle
-import android.transition.Slide
-import android.view.Window
-import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.Toolbar
 import android.widget.Button
@@ -25,7 +22,7 @@ import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelMain
 
 /* Homepage that allows users to choose a type of health violation that occurred
  and create a report for it
- Links to: ActivityCreateReport + FragmentReportList */
+ Links to: FragmentCreateReport + FragmentReportList */
 @AndroidEntryPoint
 class ActivityMain : AppCompatActivity() {
 
@@ -37,10 +34,7 @@ class ActivityMain : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    with(window) {
-      requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS) // If did not set in styles.xml
-      exitTransition = Slide(Gravity.LEFT)
-    }
+
     viewBinding = ActivityMainBinding.inflate(layoutInflater)
     setContentView(viewBinding.root)
     coordinatorLayout = viewBinding.mainCoordinatorLayout

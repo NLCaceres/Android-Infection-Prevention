@@ -1,14 +1,11 @@
 package edu.usc.nlcaceres.infectionprevention
 
-import android.app.Activity
-import android.content.Intent
+import android.util.Log
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.*
@@ -66,7 +63,9 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
 
   private fun setupStateViews() {
     progIndicator = viewBinding.progressIndicatorLayout.appProgressbar
-    viewModel.isLoading.observe(viewLifecycleOwner) { loading -> progIndicator.visibility = if (loading) View.VISIBLE else View.INVISIBLE }
+    viewModel.isLoading.observe(viewLifecycleOwner) { loading ->
+      progIndicator.visibility = if (loading) View.VISIBLE else View.INVISIBLE
+    }
 
     sorryMsgTextView = viewBinding.sorryTextView
     viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
@@ -82,31 +81,29 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
     }
   }
 
-  private val createReportActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-    if (result.resultCode == Activity.RESULT_OK) {
-      val (precautionNames, healthPracticeNames) = viewModel.getNamesLists()
-      val bundle = bundleOf(PrecautionListExtra to precautionNames, HealthPracticeListExtra to healthPracticeNames)
-      parentFragmentManager.commit {
-        setReorderingAllowed(true)
-        addToBackStack(null)
-        replace<FragmentReportList>(R.id.fragment_main_container, args = bundle) // Add() just stacks the view on top
-      }
-    }
-  }
   private fun setupPrecautionRV() {
     precautionRecyclerView = viewBinding.precautionRV.apply {
       setHasFixedSize(true)
-      precautionAdapter = PrecautionAdapter { itemView, healthPractice ->
-        val reportTypeTV = itemView.findViewById<View>(R.id.precautionButtonTV)
-        // Click Listener that creates an intent and launches the CreateReport Activity
-        Intent(context, ActivityCreateReport::class.java).apply {
-          putExtra(CreateReportPracticeExtra, healthPractice.name)
-        }.also {
-          createReportActivityLauncher.launch(it,
-            ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), reportTypeTV, "reportType"))
+      precautionAdapter = PrecautionAdapter { _, healthPractice ->
+        val createReportBundle = bundleOf(CreateReportPracticeExtra to healthPractice.name)
+        parentFragmentManager.commit {
+          setReorderingAllowed(true)
+          addToBackStack(null)
+          replace<FragmentCreateReport>(R.id.fragment_main_container, args = createReportBundle)
         }
       }
       adapter = precautionAdapter
+    }
+    // Set listener for FragmentCreateReport so we can react to submissions and go to FragmentReportList
+    parentFragmentManager.setFragmentResultListener(CreateReportRequestKey, viewLifecycleOwner) { requestKey, _ ->
+      if (requestKey != CreateReportRequestKey) { return@setFragmentResultListener } // SHOULD ALWAYS receive this key
+      val (precautionNames, healthPracticeNames) = viewModel.getNamesLists()
+      val reportListBundle = bundleOf(PrecautionListExtra to precautionNames, HealthPracticeListExtra to healthPracticeNames)
+      parentFragmentManager.commit {
+        setReorderingAllowed(true)
+        addToBackStack(null)
+        replace<FragmentReportList>(R.id.fragment_main_container, args = reportListBundle) // Add() just stacks the view on top
+      }
     }
 
     viewModel.precautionState.observe(viewLifecycleOwner) { (loading, newList) ->

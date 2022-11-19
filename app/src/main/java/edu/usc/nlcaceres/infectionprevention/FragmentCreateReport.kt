@@ -1,15 +1,9 @@
 package edu.usc.nlcaceres.infectionprevention
 
-import android.app.Activity
-import android.app.TimePickerDialog
-import android.content.Intent
-import android.os.Bundle
-import android.transition.Slide
 import android.util.Log
-import android.view.Gravity
-import android.view.MenuItem
-import android.view.View
-import android.view.Window
+import android.app.TimePickerDialog
+import android.os.Bundle
+import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.EditText
@@ -17,12 +11,14 @@ import android.widget.Spinner
 import android.widget.Button
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
+import androidx.core.os.bundleOf
+import androidx.core.view.MenuProvider
+import androidx.fragment.app.*
+import androidx.lifecycle.Lifecycle
 import dagger.hilt.android.AndroidEntryPoint
-import edu.usc.nlcaceres.infectionprevention.databinding.ActivityCreateReportBinding
+import edu.usc.nlcaceres.infectionprevention.databinding.FragmentCreateReportBinding
 import edu.usc.nlcaceres.infectionprevention.data.Location
 import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 import edu.usc.nlcaceres.infectionprevention.data.Employee
@@ -32,10 +28,11 @@ import java.time.LocalTime
 
 /* Activity to File a New Health Report */
 @AndroidEntryPoint
-class ActivityCreateReport : AppCompatActivity() {
+class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
   private val viewModel: ViewModelCreateReport by viewModels()
-  private lateinit var viewBinding : ActivityCreateReportBinding
-  private lateinit var progressIndicator : ProgressBar // If never init'd then will crash!
+  private var _viewBinding: FragmentCreateReportBinding? = null
+  private val viewBinding get() = _viewBinding!!
+  private lateinit var progressIndicator : ProgressBar // lateinit vars must be init'd or will throw!
   private lateinit var headerTV : TextView
   private lateinit var dateET : EditText
   private lateinit var dateTimeSetListener: ListenerDateTimeSet
@@ -45,18 +42,16 @@ class ActivityCreateReport : AppCompatActivity() {
   private val spinnerListener = SpinnerItemSelectionListener()
   private lateinit var createReportButton : Button
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    with(window) {
-      requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
-      enterTransition = Slide(Gravity.RIGHT)
-      exitTransition = Slide(Gravity.LEFT)
-    }
-    viewBinding = ActivityCreateReportBinding.inflate(layoutInflater)
-    setContentView(viewBinding.root) // apply may work above for quick setContentView setup
+  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    _viewBinding = FragmentCreateReportBinding.inflate(layoutInflater)
+    return viewBinding.root
+  }
 
-    // Following = how to manage <include/> layouts - Give include an id then search inside of it!
-    SetupToolbar(this, viewBinding.toolbarLayout.homeToolbar, R.drawable.ic_back_arrow)
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+
+    (activity as AppCompatActivity).supportActionBar?.setUpIndicator(R.drawable.ic_back_arrow)
+    requireActivity().addMenuProvider(CreateReportMenu(), viewLifecycleOwner, Lifecycle.State.RESUMED)
 
     setupProgressIndicator()
     setupHeaderTextView()
@@ -66,25 +61,23 @@ class ActivityCreateReport : AppCompatActivity() {
     createReportButton = viewBinding.createReportButton.apply { setOnClickListener(SubmitReportClickListener()) }
   }
 
-  override fun onOptionsItemSelected(item: MenuItem): Boolean { // Return true to end any further menu processing
-    return when (item.itemId) {
-      android.R.id.home -> { // Could also override onBackPressed but better not to (i.e. app closes if no backStack + backButton)
-        // If at this activity w/out a backStack then launch mainActivity, finish this one
-        if (this.isTaskRoot) { startActivity(Intent(this, ActivityMain::class.java)) }
-        finishAfterTransition() // If there's a backstack!, should behave as normal (onBackPressed() to mainActivity)
-        true // Finally always return true (done working with menu items here)
-      }
-      else -> super.onOptionsItemSelected(item) // Defaults to false (meaning nothing happens)
+  private inner class CreateReportMenu: MenuProvider {
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) { }
+    override fun onMenuItemSelected(menuItem: MenuItem) = when (menuItem.itemId) {
+      android.R.id.home -> { parentFragmentManager.popBackStack(); true }
+      else -> false
     }
   }
 
   private fun setupProgressIndicator() {
     progressIndicator = viewBinding.progressIndicator.appProgressbar
-    viewModel.loadingState.observe(this) { loading -> progressIndicator.visibility = if (loading) View.VISIBLE else View.INVISIBLE }
+    viewModel.loadingState.observe(viewLifecycleOwner) { loading ->
+      progressIndicator.visibility = if (loading) View.VISIBLE else View.INVISIBLE
+    }
   }
   private fun setupHeaderTextView() {
     headerTV = viewBinding.headerTV // Should default to "New Observation" and will be changed when observer
-    viewModel.healthPracticeHeaderText.observe(this) { headerTV.text = it } // emits a string from flow map func
+    viewModel.healthPracticeHeaderText.observe(viewLifecycleOwner) { headerTV.text = it } // emits a string from flow map func
   }
   private fun setupDateEditText() {
     // Kotlin can use "apply" (and other scope funcs) as convenient extension funcs that can often times help in setting up
@@ -93,26 +86,26 @@ class ActivityCreateReport : AppCompatActivity() {
       showSoftInputOnFocus = false; requestFocus()
       dateTimeSetListener = ListenerDateTimeSet(viewModel::updateDate) // Save time by not reSetting every dateET click
       setOnClickListener { with(LocalTime.now()) {
-        TimePickerDialog(this@ActivityCreateReport, dateTimeSetListener, hour, minute, false).show()
+        TimePickerDialog(requireContext(), dateTimeSetListener, hour, minute, false).show()
       }}
     }
-    viewModel.dateTimeString.observe(this) { dateET.setText(it) } // MUST use setText to use strings in editTexts
+    viewModel.dateTimeString.observe(viewLifecycleOwner) { dateET.setText(it) } // MUST use setText to use strings in editTexts
   }
 
-  // Spinners Setup in Order of Appearance in layout file
+  // Spinners Setup
   private fun setupSpinners() {
-    val selectedPracticeType = intent.getStringExtra(CreateReportPracticeExtra) ?: ""
+    val selectedPracticeType = arguments?.getString(CreateReportPracticeExtra) ?: ""
     EspressoIdlingResource.increment()
     employeeSpinner = viewBinding.employeeSpinner.apply { onItemSelectedListener = spinnerListener }
-    healthPracticeSpinner = viewBinding.healthPracticeSpinner.apply { onItemSelectedListener = spinnerListener }
     locationSpinner = viewBinding.facilitySpinner.apply { onItemSelectedListener = spinnerListener }
+    healthPracticeSpinner = viewBinding.healthPracticeSpinner.apply { onItemSelectedListener = spinnerListener }
     // Next starts loading spinner data, 1st w/ an emptyList then the full list from the server
-    viewModel.adapterData.observe(this) { (employeeList, healthPracticeList, locationList) ->
+    viewModel.adapterData.observe(viewLifecycleOwner) { (employeeList, healthPracticeList, locationList) ->
       // COULD keep refs to each arrayAdapter & mutate their lists via clear() then addAll(newList)
       // BUT making new adapters w/ each new list emitted and reSetting the spinners works just as well!
-      ArrayAdapter(this, R.layout.custom_spinner_dropdown, employeeList).also { employeeSpinner.adapter = it }
-      ArrayAdapter(this, R.layout.custom_spinner_dropdown, locationList).also { locationSpinner.adapter = it }
-      ArrayAdapter(this, R.layout.custom_spinner_dropdown, healthPracticeList).also {
+      ArrayAdapter(requireContext(), R.layout.custom_spinner_dropdown, employeeList).also { employeeSpinner.adapter = it }
+      ArrayAdapter(requireContext(), R.layout.custom_spinner_dropdown, locationList).also { locationSpinner.adapter = it }
+      ArrayAdapter(requireContext(), R.layout.custom_spinner_dropdown, healthPracticeList).also {
         healthPracticeSpinner.adapter = it
         if (healthPracticeList.isEmpty()) { return@also } // If empty, DON'T select a healthPractice
         val selectedIndex = viewModel.selectedHealthPracticeIndex(healthPracticeList, selectedPracticeType)
@@ -138,18 +131,19 @@ class ActivityCreateReport : AppCompatActivity() {
         R.id.facilitySpinner -> viewModel.updateReport(location = parent.selectedItem as? Location)
 //        R.id.unitSpinner -> Log.d("Unit Spinner", "Selected")
 //        R.id.roomSpinner -> Log.d("Room Spinner", "Selected")
-        else -> Log.w("ItemSelection When", "Else statement ran for some reason!")
+        else -> Log.w("CreateReport ItemSelection", "Else statement ran for some reason!")
       }
     }
   }
 
   private inner class SubmitReportClickListener : View.OnClickListener {
-    override fun onClick(clickedView: View?) {
+    override fun onClick(clickedView: View) {
       if (viewModel.dateTimeString.value.isNullOrBlank()) { // Indicates date was likely not selected
-        AlertDialog.Builder(this@ActivityCreateReport).run {
+        AlertDialog.Builder(requireContext()).run {
           setPositiveButton(R.string.alert_dialog_ok) { _, _ -> completeReportSubmission() }
           setNegativeButton(R.string.alert_dialog_cancel) { _, _ ->
-            ShowSnackbar(viewBinding.myCoordinatorLayout, resources.getString(R.string.missing_date_hint), Snackbar.LENGTH_SHORT)
+            setFragmentResult(SnackbarDisplay,
+              bundleOf(SnackbarBundleMessage to resources.getString(R.string.missing_date_hint)))
           }
           setMessage(R.string.date_alert_dialog_message)
           setTitle(R.string.date_alert_dialog_title)
@@ -162,10 +156,8 @@ class ActivityCreateReport : AppCompatActivity() {
   // Call this next fun either after user presses OK in alertDialog to use current time
   // OR after hitting submit because user correctly filled out all input
   private fun completeReportSubmission() {
-    setResult(Activity.RESULT_OK)
+    setFragmentResult(CreateReportRequestKey, bundleOf())
     viewModel.submitReport()
-    // This conditional handles nav when using shortcut: Start main, since shortcut didn't, go to reportList, don't close app
-    if (this.isTaskRoot) { startActivity(Intent(this, ActivityMain::class.java)) }
-    finish()
+    parentFragmentManager.popBackStack()
   }
 }

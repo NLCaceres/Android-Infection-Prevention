@@ -13,7 +13,7 @@
     <string name="alert_dialog_ok">OK</string>
     <string name="alert_dialog_cancel">Cancel</string>
     <!-- Custom Spinner -->
-    <string name="default_spinner_message">This is an Example</string>
+    <string name="default_spinner_message">Loading in Data!</string>
 
     <!-- Shortcuts -->
     <string name="create_new_report_shortcut_short_label">Create New Report</string>
@@ -34,11 +34,6 @@
     <string name="report_filters">Recent Reports by Filter</string>
     <string name="standard_precautions">Standard Precaution</string>
     <string name="isolation_precautions">Isolation Precaution</string>
-
-    <!-- Create New Report Activity -->
-    <string name="create_new_report_label">Create New Report</string>
-    <string name="date_edittext_hint">Time &amp; Date</string>
-    <string name="missing_date_hint">Tap the Time &amp; Date text box above to set them up!</string>
 
     <!-- Settings Activity String -->
     <string name="settings_label">Settings</string>
@@ -86,21 +81,25 @@
     <string name="settings_hospital_group_key">hospital_group_key</string>
     
     
-    <!-- Creating a report strings -->
+    <!-- Create a New Report Fragment Strings -->
+    <string name="create_new_report_label">Create New Report</string>
+    <string name="date_edittext_hint">Time &amp; Date</string>
+    <string name="missing_date_hint">Tap the Time &amp; Date text box above to set them up!</string>
     <string name="default_create_report_header">New Observation</string>
     <string name="create_report_date">Date of Observation</string>
-    <string name="create_report_employee_prompt">Select an Employee</string>
-    <string name="create_report_health_practice_prompt">Select a Health Practice</string>
-    <string name="create_report_location_prompt">Select a Facility, Unit and Room Number</string>
-    <string name="create_report_facility_location">Occurrence Location</string>
-    <string name="create_report_unit">Unit</string>
+    <string name="create_report_employee_spinner_label">Select an Employee</string>
+    <string name="create_report_employee_spinner_description">Employee Dropdown Menu</string>
+    <string name="create_report_health_practice_spinner_label">Select a Health Practice</string>
+    <string name="create_report_health_practice_spinner_description">Health Practice Dropdown Menu</string>
+    <string name="create_report_facility_location_spinner_label">Occurrence Location</string>
+    <string name="create_report_facility_location_spinner_description">Occurrence Location Dropdown Menu</string>
     <string name="create_report_assignments_button"><u>See your assignments</u></string>
-    <string name="create_report_room">Room</string>
-    <string name="create_report_health_practice">Health Practice</string>
-    <string name="create_report_my_team">My Team: </string>
     <string name="create_report_button">Submit</string>
     <string name="date_alert_dialog_title">Date Left Empty!</string>
     <string name="date_alert_dialog_message">"You haven't filled in a date. Would you like to use the current time for the report date?"</string>
+    <!-- Following 2 may be useful in future but are temporary placeholders in the interim -->
+    <string name="create_report_my_team">My Team: </string>
+    <string name="create_report_location_prompt">Select a Facility, Unit and Room Number</string>
 
     <!-- Reports List Activity -->
     <string name="reports_filter_button">Sort &amp; Filter</string>

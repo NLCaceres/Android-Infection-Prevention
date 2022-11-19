@@ -28,13 +28,6 @@
       </intent-filter>
       <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts" />
     </activity>
-
-    <activity android:name=".ActivityCreateReport"
-        android:label=""
-        android:parentActivityName=".ActivityMain"
-        android:exported="true"> <!-- PreSDK 21/Android 4.0/IceCreamSandwich used Meta-Data tag instead -->
-    </activity>
-
   </application>
 
 </manifest>
