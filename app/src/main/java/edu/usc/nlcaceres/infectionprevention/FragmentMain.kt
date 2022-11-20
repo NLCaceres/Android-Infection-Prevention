@@ -11,6 +11,8 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.*
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
+import androidx.core.view.doOnPreDraw
+import androidx.transition.Slide
 import dagger.hilt.android.AndroidEntryPoint
 import edu.usc.nlcaceres.infectionprevention.adapters.PrecautionAdapter
 import edu.usc.nlcaceres.infectionprevention.databinding.FragmentMainBinding
@@ -23,11 +25,15 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
   // Why have a nullable viewBinding? Because fragments can outlive their views!
   private var _viewBinding: FragmentMainBinding? = null
   private val viewBinding get() = _viewBinding!! // So only access from this prop and we can guarantee null safety!
-
   private lateinit var progIndicator : ProgressBar
   private lateinit var sorryMsgTextView : TextView
   private lateinit var precautionRecyclerView : RecyclerView
   private lateinit var precautionAdapter : PrecautionAdapter
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    exitTransition = Slide(Gravity.LEFT)
+  }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
     _viewBinding = FragmentMainBinding.inflate(inflater, container, false)
@@ -35,6 +41,8 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
   }
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    // MUST delay transition until recyclerview loads & renders all its data so its itemViews can animate properly
+    postponeEnterTransition() // Call start in precautionStateObserver below
 
     (activity as AppCompatActivity).supportActionBar?.setUpIndicator(R.drawable.ic_menu)
     requireActivity().addMenuProvider(FragmentMainMenu(), viewLifecycleOwner, Lifecycle.State.RESUMED)
@@ -84,11 +92,14 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
   private fun setupPrecautionRV() {
     precautionRecyclerView = viewBinding.precautionRV.apply {
       setHasFixedSize(true)
-      precautionAdapter = PrecautionAdapter { _, healthPractice ->
+      precautionAdapter = PrecautionAdapter { itemView, healthPractice ->
+        // Set the transitionName to ID the view in BOTH HealthPracticeAdapter & FragmentCreateReport
+        val reportTypeTV = itemView.findViewById<View>(R.id.precautionButtonTV)
         val createReportBundle = bundleOf(CreateReportPracticeExtra to healthPractice.name)
-        parentFragmentManager.commit {
-          setReorderingAllowed(true)
-          addToBackStack(null)
+        parentFragmentManager.commit { // AND perform replacement w/ setReordering & addSharedElement
+          setReorderingAllowed(true) // Ensure animation occurs w/ sharedElement for this transaction
+          addSharedElement(reportTypeTV, TransitionName(ReportTypeTextViewTransition, healthPractice.name))
+          addToBackStack(null) // i.e. Use this transition on this createReport replace
           replace<FragmentCreateReport>(R.id.fragment_main_container, args = createReportBundle)
         }
       }
@@ -115,6 +126,9 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
           newList.isEmpty() -> "Weird! Seems we don't have any available precautions to choose from!"
           else -> "Please try again later!"
         }
+      }
+      if (newList.isNotEmpty()) { // Only start transition if fragment's parentView has drawn/laid out all children
+        (view?.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
       }
     }
   }

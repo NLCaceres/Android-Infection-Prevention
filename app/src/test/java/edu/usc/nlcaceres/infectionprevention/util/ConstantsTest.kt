@@ -32,6 +32,10 @@ class ConstantsTest {
     assertEquals("edu.usc.nlcaceres.infectionprevention.sortFilter.filters", SelectedFilterParcel)
   }
 
+  @Test fun `Check Transition Names Correctly Templated`() {
+    assertEquals("edu.usc.nlcaceres.infectionprevention.report_type_textview_transition", ReportTypeTextViewTransition)
+  }
+
   @Test fun `Check Fragment Result Keys and Values Correctly Templated`() {
     assertEquals("edu.usc.nlcaceres.infectionprevention.action_view", ActionViewManager)
     assertEquals("edu.usc.nlcaceres.infectionprevention.action_view.closer", ActionViewBundleCloser)

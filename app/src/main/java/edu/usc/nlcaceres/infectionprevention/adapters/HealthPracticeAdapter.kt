@@ -8,15 +8,20 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 import edu.usc.nlcaceres.infectionprevention.databinding.ItemHealthPracticeBinding
+import androidx.core.view.ViewCompat
+import edu.usc.nlcaceres.infectionprevention.util.TransitionName
+import edu.usc.nlcaceres.infectionprevention.util.ReportTypeTextViewTransition
 
-/* Adapter to render each particular health practice button in a horizontal RV to launch CreateReportActivity */
+/* Adapter to render each particular health practice button in a horizontal RV to launch FragmentCreateReport */
 // Great new updates: viewBinding + built in DiffUtil via ListAdapter!
 class HealthPracticeAdapter(private val healthPracticeClickListener : HealthPracticeClickListener) :
   ListAdapter<HealthPractice, HealthPracticeAdapter.PracticeViewHolder>(HealthPracticeDiffCallback()) {
 
   class PracticeViewHolder(private val viewBinding : ItemHealthPracticeBinding) : RecyclerView.ViewHolder(viewBinding.root) {
     fun bind(healthPractice : HealthPractice, listener : HealthPracticeClickListener) {
-      viewBinding.precautionButtonTV.text = healthPractice.name
+      viewBinding.precautionButtonTV.text = healthPractice.name.also {
+        ViewCompat.setTransitionName(viewBinding.precautionButtonTV, TransitionName(ReportTypeTextViewTransition, it))
+      }
       viewBinding.precautionImageView.contentDescription = "Create New ${healthPractice.name} button"
       // Following click listener will not work with buttons, instead imageView is used (buttons seem to consume clicks, but not running callback)
       viewBinding.practiceItemView.setOnClickListener { itemView -> listener.onHealthPracticeItemClick(itemView, healthPractice) }

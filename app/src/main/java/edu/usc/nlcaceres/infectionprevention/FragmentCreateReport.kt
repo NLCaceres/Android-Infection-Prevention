@@ -17,6 +17,9 @@ import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.*
 import androidx.lifecycle.Lifecycle
+import androidx.core.view.ViewCompat
+import androidx.transition.ChangeBounds
+import androidx.transition.Fade
 import dagger.hilt.android.AndroidEntryPoint
 import edu.usc.nlcaceres.infectionprevention.databinding.FragmentCreateReportBinding
 import edu.usc.nlcaceres.infectionprevention.data.Location
@@ -42,6 +45,16 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
   private val spinnerListener = SpinnerItemSelectionListener()
   private lateinit var createReportButton : Button
 
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    // BONUS: Fragments don't need to call requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS), they work by default!
+    enterTransition = Fade(Fade.IN) // Like activity's window.enterTransition
+    exitTransition = Fade(Fade.OUT) // AND window.exitTransition
+    // Using androidx.transition.ChangeBounds for API 14 AndroidX improvements over old android.transition
+    sharedElementEnterTransition = ChangeBounds()
+    sharedElementReturnTransition = ChangeBounds() // Occurs on popback to slide it back in place in prev fragment
+  }
+
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
     _viewBinding = FragmentCreateReportBinding.inflate(layoutInflater)
     return viewBinding.root
@@ -49,6 +62,7 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    postponeEnterTransition()
 
     (activity as AppCompatActivity).supportActionBar?.setUpIndicator(R.drawable.ic_back_arrow)
     requireActivity().addMenuProvider(CreateReportMenu(), viewLifecycleOwner, Lifecycle.State.RESUMED)
@@ -77,6 +91,10 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
   }
   private fun setupHeaderTextView() {
     headerTV = viewBinding.headerTV // Should default to "New Observation" and will be changed when observer
+    // Other sharedElement for following transition is HealthPracticeAdapter's precautionButtonTextView
+    arguments?.getString(CreateReportPracticeExtra)?.let { selectedPractice ->
+      ViewCompat.setTransitionName(headerTV, TransitionName(ReportTypeTextViewTransition, selectedPractice))
+    }
     viewModel.healthPracticeHeaderText.observe(viewLifecycleOwner) { headerTV.text = it } // emits a string from flow map func
   }
   private fun setupDateEditText() {
@@ -111,6 +129,7 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
         val selectedIndex = viewModel.selectedHealthPracticeIndex(healthPracticeList, selectedPracticeType)
         if (selectedIndex != -1) { healthPracticeSpinner.setSelection(selectedIndex) } // MUST prevent outOfRange error
       }
+      if (healthPracticeList.isNotEmpty()) { startPostponedEnterTransition() } // When data is ready, begin final transition
     }
   }
   private inner class SpinnerItemSelectionListener : AdapterView.OnItemSelectedListener {

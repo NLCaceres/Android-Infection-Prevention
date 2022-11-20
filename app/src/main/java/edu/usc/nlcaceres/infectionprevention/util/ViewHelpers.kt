@@ -27,6 +27,9 @@ import kotlinx.coroutines.flow.onStart
 // Returns true if Android Dark Theme is on (Available Android 10 / API 29+)
 fun IsDarkMode(context: Context) = (context.resources.configuration.uiMode and UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES
 
+fun SnakecaseString(string: String) = string.lowercase().replace(" ", "_")
+fun TransitionName(prefix: String, id: String) = "$prefix.${SnakecaseString(id)}"
+
 // Quick reusable Snackbar display func AND handles Espresso, a common pain point with snackbars/toasts
 fun ShowSnackbar(view: CoordinatorLayout, text: String, duration: Int) {
     Snackbar.make(view, text, duration).run {

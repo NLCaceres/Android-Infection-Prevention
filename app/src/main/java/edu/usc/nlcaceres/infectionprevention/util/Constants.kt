@@ -34,6 +34,9 @@ const val CreateReportPracticeExtra = "$CreateReportRequestKey.health_practice"
 const val SortFilterRequestKey = "$ProjectPkgName.sortFilter"
 const val SelectedFilterParcel = "$SortFilterRequestKey.filters"
 
+// SharedTransitionNames
+const val ReportTypeTextViewTransition = "$ProjectPkgName.report_type_textview_transition"
+
 // FragmentResultListener
 const val ActionViewManager = "$ProjectPkgName.action_view"
 const val ActionViewBundleCloser = "$ActionViewManager.closer"

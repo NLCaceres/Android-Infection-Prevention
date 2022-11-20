@@ -17,6 +17,7 @@ import edu.usc.nlcaceres.infectionprevention.InfectionProtectionApplication
 import edu.usc.nlcaceres.infectionprevention.ActivityMain
 import edu.usc.nlcaceres.infectionprevention.R
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -38,6 +39,46 @@ class ViewHelperTest {
     // The func applies the bitwise AND w/ the expected UI_MODE_NIGHT_MASK (aka decimal 48) (48 & 32 == 32 aka UI_MODE_NIGHT_YES)
     val isDarkMode = IsDarkMode(app)
     assertEquals(true, isDarkMode) // So now that we've changed it, we get darkMode == true!
+  }
+
+  @Test fun `Check Strings are Properly Snakecased`() {
+    val blankResult = SnakecaseString("")
+    assertEquals("", blankResult)
+    val noEffectLowercasedResult = SnakecaseString("hello")
+    assertEquals("hello", noEffectLowercasedResult)
+    val simpleLowercasedResult = SnakecaseString("Hello")
+    assertEquals("hello", simpleLowercasedResult)
+
+    val twoUpperToLowercasedResult = SnakecaseString("Hello World")
+    assertEquals("hello_world", twoUpperToLowercasedResult)
+    val oneUpperToLowercasedWordResult = SnakecaseString("Hello world")
+    assertEquals("hello_world", oneUpperToLowercasedWordResult)
+    val noUpperToLowercasedWordResult = SnakecaseString("hello world")
+    assertEquals("hello_world", noUpperToLowercasedWordResult)
+
+    val multiWordResult = SnakecaseString("The World is Great")
+    assertEquals("the_world_is_great", multiWordResult)
+
+    val camelCaseToSnakeCase = SnakecaseString("TheWorldIsGreat") // DOESN'T convert camelcase
+    assertNotEquals("the_world_is_great", camelCaseToSnakeCase)
+    assertEquals("theworldisgreat", camelCaseToSnakeCase)
+  }
+  @Test fun `Check Strings Combined into a Proper Transition Name`() {
+    val blankTransitionName = TransitionName("", "")
+    assertEquals(".", blankTransitionName) // Returns simple dot (since nothing to combine)
+    val blankID = TransitionName("prefix", "")
+    assertEquals("prefix.", blankID)
+    val blankPrefix = TransitionName("", "some id")
+    assertEquals(".some_id", blankPrefix)
+
+    val typicalResult = TransitionName("prefix", "something")
+    assertEquals("prefix.something", typicalResult)
+    val typicalLongPrefixResult = TransitionName("some.long.prefix", "something")
+    assertEquals("some.long.prefix.something", typicalLongPrefixResult)
+    val typicalLongPrefixAndIdResult = TransitionName("some.long.prefix", "some id")
+    assertEquals("some.long.prefix.some_id", typicalLongPrefixAndIdResult)
+    val typicalSnakecasedPrefixAndLongId = TransitionName("some_thing.long.pre_fix", "Some Longer Id")
+    assertEquals("some_thing.long.pre_fix.some_longer_id", typicalSnakecasedPrefixAndLongId)
   }
 
   @Test fun `Check Progress Indicator Visibility Updates Correctly`() {
