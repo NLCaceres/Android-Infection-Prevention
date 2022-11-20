@@ -25,6 +25,7 @@ fun snakeCaseGson(): Gson = GsonBuilder()
 // Intents/Bundles for sending data across activities/fragments
 const val ProjectPkgName = "edu.usc.nlcaceres.infectionprevention"
 const val MainActIntent = "$ProjectPkgName.main"
+const val ShortcutIntentAction = "android.intent.action.VIEW" // May use an identifier BUT only available in API 29+
 const val PreSelectedFilterExtra = "$MainActIntent.preselected_filter"
 const val PrecautionListExtra = "$MainActIntent.precaution_list"
 const val HealthPracticeListExtra = "$MainActIntent.health_practice_list"

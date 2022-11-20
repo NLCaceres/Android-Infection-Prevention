@@ -33,6 +33,15 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     exitTransition = Slide(Gravity.LEFT)
+
+    // Following is similar idea to a trampoline activity for shortcuts: Check intent & replace fragment
+    if (requireActivity().intent.action == ShortcutIntentAction) { // If launched from shortcut
+      parentFragmentManager.commit { // Begin transaction to FragmentCreateReport
+        setReorderingAllowed(true)
+        addToBackStack(null)
+        replace<FragmentCreateReport>(R.id.fragment_main_container)
+      }
+    }
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
