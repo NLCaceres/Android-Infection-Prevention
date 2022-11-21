@@ -22,34 +22,37 @@ fun snakeCaseGson(): Gson = GsonBuilder()
   .registerTypeAdapter(Report::class.java, ReportDeserializer()) // Needs to handle Profession nested in Employee field
   .create() // Catches underscored names e.g. first_name
 
-// Intents/Bundles for sending data across activities/fragments
+// Intents'/Transactions' Extras for sending data across activities/fragments
 const val ProjectPkgName = "edu.usc.nlcaceres.infectionprevention"
-const val MainActIntent = "$ProjectPkgName.main"
 const val ShortcutIntentAction = "android.intent.action.VIEW" // May use an identifier BUT only available in API 29+
-const val PreSelectedFilterExtra = "$MainActIntent.preselected_filter"
-const val PrecautionListExtra = "$MainActIntent.precaution_list"
-const val HealthPracticeListExtra = "$MainActIntent.health_practice_list"
-const val SettingsIntent = "$ProjectPkgName.settings"
-const val CreateReportRequestKey = "$ProjectPkgName.new_report"
-const val CreateReportPracticeExtra = "$CreateReportRequestKey.health_practice"
-const val SortFilterRequestKey = "$ProjectPkgName.sortFilter"
-const val SelectedFilterParcel = "$SortFilterRequestKey.filters"
+const val MainFragmentTransaction = "$ProjectPkgName.main" // Transaction from Main to ReportList view
+const val PreSelectedFilterExtra = "$MainFragmentTransaction.preselected_filter"
+const val PrecautionListExtra = "$MainFragmentTransaction.precaution_list"
+const val HealthPracticeListExtra = "$MainFragmentTransaction.health_practice_list"
+const val CreateReportTransaction = "$ProjectPkgName.create_report"
+const val CreateReportPracticeExtra = "$CreateReportTransaction.health_practice"
 
 // SharedTransitionNames
 const val ReportTypeTextViewTransition = "$ProjectPkgName.report_type_textview_transition"
 
-// FragmentResultListener
-const val ActionViewManager = "$ProjectPkgName.action_view"
-const val ActionViewBundleCloser = "$ActionViewManager.closer"
-const val EditTextDialogManager = "$ProjectPkgName.edit_text_dialog"
-const val EditTextDialogPreferenceKey = "$EditTextDialogManager.preference_key"
-const val EditTextDialogPreferenceValue = "$EditTextDialogManager.preference_value"
-const val KeyboardManager = "$ProjectPkgName.keyboard"
-const val KeyboardBundleCloser = "$KeyboardManager.closer"
-const val NavDrawerManager = "$ProjectPkgName.nav_drawer"
-const val NavDrawerBundleOpener = "$NavDrawerManager.opener"
-const val SnackbarDisplay = "$ProjectPkgName.snackbar"
-const val SnackbarBundleMessage = "$SnackbarDisplay.message"
+// FragmentResultListeners
+// ActivityMain's Listener that runs common app functionality like displaying the Keyboard & Snackbar
+const val ActionViewRequestKey = "$ProjectPkgName.action_view"
+const val ActionViewIsClosingParcel = "$ActionViewRequestKey.closer"
+const val KeyboardRequestKey = "$ProjectPkgName.keyboard"
+const val KeyboardIsClosingParcel = "$KeyboardRequestKey.closer"
+const val NavDrawerRequestKey = "$ProjectPkgName.nav_drawer"
+const val NavDrawerIsOpeningParcel = "$NavDrawerRequestKey.opener"
+const val SnackbarRequestKey = "$ProjectPkgName.snackbar"
+const val SnackbarMessageParcel = "$SnackbarRequestKey.message"
+// Following Requests signal to previous fragments' resultListeners that the current fragment completed its job
+const val CreateReportRequestKey = "$ProjectPkgName.create_report_request" // Report was submitted, go to ReportList
+const val SortFilterRequestKey = "$ProjectPkgName.sort_filter_request" // Filters selected, begin sorting and filtering
+const val SelectedFilterParcel = "$SortFilterRequestKey.selected_filters"
+// Following handles updating Preferences when changed in Settings' EditTextDialogs
+const val EditTextDialogRequestKey = "$ProjectPkgName.edit_text_dialog"
+const val EditTextDialogPreferenceKey = "$EditTextDialogRequestKey.preference_key" // Gets key from bundle for findPref() to get PrefView
+const val EditTextDialogPreferenceValue = "$EditTextDialogRequestKey.preference_value" // Gets value from bundle to update UI
 
 // Settings Preferences
 const val PreferenceCategoryUser = "user_category"

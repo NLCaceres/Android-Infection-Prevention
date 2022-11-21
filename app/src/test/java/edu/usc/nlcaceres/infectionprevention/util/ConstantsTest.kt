@@ -17,19 +17,16 @@ class ConstantsTest {
     assertEquals("reports/create", ReportCreationPath)
   }
 
-  @Test fun `Check Intent Strings Correctly Templated`() { // Check tricky strings with concatenation
+  @Test fun `Check Fragment Transaction Bundle Keys Correctly Templated`() { // Check tricky strings with concatenation
     assertEquals("edu.usc.nlcaceres.infectionprevention", ProjectPkgName)
 
-    assertEquals("edu.usc.nlcaceres.infectionprevention.main", MainActIntent)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.main", MainFragmentTransaction)
     assertEquals("edu.usc.nlcaceres.infectionprevention.main.preselected_filter", PreSelectedFilterExtra)
     assertEquals("edu.usc.nlcaceres.infectionprevention.main.precaution_list", PrecautionListExtra)
     assertEquals("edu.usc.nlcaceres.infectionprevention.main.health_practice_list", HealthPracticeListExtra)
 
-    assertEquals("edu.usc.nlcaceres.infectionprevention.new_report", CreateReportRequestKey)
-    assertEquals("edu.usc.nlcaceres.infectionprevention.new_report.health_practice", CreateReportPracticeExtra)
-
-    assertEquals("edu.usc.nlcaceres.infectionprevention.sortFilter", SortFilterRequestKey)
-    assertEquals("edu.usc.nlcaceres.infectionprevention.sortFilter.filters", SelectedFilterParcel)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.create_report", CreateReportTransaction)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.create_report.health_practice", CreateReportPracticeExtra)
   }
 
   @Test fun `Check Transition Names Correctly Templated`() {
@@ -37,20 +34,28 @@ class ConstantsTest {
   }
 
   @Test fun `Check Fragment Result Keys and Values Correctly Templated`() {
-    assertEquals("edu.usc.nlcaceres.infectionprevention.action_view", ActionViewManager)
-    assertEquals("edu.usc.nlcaceres.infectionprevention.action_view.closer", ActionViewBundleCloser)
+    // App wide functionality listeners
+    assertEquals("edu.usc.nlcaceres.infectionprevention.action_view", ActionViewRequestKey)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.action_view.closer", ActionViewIsClosingParcel)
 
-    assertEquals("edu.usc.nlcaceres.infectionprevention.edit_text_dialog", EditTextDialogManager)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.keyboard", KeyboardRequestKey)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.keyboard.closer", KeyboardIsClosingParcel)
+
+    assertEquals("edu.usc.nlcaceres.infectionprevention.nav_drawer", NavDrawerRequestKey)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.nav_drawer.opener", NavDrawerIsOpeningParcel)
+
+    assertEquals("edu.usc.nlcaceres.infectionprevention.snackbar", SnackbarRequestKey)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.snackbar.message", SnackbarMessageParcel)
+
+    // Listeners awaiting result of fragment that just popped
+    assertEquals("edu.usc.nlcaceres.infectionprevention.create_report_request", CreateReportRequestKey)
+
+    assertEquals("edu.usc.nlcaceres.infectionprevention.sort_filter_request", SortFilterRequestKey)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.sort_filter_request.selected_filters", SelectedFilterParcel)
+
+    // Settings' Edit Text Dialog Listener for Preference Updates
+    assertEquals("edu.usc.nlcaceres.infectionprevention.edit_text_dialog", EditTextDialogRequestKey)
     assertEquals("edu.usc.nlcaceres.infectionprevention.edit_text_dialog.preference_key", EditTextDialogPreferenceKey)
     assertEquals("edu.usc.nlcaceres.infectionprevention.edit_text_dialog.preference_value", EditTextDialogPreferenceValue)
-
-    assertEquals("edu.usc.nlcaceres.infectionprevention.keyboard", KeyboardManager)
-    assertEquals("edu.usc.nlcaceres.infectionprevention.keyboard.closer", KeyboardBundleCloser)
-
-    assertEquals("edu.usc.nlcaceres.infectionprevention.nav_drawer", NavDrawerManager)
-    assertEquals("edu.usc.nlcaceres.infectionprevention.nav_drawer.opener", NavDrawerBundleOpener)
-
-    assertEquals("edu.usc.nlcaceres.infectionprevention.snackbar", SnackbarDisplay)
-    assertEquals("edu.usc.nlcaceres.infectionprevention.snackbar.message", SnackbarBundleMessage)
   }
 }

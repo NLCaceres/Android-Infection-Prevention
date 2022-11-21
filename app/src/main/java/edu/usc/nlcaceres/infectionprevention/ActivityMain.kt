@@ -81,29 +81,29 @@ class ActivityMain : AppCompatActivity() {
   }
 
   private fun setupFragmentListener() {
-    supportFragmentManager.setFragmentResultListener(ActionViewManager, this, messagingListener)
-    supportFragmentManager.setFragmentResultListener(KeyboardManager, this, messagingListener)
-    supportFragmentManager.setFragmentResultListener(NavDrawerManager, this, messagingListener)
-    supportFragmentManager.setFragmentResultListener(SnackbarDisplay, this, messagingListener)
+    supportFragmentManager.setFragmentResultListener(ActionViewRequestKey, this, messagingListener)
+    supportFragmentManager.setFragmentResultListener(KeyboardRequestKey, this, messagingListener)
+    supportFragmentManager.setFragmentResultListener(NavDrawerRequestKey, this, messagingListener)
+    supportFragmentManager.setFragmentResultListener(SnackbarRequestKey, this, messagingListener)
   }
   // Rather than open up coordinatorLayout and navDrawer to child fragments, handle their use from here!
   private val messagingListener = FragmentResultListener { requestKey, result ->
     when (requestKey) {
-      ActionViewManager -> { // If true value found then collapse toolbar action view
-        if (result.getBoolean(ActionViewBundleCloser)) { toolbar.collapseActionView() }
+      ActionViewRequestKey -> { // If true value found then collapse toolbar action view
+        if (result.getBoolean(ActionViewIsClosingParcel)) { toolbar.collapseActionView() }
       }
-      KeyboardManager -> {
-        if (result.getBoolean(KeyboardBundleCloser)) { // If true value found then hide keyboard
+      KeyboardRequestKey -> {
+        if (result.getBoolean(KeyboardIsClosingParcel)) { // If true value found then hide keyboard
           (getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
             .hideSoftInputFromWindow(viewBinding.root.windowToken, 0)
         }
       }
-      NavDrawerManager -> {
-        if (result.getBoolean(NavDrawerBundleOpener)) navDrawer.openDrawer(GravityCompat.START)
+      NavDrawerRequestKey -> {
+        if (result.getBoolean(NavDrawerIsOpeningParcel)) navDrawer.openDrawer(GravityCompat.START)
         else navDrawer.closeDrawer(GravityCompat.START)
       }
-      SnackbarDisplay -> {
-        result.getString(SnackbarBundleMessage)?.let { ShowSnackbar(coordinatorLayout, it, Snackbar.LENGTH_SHORT) }
+      SnackbarRequestKey -> {
+        result.getString(SnackbarMessageParcel)?.let { ShowSnackbar(coordinatorLayout, it, Snackbar.LENGTH_SHORT) }
       }
     }
   }

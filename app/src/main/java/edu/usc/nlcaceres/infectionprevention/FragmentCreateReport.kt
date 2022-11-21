@@ -161,8 +161,8 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
         AlertDialog.Builder(requireContext()).run {
           setPositiveButton(R.string.alert_dialog_ok) { _, _ -> completeReportSubmission() }
           setNegativeButton(R.string.alert_dialog_cancel) { _, _ ->
-            setFragmentResult(SnackbarDisplay,
-              bundleOf(SnackbarBundleMessage to resources.getString(R.string.missing_date_hint)))
+            setFragmentResult(SnackbarRequestKey,
+              bundleOf(SnackbarMessageParcel to resources.getString(R.string.missing_date_hint)))
           }
           setMessage(R.string.date_alert_dialog_message)
           setTitle(R.string.date_alert_dialog_title)

@@ -34,7 +34,7 @@ class FragmentSettings : PreferenceFragmentCompat() {
     setDividerHeight(dpUnits(4))
     // Can use insetDrawable w/ listView.addItemDecoration to add dividers between preferences but then
     // ALSO end up with an extra divider between the category title AND its preferences
-    childFragmentManager.setFragmentResultListener(EditTextDialogManager, this, dialogResultListener)
+    childFragmentManager.setFragmentResultListener(EditTextDialogRequestKey, this, dialogResultListener)
   }
   private inner class SettingsMenu: MenuProvider { // Need inner for fragmentManager
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -131,7 +131,7 @@ class FragmentSettings : PreferenceFragmentCompat() {
   }
   private val dialogResultListener = FragmentResultListener { requestKey, bundle ->
     when (requestKey) {
-      EditTextDialogManager -> { // Get key from pref that finished to update UI with latest text value
+      EditTextDialogRequestKey -> { // Get key from pref that finished to update UI with latest text value
         findPreference<EditTextPreference>(bundle.getString(EditTextDialogPreferenceKey, ""))?.let {
           it.text = bundle.getString(EditTextDialogPreferenceValue, "")
         }

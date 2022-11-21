@@ -1,6 +1,5 @@
 package edu.usc.nlcaceres.infectionprevention
 
-import android.util.Log
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
@@ -65,7 +64,7 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
       menuInflater.inflate(R.menu.action_buttons, menu)
     }
     override fun onMenuItemSelected(item: MenuItem) = when (item.itemId) {
-      android.R.id.home -> { setFragmentResult(NavDrawerManager, bundleOf(NavDrawerBundleOpener to true)); true }
+      android.R.id.home -> { setFragmentResult(NavDrawerRequestKey, bundleOf(NavDrawerIsOpeningParcel to true)); true }
       R.id.action_settings -> {
         parentFragmentManager.commit {
           setReorderingAllowed(true)
@@ -93,7 +92,7 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
           visibility = if (viewModel.precautionListEmpty()) View.VISIBLE else View.INVISIBLE
           text = message
         }
-        setFragmentResult(SnackbarDisplay, bundleOf(SnackbarBundleMessage to message))
+        setFragmentResult(SnackbarRequestKey, bundleOf(SnackbarMessageParcel to message))
       }
     }
   }

@@ -21,7 +21,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.preference.PreferenceManager
 import edu.usc.nlcaceres.infectionprevention.databinding.PreferencesEdittextDialogBinding
-import edu.usc.nlcaceres.infectionprevention.util.EditTextDialogManager
+import edu.usc.nlcaceres.infectionprevention.util.EditTextDialogRequestKey
 import edu.usc.nlcaceres.infectionprevention.util.EditTextDialogPreferenceKey
 import edu.usc.nlcaceres.infectionprevention.util.EditTextDialogPreferenceValue
 
@@ -56,7 +56,7 @@ class FragmentEditPreferenceDialog: DialogFragment() {
       sharedPrefs.edit { // Will run apply() to update immediately to sharedPrefs and async-ly to the disk
         putString(key, newVal) // Grab text from editText to set new val
       } // Could add commit = true param BUT commit() could freeze since it sync-ly saves to disk
-      setFragmentResult(EditTextDialogManager,
+      setFragmentResult(EditTextDialogRequestKey,
         bundleOf(EditTextDialogPreferenceKey to key, EditTextDialogPreferenceValue to newVal))
       dismiss()
     }}
