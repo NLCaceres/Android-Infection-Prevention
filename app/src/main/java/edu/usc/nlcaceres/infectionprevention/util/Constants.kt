@@ -1,10 +1,5 @@
 package edu.usc.nlcaceres.infectionprevention.util
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.FieldNamingPolicy
-import edu.usc.nlcaceres.infectionprevention.data.Report
-
 // Backend Endpoints - Base URLS need to end with '/' for Retrofit!
 const val BaseURL = "https://infection-prevention-express.herokuapp.com/api/"
 const val BaseDevURL = "http://10.0.2.2:3000/api/" // LocalHost if connecting to locally spun up dev server
@@ -15,12 +10,6 @@ const val HealthPracticesPath = "healthpractices"
 const val LocationsPath = "locations"
 const val PrecautionsPath = "precautions"
 const val ProfessionsPath = "professions"
-
-// Gson Helper
-fun snakeCaseGson(): Gson = GsonBuilder()
-  .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-  .registerTypeAdapter(Report::class.java, ReportDeserializer()) // Needs to handle Profession nested in Employee field
-  .create() // Catches underscored names e.g. first_name
 
 // Intents'/Transactions' Extras for sending data across activities/fragments
 const val ProjectPkgName = "edu.usc.nlcaceres.infectionprevention"

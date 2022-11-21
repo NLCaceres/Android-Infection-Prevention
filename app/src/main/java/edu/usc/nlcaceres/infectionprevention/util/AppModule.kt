@@ -1,18 +1,21 @@
 package edu.usc.nlcaceres.infectionprevention.util
 
-import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
+import javax.inject.Singleton
+import dagger.Binds
+import dagger.Provides
+import javax.inject.Qualifier
 import dagger.hilt.components.SingletonComponent
-import edu.usc.nlcaceres.infectionprevention.data.*
-import edu.usc.nlcaceres.infectionprevention.data.ReportService.*
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Qualifier
-import javax.inject.Singleton
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import edu.usc.nlcaceres.infectionprevention.data.*
+import edu.usc.nlcaceres.infectionprevention.data.ReportService.*
 
 // Whether Dagger or Hilt, @Module establishes how certain types are provided
 // In particular, Hilt needs info on interfaces and types that use builders to be instantiated
@@ -25,35 +28,46 @@ object AppModule {
   @Provides // Even though dispatcher in repository constructors as default param value, this lets swap as needed!
   fun provideIoDispatcher() = Dispatchers.IO // Useful for a ton of coroutine off-main-thread work
 
-  // The next 3 funcs work together to build Retrofit API interfaces rather than use the typical
+  @Singleton
+  @Provides
+  fun provideGson(): Gson = GsonBuilder()
+    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES) // Catches underscored names e.g. first_name
+    .registerTypeAdapter(Report::class.java, ReportDeserializer()) // Needs to handle Profession nested in Employee field
+    .create()
+
+  @Singleton
+  @Provides // Could add qualifier BUT only will use one type of converter (Gson) so unlikely to matter
+  fun provideGsonConverterFactory(gson: Gson): retrofit2.Converter.Factory = GsonConverterFactory.create(gson)
+
+  // The next funcs work together to build Retrofit API interfaces rather than use the typical
   // companion object pattern to create a retrofit instance then create APIs from our interfaces
   // No lazy retrofit instance needed and across the app only one instance per API to request data over the network
   @Singleton
   @Provides
-  fun provideBaseRetrofitInstance(): Retrofit {
+  fun provideBaseRetrofitInstance(gsonConverterFactory: retrofit2.Converter.Factory): Retrofit {
     return Retrofit.Builder().baseUrl(BaseURL) // BaseUrl must end in '/'
-        .addConverterFactory(GsonConverterFactory.create(snakeCaseGson())) // Custom Gson factory based on a GsonBuilder instance
+        .addConverterFactory(gsonConverterFactory) // Custom Gson factory based on a GsonBuilder instance
         .build()
   }
   @Singleton
   @Provides // Use above retrofitInstance in this func parameter then let Retrofit create instance of our Report API
-  fun provideReportAPI(retrofit: Retrofit) = retrofit.create(ReportAPI::class.java)
+  fun provideReportAPI(retrofit: Retrofit): ReportAPI = retrofit.create(ReportAPI::class.java)
 
   @Singleton
   @Provides // Similarly, grab above provided retrofit instance and let it create Employee API from interface
-  fun provideEmployeeAPI(retrofit: Retrofit) = retrofit.create(EmployeeAPI::class.java)
+  fun provideEmployeeAPI(retrofit: Retrofit): EmployeeAPI = retrofit.create(EmployeeAPI::class.java)
 
   @Singleton
   @Provides
-  fun provideHealthPracticeAPI(retrofit: Retrofit) = retrofit.create(HealthPracticeAPI::class.java)
+  fun provideHealthPracticeAPI(retrofit: Retrofit): HealthPracticeAPI = retrofit.create(HealthPracticeAPI::class.java)
 
   @Singleton
   @Provides
-  fun provideLocationAPI(retrofit: Retrofit) = retrofit.create(LocationAPI::class.java)
+  fun provideLocationAPI(retrofit: Retrofit): LocationAPI = retrofit.create(LocationAPI::class.java)
 
   @Singleton
-  @Provides // Use above retrofitInstance in this func parameter then let Retrofit create instance of our Precaution API
-  fun providePrecautionAPI(retrofit: Retrofit) = retrofit.create(PrecautionAPI::class.java)
+  @Provides
+  fun providePrecautionAPI(retrofit: Retrofit): PrecautionAPI = retrofit.create(PrecautionAPI::class.java)
 }
 
 @Module
