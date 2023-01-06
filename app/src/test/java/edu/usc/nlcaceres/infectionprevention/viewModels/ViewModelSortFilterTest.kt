@@ -70,12 +70,25 @@ class ViewModelSortFilterTest {
     // initialize() can be called twice (The "before" rule) BUT no doubling occurs. Just a brand new version of the same list
     assertEquals(filterGroupList, viewModel.filterGroupList.value)
 
-    val expectedEmptyList = listOf(sortGroup,
-      FilterGroup("Precaution Type", emptyList(), false, false),
-      FilterGroup("Health Practice Type", emptyList(), false, false))
-    // Different input should yield a whole new list altogether!
-    viewModel.initializeFilterList(emptyList(), emptyList())
-    assertEquals(expectedEmptyList, viewModel.filterGroupList.value)
+    val expectedPrecautionList = FilterGroup("Precaution Type", arrayListOf(FilterItem("Standard", false, "Precaution Type"),
+      FilterItem("Isolation", false, "Precaution Type")), false, false)
+    val expectedFiltersWithPrecautionList = listOf(sortGroup, expectedPrecautionList) // Different input can yield a smaller list!
+    viewModel.initializeFilterList(precautionList, emptyList()) // WHEN 1 empty list used
+    assertEquals(2, viewModel.filterGroupList.value.size) // Only the 1 non-empty list is added
+    assertEquals(expectedFiltersWithPrecautionList, viewModel.filterGroupList.value)
+
+    val expectedHealthPracticeList = FilterGroup("Health Practice Type",
+      arrayListOf(FilterItem("Hand Hygiene", false, "Health Practice Type"), FilterItem("PPE", false, "Health Practice Type"),
+      FilterItem("Droplet", false, "Health Practice Type")), false, false)
+    val expectedFiltersWithHealthPracticeList = listOf(sortGroup, expectedHealthPracticeList)
+    viewModel.initializeFilterList(emptyList(), healthPracticeList) // Similarly but using the healthPracticeList
+    assertEquals(2, viewModel.filterGroupList.value.size) // Once again, only 1 non-empty list added
+    assertEquals(expectedFiltersWithHealthPracticeList, viewModel.filterGroupList.value)
+
+    val expectedEmptyList = listOf(sortGroup) // And as small as a single list of options
+    viewModel.initializeFilterList(emptyList(), emptyList()) // WHEN empty lists used
+    assertEquals(1, viewModel.filterGroupList.value.size) // ONLY the default sort list in the group list
+    assertEquals(expectedEmptyList, viewModel.filterGroupList.value) // Those options' lists not added
 
     filterStateFlowJob.cancel() // MUST ALSO CANCEL the stateflow!
   }
