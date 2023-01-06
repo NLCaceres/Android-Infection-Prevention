@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention.viewModels
 
+import android.util.Log
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.usc.nlcaceres.infectionprevention.data.FilterGroup
@@ -53,22 +54,27 @@ class ViewModelSortFilter @Inject constructor(private val ioDispatcher: Coroutin
   }
 
   private fun createGroupAndLists(precautionList: List<String>, healthPracticeList: List<String>): List<FilterGroup> {
-    val sortByTitleStr = "Sort By"
-    val sortByList = arrayListOf(FilterItem("New Reports", false, sortByTitleStr),
-      FilterItem("Older Reports", false, sortByTitleStr),
-      FilterItem("Employee Name (A-Z)", false, sortByTitleStr),
-      FilterItem("Employee Name (Z-A)", false, sortByTitleStr))
-
-    val precautionName = "Precaution Type"
-    val precautionTypeList = precautionList.map { precaution -> FilterItem(precaution, false, precautionName) }
-
-    val practiceName = "Health Practice Type"
-    val practiceTypeList = healthPracticeList.map { precaution -> FilterItem(precaution, false, practiceName) }
+    val sortByFilterGroupTitle = "Sort By"
+    val sortByList = arrayListOf(FilterItem("New Reports", false, sortByFilterGroupTitle),
+      FilterItem("Older Reports", false, sortByFilterGroupTitle),
+      FilterItem("Employee Name (A-Z)", false, sortByFilterGroupTitle),
+      FilterItem("Employee Name (Z-A)", false, sortByFilterGroupTitle))
 
     // Kotlin prefers to use named arguments for boolean properties hence 'isExpanded =' & 'singleSelectionEnabled'
-    return listOf(FilterGroup(sortByTitleStr, sortByList, isExpanded = false, singleSelectionEnabled = true),
-      FilterGroup(precautionName, precautionTypeList, isExpanded = false, singleSelectionEnabled = false),
-      FilterGroup(practiceName, practiceTypeList, isExpanded = false, singleSelectionEnabled = false))
+    val filterGroupList = mutableListOf(FilterGroup(sortByFilterGroupTitle, sortByList, isExpanded = false, singleSelectionEnabled = true))
+
+    if (precautionList.isNotEmpty()) {
+      val filterGroupTitle = "Precaution Type"
+      val precautionTypeList = precautionList.map { precautionName -> FilterItem(precautionName, false, filterGroupTitle) }
+      filterGroupList.add(FilterGroup(filterGroupTitle, precautionTypeList, isExpanded = false, singleSelectionEnabled = false))
+    }
+    if (healthPracticeList.isNotEmpty()) {
+      val filterGroupTitle = "Health Practice Type"
+      val practiceTypeList = healthPracticeList.map { practiceName -> FilterItem(practiceName, false, filterGroupTitle) }
+      filterGroupList.add(FilterGroup(filterGroupTitle, practiceTypeList, isExpanded = false, singleSelectionEnabled = false))
+    }
+
+    return filterGroupList
   }
   fun selectFilter(filter: FilterItem, singleSelectionEnabled: Boolean): Pair<Int, Int> {
     val mutableList = _selectedFilterList.value ?: mutableListOf()
