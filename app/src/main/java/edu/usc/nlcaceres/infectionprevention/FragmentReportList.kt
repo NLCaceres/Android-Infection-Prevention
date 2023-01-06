@@ -101,6 +101,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
   }
   private fun setupFloatButtonToSortFilterView() {
     filterFloatButton = viewBinding.sortFilterFloatingButton.apply { setOnClickListener {
+      (activity as? ActivityMain)?.collapseActionView() // Prevent odd toolbar menu disappearing issue
       findNavController().navigate(R.id.actionToSortFilterFragment)
     }}
   }
@@ -164,6 +165,8 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
       setUpSearchView(menu)
     }
     override fun onMenuItemSelected(item: MenuItem): Boolean {
+      // Collapse ActionView before allowing navigation to ensure Settings Toolbar is setup properly
+      if (item.itemId == R.id.globalActionToFragmentSettings) { (activity as? ActivityMain)?.collapseActionView() }
       return onNavDestinationSelected(item, findNavController()) // Replaces fragmentManager.popBackStack() & activity?.finish()
     }
     // SEARCHBAR in Toolbar - Called in toolbar createOptionsMenu
