@@ -22,8 +22,6 @@ class ConstantsTest {
 
     assertEquals("edu.usc.nlcaceres.infectionprevention.main", MainFragmentTransaction)
     assertEquals("edu.usc.nlcaceres.infectionprevention.main.preselected_filter", PreSelectedFilterExtra)
-    assertEquals("edu.usc.nlcaceres.infectionprevention.main.precaution_list", PrecautionListExtra)
-    assertEquals("edu.usc.nlcaceres.infectionprevention.main.health_practice_list", HealthPracticeListExtra)
 
     assertEquals("edu.usc.nlcaceres.infectionprevention.create_report", CreateReportTransaction)
     assertEquals("edu.usc.nlcaceres.infectionprevention.create_report.health_practice", CreateReportPracticeExtra)
@@ -34,19 +32,6 @@ class ConstantsTest {
   }
 
   @Test fun `Check Fragment Result Keys and Values Correctly Templated`() {
-    // App wide functionality listeners
-    assertEquals("edu.usc.nlcaceres.infectionprevention.action_view", ActionViewRequestKey)
-    assertEquals("edu.usc.nlcaceres.infectionprevention.action_view.closer", ActionViewIsClosingParcel)
-
-    assertEquals("edu.usc.nlcaceres.infectionprevention.keyboard", KeyboardRequestKey)
-    assertEquals("edu.usc.nlcaceres.infectionprevention.keyboard.closer", KeyboardIsClosingParcel)
-
-    assertEquals("edu.usc.nlcaceres.infectionprevention.nav_drawer", NavDrawerRequestKey)
-    assertEquals("edu.usc.nlcaceres.infectionprevention.nav_drawer.opener", NavDrawerIsOpeningParcel)
-
-    assertEquals("edu.usc.nlcaceres.infectionprevention.snackbar", SnackbarRequestKey)
-    assertEquals("edu.usc.nlcaceres.infectionprevention.snackbar.message", SnackbarMessageParcel)
-
     // Listeners awaiting result of fragment that just popped
     assertEquals("edu.usc.nlcaceres.infectionprevention.create_report_request", CreateReportRequestKey)
 

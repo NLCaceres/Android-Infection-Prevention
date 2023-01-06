@@ -79,7 +79,7 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
           visibility = if (viewModel.precautionListEmpty()) View.VISIBLE else View.INVISIBLE
           text = message
         }
-        setFragmentResult(SnackbarRequestKey, bundleOf(SnackbarMessageParcel to message))
+        (activity as? ActivityMain)?.showSnackbar(message)
       }
     }
   }
