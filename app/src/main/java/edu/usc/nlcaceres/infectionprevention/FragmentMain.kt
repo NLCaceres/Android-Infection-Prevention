@@ -115,7 +115,7 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
           else -> "Please try again later!"
         }
       }
-      if (newList.isNotEmpty()) { // Only start transition if fragment's parentView has drawn/laid out all children
+      if (!loading) { // Only start transition if fragment's parentView has drawn/laid out all children
         (view?.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
       }
     }
