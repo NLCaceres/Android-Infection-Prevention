@@ -5,13 +5,14 @@ import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.*
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexDirection
@@ -27,6 +28,7 @@ import edu.usc.nlcaceres.infectionprevention.adapters.SelectedFilterAdapter
 import edu.usc.nlcaceres.infectionprevention.databinding.FragmentSortFilterBinding
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelSortFilter
 import edu.usc.nlcaceres.infectionprevention.util.*
+import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelMain
 import kotlinx.coroutines.launch
 
 /* Activity with 2 RecyclerViews - Top handles the selected filters, Bottom the filters to be selected
@@ -37,6 +39,7 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
   private var _viewBinding: FragmentSortFilterBinding? = null
   private val viewBinding get() = _viewBinding!!
   private val viewModel: ViewModelSortFilter by viewModels()
+  private val activityViewModel: ViewModelMain by activityViewModels()
 
   private lateinit var selectedFilterRV : RecyclerView
   private lateinit var selectedFilterAdapter : SelectedFilterAdapter
@@ -52,7 +55,6 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    (activity as AppCompatActivity).supportActionBar?.setUpIndicator(R.drawable.ic_close)
     requireActivity().addMenuProvider(SortFilterMenu(), viewLifecycleOwner, Lifecycle.State.RESUMED)
 
     // Since doneButtonEnabled is distinct(), invalidate() always needed so onPrepareOptionsMenu can update doneButton
@@ -72,33 +74,23 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
         icon?.alpha = if (isEnabled) 255 else 130 // Full brightness when enabled. Just over half when disabled
       }
     }
-    override fun onMenuItemSelected(menuItem: MenuItem) = when (menuItem.itemId) {
-      android.R.id.home -> { parentFragmentManager.popBackStack(); true }
+    override fun onMenuItemSelected(item: MenuItem) = when (item.itemId) {
       R.id.set_filters_action -> {
         val selectedFilters = ArrayList(viewModel.selectedFilterList.value ?: listOf())
-        // setFragmentResult will deliver its result to 1 listener! BUT only once it's in STARTED
+        // setFragmentResult delivers its result to ReportList listener! BUT only once it's in STARTED lifecycle state
         setFragmentResult(SortFilterRequestKey, bundleOf(SelectedFilterParcel to selectedFilters))
-        parentFragmentManager.popBackStack() // Pop off this fragment back to reportList (like activity.finish())
+        findNavController().navigateUp() // Pop off this fragment like parentFragmentManager.popBackStack() or activity.finish()
         true
       }
       R.id.reset_filters_action -> {
         viewModel.resetFilters().forEach { index -> expandableFilterAdapter.notifyItemChanged(index) }
         true
       }
-      R.id.settings_action -> {
-        parentFragmentManager.commit {
-          setReorderingAllowed(true)
-          addToBackStack(null)
-          replace<FragmentSettings>(R.id.fragment_main_container)
-        }
-        true
-      }
-      else -> false
+      else -> onNavDestinationSelected(item, findNavController())
     }
   }
 
-  private fun setupExpandableRecyclerView() {
-    // ExpandableListView = alt choice BUT RecyclerViews CAN save on memory
+  private fun setupExpandableRecyclerView() { // ExpandableListView = alt choice BUT RecyclerViews save on memory
     expandableFilterRV = viewBinding.expandableFilterRecyclerView.apply {
       expandableFilterAdapter = ExpandableFilterAdapter(FilterSelectionListener()).also { adapter = it }
       addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
@@ -109,9 +101,8 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
     lifecycleScope.launch { viewModel.filterGroupList.flowWithLifecycle(lifecycle).collect { newList ->
       expandableFilterAdapter.submitList(newList)
     }}
-    val precautionTypeList = requireArguments().getStringArrayList(PrecautionListExtra) ?: emptyList()
-    val practiceTypeList = requireArguments().getStringArrayList(HealthPracticeListExtra) ?: emptyList()
-    viewModel.initializeFilterList(precautionTypeList, practiceTypeList)
+    val (precautionNames, healthPracticeNames) = activityViewModel.getNamesLists()
+    viewModel.initializeFilterList(precautionNames, healthPracticeNames)
   }
 
   private fun setUpSelectedFilterRV() {

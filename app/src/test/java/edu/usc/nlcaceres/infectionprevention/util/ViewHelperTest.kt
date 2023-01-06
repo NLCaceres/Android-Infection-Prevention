@@ -95,13 +95,13 @@ class ViewHelperTest {
     launch(ActivityMain::class.java).use {
       onView(withId(R.id.home_toolbar)).check(matches(isDisplayed()))
       onView(withId(R.id.home_toolbar)).check(matches(withChild(withId(R.id.toolbar_logo))))
-      onView(withContentDescription(R.string.abc_action_bar_up_description)).
+      onView(withContentDescription(R.string.nav_app_bar_open_drawer_description)).
         check(matches(isDisplayed())).check(matches(withDrawable(R.drawable.ic_menu)))
 
       // Go to settings and check if toolbar updated up indicator
       onView(withId(R.id.home_toolbar)).check(matches(isDisplayed()))
       onView(withContentDescription("Settings")).perform(click())
-      onView(withContentDescription(R.string.abc_action_bar_up_description)).
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).
         check(matches(isDisplayed())).check(matches(withDrawable(R.drawable.ic_back_arrow)))
     }
   }

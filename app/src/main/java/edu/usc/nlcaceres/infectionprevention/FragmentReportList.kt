@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention
 
+import android.util.Log
 import android.os.Bundle
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
@@ -17,12 +18,12 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.JustifyContent
 import androidx.core.view.MenuProvider
 import android.text.InputType.TYPE_CLASS_TEXT
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 import androidx.fragment.app.*
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
@@ -66,8 +67,6 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    (activity as AppCompatActivity).supportActionBar?.setUpIndicator(R.drawable.ic_back_arrow)
-
     requireActivity().addMenuProvider(ReportListMenu(), viewLifecycleOwner, Lifecycle.State.RESUMED)
 
     setupRefresh()
@@ -102,13 +101,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
   }
   private fun setupFloatButtonToSortFilterView() {
     filterFloatButton = viewBinding.sortFilterFloatingButton.apply { setOnClickListener {
-      parentFragmentManager.commit {
-        setReorderingAllowed(true)
-        addToBackStack(null)
-        val bundle = bundleOf(PrecautionListExtra to requireArguments().getStringArrayList(PrecautionListExtra),
-          HealthPracticeListExtra to requireArguments().getStringArrayList(HealthPracticeListExtra))
-        replace<FragmentSortFilter>(R.id.fragment_main_container, args = bundle)
-      }
+      findNavController().navigate(R.id.actionToSortFilterFragment)
     }}
   }
   private fun setupSortFilterResultListener() {
@@ -127,7 +120,9 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
   }
 
   private fun setupSortFilterViews() {
-    requireArguments().fetchParcelable<FilterItem>(PreSelectedFilterExtra)?.let { viewModel.selectedFilters = arrayListOf(it) }
+    arguments?.getString(PreSelectedFilterExtra)?.let { filterName ->
+      viewModel.selectedFilters = arrayListOf(FilterItem(filterName, true, "Precaution Type"))
+    }
 
     selectedFilterAdapter = SelectedFilterAdapter { _, _, position -> // RemoveButton() - View, FilterItem, Int
       viewModel.selectedFilters.removeAt(position) // First remove filter from selectedFilterList
@@ -167,17 +162,8 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
       menuInflater.inflate(R.menu.report_list_actions, menu)
       setUpSearchView(menu)
     }
-    override fun onMenuItemSelected(item: MenuItem) = when (item.itemId) {
-      android.R.id.home -> { parentFragmentManager.popBackStack(); true } // Rather than requireActivity.finish()
-      R.id.settings_action -> {
-        parentFragmentManager.commit {
-          setReorderingAllowed(true)
-          addToBackStack(null)
-          replace<FragmentSettings>(R.id.fragment_main_container)
-        } // Rather than startActivity(intent, ActivitySettings)
-        true
-      }
-      else -> false // False = Let something else handle the toolbar functionality
+    override fun onMenuItemSelected(item: MenuItem): Boolean {
+      return onNavDestinationSelected(item, findNavController()) // Replaces fragmentManager.popBackStack() & activity?.finish()
     }
     // SEARCHBAR in Toolbar - Called in toolbar createOptionsMenu
     private fun setUpSearchView(menu : Menu) {

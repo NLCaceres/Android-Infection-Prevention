@@ -2,6 +2,7 @@
 
 buildscript {
     val kotlin_version = "1.7.10"
+    val nav_version = "2.5.3"
 
     repositories {
         google()
@@ -11,6 +12,7 @@ buildscript {
         classpath("com.android.tools.build:gradle:7.3.1")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
         classpath("com.google.dagger:hilt-android-gradle-plugin:2.43.2")
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
         // App Dependencies do NOT go here. They go in the module build.gradle.kts file
     }
 }

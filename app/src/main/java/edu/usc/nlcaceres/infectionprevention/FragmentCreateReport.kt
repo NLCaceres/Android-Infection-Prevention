@@ -12,12 +12,12 @@ import android.widget.Button
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.*
 import androidx.lifecycle.Lifecycle
 import androidx.core.view.ViewCompat
+import androidx.navigation.fragment.findNavController
 import androidx.transition.ChangeBounds
 import androidx.transition.Fade
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,7 +64,6 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
     super.onViewCreated(view, savedInstanceState)
     postponeEnterTransition()
 
-    (activity as AppCompatActivity).supportActionBar?.setUpIndicator(R.drawable.ic_back_arrow)
     requireActivity().addMenuProvider(CreateReportMenu(), viewLifecycleOwner, Lifecycle.State.RESUMED)
 
     setupProgressIndicator()
@@ -177,6 +176,6 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
   private fun completeReportSubmission() {
     setFragmentResult(CreateReportRequestKey, bundleOf())
     viewModel.submitReport()
-    parentFragmentManager.popBackStack()
+    findNavController().navigateUp() // NavComponent allows multi-step pop back if needed!
   }
 }

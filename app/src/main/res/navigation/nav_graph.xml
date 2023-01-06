@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+  <!-- Main Destinations to go from MainFragment: CreateReport or ReportList -->
+  <fragment
+      android:id="@+id/mainFragment"
+      android:label=""
+      android:name="edu.usc.nlcaceres.infectionprevention.FragmentMain"
+      tools:layout="@layout/fragment_main">
+
+    <action
+        android:id="@+id/actionToCreateReportFragment"
+        app:destination="@id/createReportFragment" />
+
+    <!-- Special items in DrawerLayout in MainFragment -->
+    <!-- Since can't send parcelable over as a default value, the following 2 actions send a -->
+    <!-- string notifying reportList what filterItem to create a filter for the list the API sends! -->
+    <!-- So instead of using args/bundles to send complex data, send simple data for easier recreation/rerender! -->
+    <action
+      android:id="@+id/actionToReportListFragmentWithStandardFilter"
+      app:destination="@id/reportListFragment">
+      <argument
+          android:name="edu.usc.nlcaceres.infectionprevention.main.preselected_filter"
+          app:argType="string"
+          android:defaultValue="Standard"/>
+    </action>
+    <action
+      android:id="@+id/actionToReportListFragmentWithIsolationFilter"
+      app:destination="@id/reportListFragment">
+      <argument
+          android:name="edu.usc.nlcaceres.infectionprevention.main.preselected_filter"
+          app:argType="string"
+          android:defaultValue="Isolation"/>
+    </action>
+  </fragment>
+
+  <!-- Navigation Options from left to right -->
+  <!-- Left Side Drawer Layout: ReportListFragment to SortFilterFragment -->
+  <fragment
+      android:id="@+id/reportListFragment"
+      android:label=""
+      android:name="edu.usc.nlcaceres.infectionprevention.FragmentReportList"
+      tools:layout="@layout/fragment_report_list">
+    <!-- Used to close DrawerLayout onNavItemSelected -->
+    <argument android:name="CloseDrawer" android:defaultValue="true" />
+
+    <action
+      android:id="@+id/actionToSortFilterFragment"
+      app:destination="@id/sortFilterFragment" />
+  </fragment>
+  <fragment
+      android:id="@+id/sortFilterFragment"
+      android:label=""
+      android:name="edu.usc.nlcaceres.infectionprevention.FragmentSortFilter"
+      tools:layout="@layout/fragment_sort_filter"/>
+
+  <!-- Center RecyclerView Buttons: CreateReportFragment -->
+  <fragment
+      android:id="@+id/createReportFragment"
+      android:label=""
+      android:name="edu.usc.nlcaceres.infectionprevention.FragmentCreateReport"
+      tools:layout="@layout/fragment_create_report"/>
+
+  <!-- ActionBar Settings Item: SettingsFragment w/ GlobalAction to goto -->
+  <fragment
+      android:id="@+id/settingsFragment"
+      android:label="@string/settings_label"
+      android:name="edu.usc.nlcaceres.infectionprevention.FragmentSettings" />
+  <action
+      android:id="@+id/globalActionToFragmentSettings"
+      app:destination="@id/settingsFragment" />
+</navigation>

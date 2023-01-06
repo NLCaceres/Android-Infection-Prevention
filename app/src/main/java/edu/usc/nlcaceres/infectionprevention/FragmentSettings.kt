@@ -1,15 +1,9 @@
 package edu.usc.nlcaceres.infectionprevention
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentResultListener
-import androidx.lifecycle.Lifecycle
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.preference.EditTextPreference
@@ -27,23 +21,12 @@ class FragmentSettings : PreferenceFragmentCompat() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    (activity as AppCompatActivity).supportActionBar?.setUpIndicator(R.drawable.ic_back_arrow)
-    requireActivity().addMenuProvider(SettingsMenu(), viewLifecycleOwner, Lifecycle.State.RESUMED)
 
     setDivider(ContextCompat.getDrawable(requireContext(), R.drawable.custom_item_divider)) // Divide Categories
     setDividerHeight(dpUnits(4))
     // Can use insetDrawable w/ listView.addItemDecoration to add dividers between preferences but then
     // ALSO end up with an extra divider between the category title AND its preferences
     childFragmentManager.setFragmentResultListener(EditTextDialogRequestKey, this, dialogResultListener)
-  }
-  private inner class SettingsMenu: MenuProvider { // Need inner for fragmentManager
-    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-      menuInflater.inflate(R.menu.action_buttons, menu)
-    }
-    override fun onMenuItemSelected(item: MenuItem) = when (item.itemId) {
-      android.R.id.home -> { parentFragmentManager.popBackStack(); true }
-      else -> false
-    }
   }
 
   private fun setupCommonPrefs() { // Preferences all users should see
