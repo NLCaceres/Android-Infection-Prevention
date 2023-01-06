@@ -139,8 +139,9 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
   private fun setupReportRV() {
     reportsRV = viewBinding.reportRV.apply {
       reportsAdapter = ReportAdapter().also { adapter = it } // ALSO setAdapter for reportsRV
-      val tintedLine = ContextCompat.getDrawable(context, R.drawable.custom_item_divider) // Get line drawable
-        ?.apply { setTint(ContextCompat.getColor(context, R.color.colorPrimaryDark)) } // Color the line
+      val tintedLine = ContextCompat.getDrawable(context, R.drawable.custom_item_divider)?.apply {
+        setTint(ContextCompat.getColor(context, R.color.colorPrimaryDark)) // Get line as drawable to color it
+      }
       addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply { setDrawable(tintedLine!!) })
     }
 
