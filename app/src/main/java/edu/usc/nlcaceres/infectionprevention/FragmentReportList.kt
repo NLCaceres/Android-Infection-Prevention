@@ -95,7 +95,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
           visibility = if (viewModel.reportListEmpty()) View.VISIBLE else View.INVISIBLE
           text = message
         }
-        setFragmentResult(SnackbarRequestKey, bundleOf(SnackbarMessageParcel to message))
+        (activity as? ActivityMain)?.showSnackbar(message)
       }
     }
   }
@@ -108,7 +108,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
     parentFragmentManager.setFragmentResultListener(SortFilterRequestKey, viewLifecycleOwner) { requestKey, result ->
       if (requestKey != SortFilterRequestKey) { return@setFragmentResultListener } // Early break if key is incorrect
       result.fetchParcelableList<FilterItem>(SelectedFilterParcel)?.let { newFiltersList -> // Make sure not null
-        setFragmentResult(SnackbarRequestKey, bundleOf(SnackbarMessageParcel to "Filtering and Sorting!"))
+        (activity as? ActivityMain)?.showSnackbar(resources.getString(R.string.sorting_and_filtering_message))
 
         viewModel.selectedFilters.clear()
         viewModel.selectedFilters.addAll(newFiltersList) // Update filters for display
@@ -204,9 +204,10 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
   private inner class ActionViewExpansionListener: MenuItem.OnActionExpandListener {
     private val focusListener = View.OnFocusChangeListener { view, isFocused ->
       if (!isFocused) { // When searchActionView loses focus, ask activity to hide keyboard + close actionView if no query
-        setFragmentResult(KeyboardRequestKey, bundleOf(KeyboardIsClosingParcel to true))
+        (activity as? ActivityMain)?.hideKeyboard()
+
         (view as? EditText)?.run {
-          if (text.isEmpty()) setFragmentResult(ActionViewRequestKey, bundleOf(ActionViewIsClosingParcel to true))
+          if (text.isEmpty()) { (activity as? ActivityMain)?.collapseActionView() }
         }
       }
     }
@@ -220,7 +221,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
       val searchBar = searchIcon.actionView as EditText
       if (requireActivity().currentFocus == searchBar && searchBar.text.isNotEmpty()) {
         searchBar.text.clear()
-        setFragmentResult(KeyboardRequestKey, bundleOf(KeyboardIsClosingParcel to true)) // Hide keyboard
+        (activity as? ActivityMain)?.hideKeyboard()
         searchBar.onFocusChangeListener = null // Prevents double collapse nullException call (listening restarts on next expansion)
         return true
       }
@@ -228,7 +229,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
         searchBar.clearFocus(); return false // Clear focus and let focusListener close actionView
       }
       // Made it here, either user didn't interact at all or above "else if" ran so clearFocus() let focusListener run collapse
-      setFragmentResult(KeyboardRequestKey, bundleOf(KeyboardIsClosingParcel to true)) // Hide keyboard
+      (activity as? ActivityMain)?.hideKeyboard()
       searchBar.text.clear(); return true
     }
   }

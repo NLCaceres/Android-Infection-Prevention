@@ -16,8 +16,6 @@ const val ProjectPkgName = "edu.usc.nlcaceres.infectionprevention"
 const val ShortcutIntentAction = "android.intent.action.VIEW" // May use an identifier BUT only available in API 29+
 const val MainFragmentTransaction = "$ProjectPkgName.main" // Transaction from Main to ReportList view
 const val PreSelectedFilterExtra = "$MainFragmentTransaction.preselected_filter"
-const val PrecautionListExtra = "$MainFragmentTransaction.precaution_list"
-const val HealthPracticeListExtra = "$MainFragmentTransaction.health_practice_list"
 const val CreateReportTransaction = "$ProjectPkgName.create_report"
 const val CreateReportPracticeExtra = "$CreateReportTransaction.health_practice"
 
@@ -25,15 +23,6 @@ const val CreateReportPracticeExtra = "$CreateReportTransaction.health_practice"
 const val ReportTypeTextViewTransition = "$ProjectPkgName.report_type_textview_transition"
 
 // FragmentResultListeners
-// ActivityMain's Listener that runs common app functionality like displaying the Keyboard & Snackbar
-const val ActionViewRequestKey = "$ProjectPkgName.action_view"
-const val ActionViewIsClosingParcel = "$ActionViewRequestKey.closer"
-const val KeyboardRequestKey = "$ProjectPkgName.keyboard"
-const val KeyboardIsClosingParcel = "$KeyboardRequestKey.closer"
-const val NavDrawerRequestKey = "$ProjectPkgName.nav_drawer"
-const val NavDrawerIsOpeningParcel = "$NavDrawerRequestKey.opener"
-const val SnackbarRequestKey = "$ProjectPkgName.snackbar"
-const val SnackbarMessageParcel = "$SnackbarRequestKey.message"
 // Following Requests signal to previous fragments' resultListeners that the current fragment completed its job
 const val CreateReportRequestKey = "$ProjectPkgName.create_report_request" // Report was submitted, go to ReportList
 const val SortFilterRequestKey = "$ProjectPkgName.sort_filter_request" // Filters selected, begin sorting and filtering

@@ -159,10 +159,7 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
       if (viewModel.dateTimeString.value.isNullOrBlank()) { // Indicates date was likely not selected
         AlertDialog.Builder(requireContext()).run {
           setPositiveButton(R.string.alert_dialog_ok) { _, _ -> completeReportSubmission() }
-          setNegativeButton(R.string.alert_dialog_cancel) { _, _ ->
-            setFragmentResult(SnackbarRequestKey,
-              bundleOf(SnackbarMessageParcel to resources.getString(R.string.missing_date_hint)))
-          }
+          setNegativeButton(R.string.alert_dialog_cancel) { _, _ -> (activity as? ActivityMain)?.showSnackbar(resources.getString(R.string.missing_date_hint)) }
           setMessage(R.string.date_alert_dialog_message)
           setTitle(R.string.date_alert_dialog_title)
           create() // After set up return the alert dialog via create

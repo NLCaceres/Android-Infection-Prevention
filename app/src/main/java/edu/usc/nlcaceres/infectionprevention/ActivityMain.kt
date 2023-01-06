@@ -90,31 +90,11 @@ class ActivityMain : AppCompatActivity() {
     }
   }
 
-  private fun setupFragmentListener() {
-    supportFragmentManager.setFragmentResultListener(ActionViewRequestKey, this, messagingListener)
-    supportFragmentManager.setFragmentResultListener(KeyboardRequestKey, this, messagingListener)
-    supportFragmentManager.setFragmentResultListener(NavDrawerRequestKey, this, messagingListener)
-    supportFragmentManager.setFragmentResultListener(SnackbarRequestKey, this, messagingListener)
-  }
-  // Rather than open up coordinatorLayout and navDrawer to child fragments, handle their use from here!
-  private val messagingListener = FragmentResultListener { requestKey, result ->
-    when (requestKey) {
-      ActionViewRequestKey -> { // If true value found then collapse toolbar action view
-        if (result.getBoolean(ActionViewIsClosingParcel)) { toolbar.collapseActionView() }
-      }
-      KeyboardRequestKey -> {
-        if (result.getBoolean(KeyboardIsClosingParcel)) { // If true value found then hide keyboard
-          (getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
-            .hideSoftInputFromWindow(viewBinding.root.windowToken, 0)
-        }
-      }
-      NavDrawerRequestKey -> {
-        if (result.getBoolean(NavDrawerIsOpeningParcel)) navDrawer.openDrawer(GravityCompat.START)
-        else navDrawer.closeDrawer(GravityCompat.START)
-      }
-      SnackbarRequestKey -> {
-        result.getString(SnackbarMessageParcel)?.let { ShowSnackbar(coordinatorLayout, it, Snackbar.LENGTH_SHORT) }
-      }
-    }
+  // Replace Fragment Listeners w/ simple helper functions since modern Android usually only uses 1 Host Activity
+  fun collapseActionView() = toolbar.collapseActionView()
+  fun hideKeyboard() = (getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
+    .hideSoftInputFromWindow(viewBinding.root.windowToken, 0)
+  fun showSnackbar(message: String) {
+    ShowSnackbar(coordinatorLayout, message, Snackbar.LENGTH_SHORT)
   }
 }

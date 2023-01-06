@@ -103,6 +103,7 @@
 
     <!-- Reports List Activity -->
     <string name="reports_filter_button">Sort &amp; Filter</string>
+    <string name="sorting_and_filtering_message">Sorting and Filtering Now!</string>
     <string name="filter_desc">Sorting and Filtering button</string>
     <string name="default_report_item_title">Violation Type</string>
     <string name="default_report_item_date">10:24pm 10/12/2019</string>
