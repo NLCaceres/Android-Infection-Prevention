@@ -9,11 +9,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.FragmentResultListener
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import edu.usc.nlcaceres.infectionprevention.databinding.ActivityMainBinding
@@ -28,9 +30,9 @@ class ActivityMain : AppCompatActivity() {
 
   private val viewModel: ViewModelMain by viewModels() // Still requires Hilt to retrieve the viewModel
   private lateinit var viewBinding : ActivityMainBinding
-  lateinit var toolbar: Toolbar
   private lateinit var coordinatorLayout: CoordinatorLayout
-  private lateinit var navDrawer: DrawerLayout
+  private lateinit var toolbar: Toolbar
+  private lateinit var appBarConfig: AppBarConfiguration
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -41,6 +43,11 @@ class ActivityMain : AppCompatActivity() {
 
     EspressoIdlingResource.increment() // ViewModel completion block handles the decrement since it runs even on error
 
+    val navController = setupActionBar()
+    setupNavDrawer(navController)
+  }
+
+  private fun setupActionBar(): NavController {
     // Since MainLauncher Activity label gives the app icon AND the toolbar its title, so need to remove it here
     toolbar = viewBinding.toolbarLayout.homeToolbar.apply {
       title = ""
@@ -48,36 +55,39 @@ class ActivityMain : AppCompatActivity() {
       setSupportActionBar(this)
     }
 
-    setupNavView()
+    val navHost = supportFragmentManager.findFragmentById(R.id.fragment_nav_host) as NavHostFragment
+    val navController = navHost.navController
 
-    setupFragmentListener()
+    appBarConfig = AppBarConfiguration(navController.graph, viewBinding.navDrawer)
+
+    setupActionBarWithNavController(navController, appBarConfig) // Allow NavComponent to control Home/Up Buttons
+
+    return navController
   }
 
-  private fun setupNavView() {
-    navDrawer = viewBinding.navDrawer
+  // Following allows NavHostFragment to hijack the Actionbar Home/Up button & open/close the NavDrawer
+  override fun onSupportNavigateUp(): Boolean {
+    val navController = findNavController(R.id.fragment_nav_host)
+    return navController.navigateUp(appBarConfig) || super.onSupportNavigateUp()
+  }
+
+  private fun setupNavDrawer(navController: NavController) {
     viewBinding.navView.apply {
-      setNavigationItemSelectedListener(NavDrawerItemSelectedListener(::finalizeNavDrawerItemSelection))
       getHeaderView(0).findViewById<Button>(R.id.navCloseButton)
-        .setOnClickListener { navDrawer.closeDrawers() }
+        .setOnClickListener { viewBinding.navDrawer.closeDrawers() }
+      setupWithNavController(navController) // Links NavDrawer & its items to NavComponent/Graph
     }
-  }
-  // Following handles navigation from NavDrawer + fills intent with current list of precaution types
-  private fun finalizeNavDrawerItemSelection(bundle: Bundle) {
-    navDrawer.closeDrawers()
-    // Add the names lists to bundle separately so sortFilterActivity can dynamically create filter options
-    val (precautionNames, healthPracticeNames) = viewModel.getNamesLists()
-    bundle.putStringArrayList(PrecautionListExtra, precautionNames)
-    bundle.putStringArrayList(HealthPracticeListExtra, healthPracticeNames)
-    supportFragmentManager.commit { // Handle fragment transaction from fragmentMain to fragmentReportList
-      setReorderingAllowed(true) // Optimize state changes as the fragment change gets animated
+    navController.addOnDestinationChangedListener { _, destination, args ->
+      val upIndicator = when (destination.id) {
+        R.id.createReportFragment, R.id.settingsFragment, R.id.reportListFragment -> R.drawable.ic_back_arrow
+        R.id.sortFilterFragment -> R.drawable.ic_close
+        else -> R.drawable.ic_menu
+      } // To minimize pop-in, we update toolbar on Nav, not on Fragment CREATE lifecycle state
+      supportActionBar?.setUpIndicator(upIndicator)
 
-      // Could label source fragment for back stack if needed to jump straight back to it rather than require multiple pops back
-      addToBackStack(null) // Needed regardless if adding or replacing UNLESS source fragment can be skipped when popping back
-
-      // Replace() removes/destroys current Fragment instance then adds in layout frag container
-      replace<FragmentReportList>(R.id.fragment_main_container, args = bundle) // Add() just stacks the view on top
+      // If using navDrawer item to go to destination, use "CloseDrawer" argument to closeDrawer b4 entering next fragment
+      if (args?.getBoolean("CloseDrawer") == true) { viewBinding.navDrawer.closeDrawers() }
     }
-    //startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
   }
 
   private fun setupFragmentListener() {

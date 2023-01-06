@@ -87,9 +87,9 @@ class MainActivityRobot : BaseRobot() {
 
     // Toolbar views
     fun navDrawer(): ViewInteraction = onView(withId(R.id.navDrawer))
-    fun navNormalReportListButton(): ViewInteraction = onView(withId(R.id.nav_reports))
-    fun navFilterStandardReportListButton(): ViewInteraction = onView(withId(R.id.nav_standard_precautions))
-    fun navFilterIsoReportListButton(): ViewInteraction = onView(withId(R.id.nav_isolation_precautions))
+    fun navNormalReportListButton(): ViewInteraction = onView(withText("Recent Reports"))
+    fun navFilterStandardReportListButton(): ViewInteraction = onView(withText("Standard Precaution"))
+    fun navFilterIsoReportListButton(): ViewInteraction = onView(withText("Isolation Precaution"))
     fun settingButton(): ViewInteraction = onView(withContentDescription("Settings")) // Alternative is R.id.action_settings BUT seemingly not consistent
   }
 }

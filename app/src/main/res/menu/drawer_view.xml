@@ -3,18 +3,18 @@
     <group>
         <item
             android:title="@string/reports"
-            android:id="@+id/nav_reports"
+            android:id="@+id/reportListFragment"
             android:icon="@drawable/ic_description"/>
     </group>
 
     <item android:title="@string/report_filters">
         <menu>
             <item
-                android:id="@+id/nav_standard_precautions"
+                android:id="@id/actionToReportListFragmentWithStandardFilter"
                 android:title="@string/standard_precautions"
                 android:icon="@drawable/ic_collections_bookmark" />
             <item
-                android:id="@+id/nav_isolation_precautions"
+                android:id="@id/actionToReportListFragmentWithIsolationFilter"
                 android:title="@string/isolation_precautions"
                 android:icon="@drawable/ic_collections_bookmark" />
         </menu>

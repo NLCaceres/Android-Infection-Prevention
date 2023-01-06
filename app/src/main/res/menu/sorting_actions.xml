@@ -11,9 +11,10 @@
       android:icon="@drawable/ic_done"
       app:showAsAction="always" />
   <item
-      android:id="@+id/settings_action"
+      android:id="@+id/globalActionToFragmentSettings"
       android:title="@string/action_settings"
       android:icon="@drawable/ic_settings"
+      android:menuCategory="secondary"
       app:showAsAction="ifRoom" />
 
 </menu>
