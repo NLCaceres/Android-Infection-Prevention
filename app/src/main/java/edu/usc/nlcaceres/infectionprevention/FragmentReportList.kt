@@ -170,7 +170,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
       if (item.itemId == R.id.globalActionToFragmentSettings) { (activity as? ActivityMain)?.collapseActionView() }
       return onNavDestinationSelected(item, findNavController()) // Replaces fragmentManager.popBackStack() & activity?.finish()
     }
-    // SEARCHBAR in Toolbar - Called in toolbar createOptionsMenu
+    // Create SearchBar in ActionBar by calling following in onCreateMenu()
     private fun setUpSearchView(menu : Menu) {
       val searchMenu = menu.findItem(R.id.search_action)
       searchMenu.setOnActionExpandListener(object : OnActionExpandListener {

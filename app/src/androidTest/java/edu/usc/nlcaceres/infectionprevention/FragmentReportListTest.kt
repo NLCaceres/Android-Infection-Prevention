@@ -68,7 +68,7 @@ class FragmentReportListTest: RoboTest() {
   }
 
   // SearchBar filter
-  @Test fun expand_Search_ActionBar_View_When_Empty() {
+  @Test fun expand_SearchBar_ActionView_When_Empty() {
     reportListFragment {
       // Normal flow - Tap search icon, use searchBar, press x to close
       expandSearchBar()
@@ -82,7 +82,7 @@ class FragmentReportListTest: RoboTest() {
       checkSearchBarExpanded() // NOW searchBar losing focus doesn't close it, it stays open even if empty
     }
   }
-  @Test fun expand_Search_ActionBar_View_With_Text() {
+  @Test fun expand_SearchBar_ActionView_With_Text() {
     reportListFragment {
       expandSearchBar()
       checkFirstSearchBarExpansion()
@@ -97,7 +97,7 @@ class FragmentReportListTest: RoboTest() {
       checkFirstSearchBarExpansion() // EditText empty despite previously being filled with "USC"
     }
   }
-  @Test fun filter_With_Search_Bar() {
+  @Test fun filter_With_SearchBar() {
     reportListFragment {
       expandSearchBar()
       checkFirstSearchBarExpansion()
