@@ -16,6 +16,7 @@
         android:id="@+id/precautionImageView"
         android:background="@drawable/circle_buttons"
         android:src="@drawable/ic_circle_plus"
+        android:contentDescription="@string/health_practice_button_desc"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/precautionButtonTV"
         app:layout_constraintStart_toStartOf="parent"
