@@ -26,6 +26,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="@drawable/ic_close"
+        android:contentDescription="@string/close_nav_drawer_button_desc"
         app:layout_constraintTop_toTopOf="@+id/logoImageView"
         app:layout_constraintEnd_toEndOf="parent"/>
 

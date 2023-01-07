@@ -27,9 +27,11 @@
     <string name="create_report_header">Create a New %1$s Report</string>
     <string name="slide_forward_hint">Slide Right</string>
     <string name="slide_backward_hint">Slide Left</string>
+    <string name="health_practice_button_desc">Create New Health Practice Report</string>
 
     <!-- Nav Drawer Strings -->
     <string name="nav_header_img">USC Shield Nav Header Logo</string>
+    <string name="close_nav_drawer_button_desc">Close Nav Drawer</string>
     <string name="reports">Recent Reports</string>
     <string name="report_filters">Recent Reports by Filter</string>
     <string name="standard_precautions">Standard Precaution</string>
@@ -59,8 +61,7 @@
 
     <string name="settings_password">Password</string>
     <string name="settings_password_key">password</string>
-    
-    
+
     <!-- Settings admin strings and keys -->
     <string name="settings_admin">Admin Settings</string>
     <string name="settings_admin_key">admin</string>
@@ -104,7 +105,7 @@
     <!-- Reports List Activity -->
     <string name="reports_filter_button">Sort &amp; Filter</string>
     <string name="sorting_and_filtering_message">Sorting and Filtering Now!</string>
-    <string name="filter_desc">Sorting and Filtering button</string>
+    <string name="filter_desc">Sorting and Filtering</string>
     <string name="default_report_item_title">Violation Type</string>
     <string name="default_report_item_date">10:24pm 10/12/2019</string>
     <string name="default_report_item_employee_name">Committed by Nicholas Caceres</string>
@@ -118,6 +119,6 @@
     <!-- Sort Filter Menu -->
     <string name="set_filter_menu_label">Done</string>
     <string name="reset_filter_menu_label">Reset Filters</string>
-    <string name="remove_filter_button">Remove Filter Button</string>
+    <string name="remove_filter_button">Remove Filter</string>
     <string name="default_filter_name">Filter Name</string>
 </resources>

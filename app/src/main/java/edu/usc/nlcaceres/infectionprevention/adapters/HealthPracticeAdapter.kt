@@ -22,7 +22,7 @@ class HealthPracticeAdapter(private val healthPracticeClickListener : HealthPrac
       viewBinding.precautionButtonTV.text = healthPractice.name.also {
         ViewCompat.setTransitionName(viewBinding.precautionButtonTV, TransitionName(ReportTypeTextViewTransition, it))
       }
-      viewBinding.precautionImageView.contentDescription = "Create New ${healthPractice.name} button"
+      viewBinding.precautionImageView.contentDescription = "Create New ${healthPractice.name} Report"
       // Following click listener will not work with buttons, instead imageView is used (buttons seem to consume clicks, but not running callback)
       viewBinding.practiceItemView.setOnClickListener { itemView -> listener.onHealthPracticeItemClick(itemView, healthPractice) }
     }
