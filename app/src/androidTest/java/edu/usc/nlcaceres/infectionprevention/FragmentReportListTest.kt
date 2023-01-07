@@ -78,8 +78,8 @@ class FragmentReportListTest: RoboTest() {
 
       expandSearchBar()
       checkFirstSearchBarExpansion() // EditText starts up again empty
-      tapAwayFromSearchBar() // Tapping away will close it since editText is still empty
-      checkSearchBarClosed()
+      tapAwayFromSearchBar() // Tapping away USED to close it since editText is still empty
+      checkSearchBarExpanded() // NOW searchBar losing focus doesn't close it, it stays open even if empty
     }
   }
   @Test fun expand_Search_ActionBar_View_With_Text() {
@@ -88,8 +88,8 @@ class FragmentReportListTest: RoboTest() {
       checkFirstSearchBarExpansion()
       enterSearchQuery("USC")
       checkListCount(2)
-      tapAwayFromSearchBar() // Since editText filled with "USC"
-      checkSearchBarExpanded() // editText will stay open
+      tapAwayFromSearchBar() // EditText filled with "USC"
+      checkSearchBarExpanded() // and it definitely stays open
       closeSearchBar() // True close by pressing "X" button
       checkSearchBarClosed()
 
