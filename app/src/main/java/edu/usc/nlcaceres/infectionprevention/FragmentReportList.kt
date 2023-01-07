@@ -18,6 +18,7 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.JustifyContent
 import androidx.core.view.MenuProvider
 import android.text.InputType.TYPE_CLASS_TEXT
+import android.view.MenuItem.OnActionExpandListener
 import androidx.fragment.app.*
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -172,7 +173,18 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
     // SEARCHBAR in Toolbar - Called in toolbar createOptionsMenu
     private fun setUpSearchView(menu : Menu) {
       val searchMenu = menu.findItem(R.id.search_action)
-      searchMenu.setOnActionExpandListener(ActionViewExpansionListener())
+      searchMenu.setOnActionExpandListener(object : OnActionExpandListener {
+        override fun onMenuItemActionExpand(searchIcon: MenuItem): Boolean {
+          (searchIcon.actionView as? EditText)?.requestFocus() // editText cast should always work, allowing focusing
+          return true // Returning true allows expansion to occur as normal
+        }
+        override fun onMenuItemActionCollapse(searchIcon: MenuItem): Boolean {
+          val searchBar = searchIcon.actionView as EditText
+          if (searchBar.text.isNotEmpty()) { searchBar.text.clear() } // Clear text for fresh start on next expand
+          (activity as? ActivityMain)?.hideKeyboard() // Always hide keyboard when closing
+          return true // Returning true allows collapse to occur as normal
+        }
+      })
 
       (searchMenu?.actionView as EditText).apply {
         setHint(R.string.search_hint)
@@ -201,39 +213,6 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
             EspressoIdlingResource.decrement()
           }
       }
-    }
-  }
-  // Needs access to fragment's setFragmentResult & requireActivity so must be inner and declared in same file
-  private inner class ActionViewExpansionListener: MenuItem.OnActionExpandListener {
-    private val focusListener = View.OnFocusChangeListener { view, isFocused ->
-      if (!isFocused) { // When searchActionView loses focus, ask activity to hide keyboard + close actionView if no query
-        (activity as? ActivityMain)?.hideKeyboard()
-
-        (view as? EditText)?.run {
-          if (text.isEmpty()) { (activity as? ActivityMain)?.collapseActionView() }
-        }
-      }
-    }
-    override fun onMenuItemActionExpand(searchIcon: MenuItem): Boolean { // Returning true lets expansion/collapse to happen
-      val searchBar = searchIcon.actionView as EditText
-      searchBar.requestFocus()
-      if (searchBar.onFocusChangeListener == null) searchBar.onFocusChangeListener = focusListener
-      return true
-    }
-    override fun onMenuItemActionCollapse(searchIcon: MenuItem): Boolean {
-      val searchBar = searchIcon.actionView as EditText
-      if (requireActivity().currentFocus == searchBar && searchBar.text.isNotEmpty()) {
-        searchBar.text.clear()
-        (activity as? ActivityMain)?.hideKeyboard()
-        searchBar.onFocusChangeListener = null // Prevents double collapse nullException call (listening restarts on next expansion)
-        return true
-      }
-      else if (requireActivity().currentFocus == searchBar) {
-        searchBar.clearFocus(); return false // Clear focus and let focusListener close actionView
-      }
-      // Made it here, either user didn't interact at all or above "else if" ran so clearFocus() let focusListener run collapse
-      (activity as? ActivityMain)?.hideKeyboard()
-      searchBar.text.clear(); return true
     }
   }
 }
