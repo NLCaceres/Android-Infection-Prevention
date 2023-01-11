@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention
 
+import android.util.Log
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
@@ -13,9 +14,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
-import android.view.Gravity
-import edu.usc.nlcaceres.infectionprevention.databinding.CustomAlertDialogBinding
 import android.view.WindowInsets
+import android.view.Gravity
+import java.io.Serializable
+import edu.usc.nlcaceres.infectionprevention.databinding.CustomAlertDialogBinding
+import edu.usc.nlcaceres.infectionprevention.util.AlertDialogBundleTitleKey
+import edu.usc.nlcaceres.infectionprevention.util.AlertDialogBundleMessageKey
+import edu.usc.nlcaceres.infectionprevention.util.AlertDialogBundleOkButtonListenerKey
+import edu.usc.nlcaceres.infectionprevention.util.AlertDialogBundleNeedBasicCancelButtonKey
+import edu.usc.nlcaceres.infectionprevention.util.AlertDialogBundleCancelButtonListenerKey
+import edu.usc.nlcaceres.infectionprevention.util.fetchSerializable
 
 /* Custom DialogFragment, overrides onCreateView NOT onCreateDialog.
 Guide: https://developer.android.com/guide/topics/ui/dialogs - Dialog with Custom Layout
@@ -37,13 +45,19 @@ class AppFragmentAlertDialog : DialogFragment() {
     super.onViewCreated(view, savedInstanceState)
 
     alertIcon = viewBinding.alertIcon.apply { setImageDrawable(ContextCompat.getDrawable(context, R.drawable.usc_shield_mono_gold)) }
-    alertTitle = viewBinding.alertTitle.apply { text = arguments?.getString("Title") }
-    alertMessage = viewBinding.alertMessage.apply { text = arguments?.getString("Message") }
-    alertOKButton = viewBinding.alertOkButton.apply { setOnClickListener { dismiss() } }
+    alertTitle = viewBinding.alertTitle.apply { text = arguments?.getString(AlertDialogBundleTitleKey) }
+    alertMessage = viewBinding.alertMessage.apply { text = arguments?.getString(AlertDialogBundleMessageKey) }
+    alertOKButton = viewBinding.alertOkButton.apply {
+      setOnClickListener {
+        (arguments?.fetchSerializable<ButtonListener>(AlertDialogBundleOkButtonListenerKey))?.onClick()
+        dismiss()
+      }
+    }
     alertCancelButton = viewBinding.alertCancelButton.apply {
-      val needCancelButton = arguments?.getBoolean("NeedCancelButton") ?: false
+      val cancelButtonListener = arguments?.fetchSerializable<ButtonListener>(AlertDialogBundleCancelButtonListenerKey)
+      val needCancelButton = (arguments?.getBoolean(AlertDialogBundleNeedBasicCancelButtonKey) ?: false)
       visibility = if (needCancelButton) View.VISIBLE else View.INVISIBLE
-      setOnClickListener { dismiss() }
+      setOnClickListener { cancelButtonListener?.onClick(); dismiss() } // Run custom cancel block then dismiss dialog
     }
   }
 
@@ -53,7 +67,7 @@ class AppFragmentAlertDialog : DialogFragment() {
   }
 
   private fun setUpDimensions(window: Window) {
-    val windowSize = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+    val windowSize = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) { // Q == SDK 29 Android 10
       val windowMetrics = window.windowManager.currentWindowMetrics
       // Gets all insets (system bars, nav bars, display cutouts)
       val insets = windowMetrics.windowInsets.getInsetsIgnoringVisibility(
@@ -76,15 +90,26 @@ class AppFragmentAlertDialog : DialogFragment() {
     window.setGravity(Gravity.CENTER)
   }
 
+  // Following used to make button callbacks that thanks to Serializable can be passed into bundle
+  fun interface ButtonListener: Serializable {
+    fun onClick() // Could provide a param ref to THIS dialog instance like DialogInterface does but currently not needed
+  }
+
   companion object {
     // Why newInstance rather than constructor? Bundle survives configuration changes + recreation
     // ViewModel survives config changes BUT not recreation. During recreation the empty default constructor is called
-    fun newInstance(title : String, message : String, needCancelButton : Boolean) : AppFragmentAlertDialog {
+    fun newInstance(title: String, message: String, okButtonListener: ButtonListener? = null,
+                    needCancelButton: Boolean? = null, cancelButtonListener: ButtonListener? = null): AppFragmentAlertDialog {
       val frag = AppFragmentAlertDialog()
       frag.arguments = Bundle().apply {
-        putString("Title", title)
-        putString("Message", message)
-        putBoolean("NeedCancelButton", needCancelButton)
+        putString(AlertDialogBundleTitleKey, title)
+        putString(AlertDialogBundleMessageKey, message)
+        putSerializable(AlertDialogBundleOkButtonListenerKey, okButtonListener)
+        // Why needCancelButton flag AND a cancelButtonListener?
+        // If just using the flag, then cancelButton is visible & fires a simple dismiss w/out any bonus functionality
+        // If just using the cancelButtonListener, then flag becomes true anyway, making the button visible BUT w/ bonus functionality
+        putBoolean(AlertDialogBundleNeedBasicCancelButtonKey, needCancelButton ?: false || cancelButtonListener != null)
+        putSerializable(AlertDialogBundleCancelButtonListenerKey, cancelButtonListener)
       }
       return frag
     }

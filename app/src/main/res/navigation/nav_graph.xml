@@ -47,7 +47,9 @@
       android:name="edu.usc.nlcaceres.infectionprevention.FragmentReportList"
       tools:layout="@layout/fragment_report_list">
     <!-- Used to close DrawerLayout onNavItemSelected -->
-    <argument android:name="CloseDrawer" android:defaultValue="true" />
+    <argument
+        android:name="edu.usc.nlcaceres.infectionprevention.nav_drawer.close_drawer"
+        app:argType="boolean" android:defaultValue="true" />
 
     <action
       android:id="@+id/actionToSortFilterFragment"

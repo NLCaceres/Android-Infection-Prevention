@@ -17,7 +17,7 @@ class ConstantsTest {
     assertEquals("reports/create", ReportCreationPath)
   }
 
-  @Test fun `Check Fragment Transaction Bundle Keys Correctly Templated`() { // Check tricky strings with concatenation
+  @Test fun `Check Navigation Argument Keys Correctly Templated`() { // Check tricky strings with concatenation
     assertEquals("edu.usc.nlcaceres.infectionprevention", ProjectPkgName)
 
     assertEquals("edu.usc.nlcaceres.infectionprevention.main", MainFragmentTransaction)
@@ -25,6 +25,8 @@ class ConstantsTest {
 
     assertEquals("edu.usc.nlcaceres.infectionprevention.create_report", CreateReportTransaction)
     assertEquals("edu.usc.nlcaceres.infectionprevention.create_report.health_practice", CreateReportPracticeExtra)
+
+    assertEquals("edu.usc.nlcaceres.infectionprevention.nav_drawer.close_drawer", NavDrawerCloseNavArgKey)
   }
 
   @Test fun `Check Transition Names Correctly Templated`() {
@@ -42,5 +44,18 @@ class ConstantsTest {
     assertEquals("edu.usc.nlcaceres.infectionprevention.edit_text_dialog", EditTextDialogRequestKey)
     assertEquals("edu.usc.nlcaceres.infectionprevention.edit_text_dialog.preference_key", EditTextDialogPreferenceKey)
     assertEquals("edu.usc.nlcaceres.infectionprevention.edit_text_dialog.preference_value", EditTextDialogPreferenceValue)
+  }
+
+  @Test fun `Check CustomAlertDialog Tag & Bundle Keys`() {
+    assertEquals("edu.usc.nlcaceres.infectionprevention.createReport_missing_date_alert_dialog", CreateReportAlertDialogTag)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.settings_editText_preference_dialog", SettingsEditTextPreferenceDialogTag)
+
+    assertEquals("edu.usc.nlcaceres.infectionprevention.custom_alert_dialog", CustomAlertDialogBundle)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.custom_alert_dialog.title", AlertDialogBundleTitleKey)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.custom_alert_dialog.message", AlertDialogBundleMessageKey)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.custom_alert_dialog.hint", AlertDialogBundleHintKey)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.custom_alert_dialog.ok_button_listener", AlertDialogBundleOkButtonListenerKey)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.custom_alert_dialog.need_basic_cancel_button", AlertDialogBundleNeedBasicCancelButtonKey)
+    assertEquals("edu.usc.nlcaceres.infectionprevention.custom_alert_dialog.cancel_button_listener", AlertDialogBundleCancelButtonListenerKey)
   }
 }
