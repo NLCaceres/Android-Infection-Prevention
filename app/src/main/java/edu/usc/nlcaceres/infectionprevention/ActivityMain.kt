@@ -84,7 +84,7 @@ class ActivityMain : AppCompatActivity() {
       supportActionBar?.setUpIndicator(upIndicator)
 
       // If using navDrawer item to go to destination, use "CloseDrawer" argument to closeDrawer b4 entering next fragment
-      if (args?.getBoolean("CloseDrawer") == true) { viewBinding.navDrawer.closeDrawers() }
+      if (args?.getBoolean(NavDrawerCloseNavArgKey) == true) { viewBinding.navDrawer.closeDrawers() }
     }
   }
 

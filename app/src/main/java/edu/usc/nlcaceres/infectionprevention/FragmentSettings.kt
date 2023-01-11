@@ -107,7 +107,7 @@ class FragmentSettings : PreferenceFragmentCompat() {
     when (preference) {
       is EditTextPreference -> { // Use dialogMessage prop to set editText hint
         FragmentEditPreferenceDialog.newInstance(preference.key, preference.title as String,
-          preference.dialogMessage.toString(), true).show(childFragmentManager, "settings_dialog")
+          preference.dialogMessage.toString(), true).show(childFragmentManager, SettingsEditTextPreferenceDialogTag)
       }
       else -> super.onDisplayPreferenceDialog(preference)
     }

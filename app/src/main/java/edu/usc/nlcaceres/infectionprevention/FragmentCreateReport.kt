@@ -11,9 +11,7 @@ import android.widget.Spinner
 import android.widget.Button
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.*
 import androidx.lifecycle.Lifecycle
 import androidx.core.view.ViewCompat
@@ -71,15 +69,12 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
     setupDateEditText()
     setupSpinners()
 
-    createReportButton = viewBinding.createReportButton.apply { setOnClickListener(SubmitReportClickListener()) }
-  }
-
-  private inner class CreateReportMenu: MenuProvider {
-    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) { }
-    override fun onMenuItemSelected(menuItem: MenuItem) = when (menuItem.itemId) {
-      android.R.id.home -> { parentFragmentManager.popBackStack(); true }
-      else -> false
-    }
+    createReportButton = viewBinding.createReportButton.apply { setOnClickListener {
+      if (viewModel.dateTimeString.value.isNullOrBlank()) { // Date likely was NOT selected, so alert user
+        createAlertDialog().show(childFragmentManager, CreateReportAlertDialogTag)
+      }
+      else { completeReportSubmission() }
+    }}
   }
 
   private fun setupProgressIndicator() {
@@ -93,7 +88,8 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
     // Other sharedElement for following transition is HealthPracticeAdapter's precautionButtonTextView
     arguments?.getString(CreateReportPracticeExtra)?.let { selectedPractice ->
       ViewCompat.setTransitionName(headerTV, TransitionName(ReportTypeTextViewTransition, selectedPractice))
-    }
+    } // Unclear if this transition runs if selectedPractice == "" (i.e. when arriving at this fragment via shortcut)
+
     viewModel.healthPracticeHeaderText.observe(viewLifecycleOwner) { headerTV.text = it } // emits a string from flow map func
   }
   private fun setupDateEditText() {
@@ -154,24 +150,19 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
     }
   }
 
-  private inner class SubmitReportClickListener : View.OnClickListener {
-    override fun onClick(clickedView: View) {
-      if (viewModel.dateTimeString.value.isNullOrBlank()) { // Indicates date was likely not selected
-        AlertDialog.Builder(requireContext()).run {
-          setPositiveButton(R.string.alert_dialog_ok) { _, _ -> completeReportSubmission() }
-          setNegativeButton(R.string.alert_dialog_cancel) { _, _ -> (activity as? ActivityMain)?.showSnackbar(resources.getString(R.string.missing_date_hint)) }
-          setMessage(R.string.date_alert_dialog_message)
-          setTitle(R.string.date_alert_dialog_title)
-          create() // After set up return the alert dialog via create
-        }.show()
-      }
-      else { completeReportSubmission() }
-    }
+  private fun createAlertDialog(): DialogFragment {
+    val title = resources.getString(R.string.date_alert_dialog_title)
+    val message = resources.getString(R.string.date_alert_dialog_message)
+    val missingDateHint = resources.getString(R.string.missing_date_hint)
+    return AppFragmentAlertDialog.newInstance(title, message,
+      okButtonListener = { completeReportSubmission() },
+      cancelButtonListener = { (activity as? ActivityMain)?.showSnackbar(missingDateHint) }
+    )
   }
   // Call this next fun either after user presses OK in alertDialog to use current time
   // OR after hitting submit because user correctly filled out all input
   private fun completeReportSubmission() {
-    setFragmentResult(CreateReportRequestKey, bundleOf())
+    setFragmentResult(CreateReportRequestKey, bundleOf()) // Bundle required, so sending an empty one is fine
     viewModel.submitReport()
     findNavController().navigateUp() // NavComponent allows multi-step pop back if needed!
   }

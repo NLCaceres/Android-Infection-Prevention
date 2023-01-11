@@ -11,13 +11,14 @@ const val LocationsPath = "locations"
 const val PrecautionsPath = "precautions"
 const val ProfessionsPath = "professions"
 
-// Intents'/Transactions' Extras for sending data across activities/fragments
+// Navigation Argument Extras for sending data across fragments
 const val ProjectPkgName = "edu.usc.nlcaceres.infectionprevention"
 const val ShortcutIntentAction = "android.intent.action.VIEW" // May use an identifier BUT only available in API 29+
 const val MainFragmentTransaction = "$ProjectPkgName.main" // Transaction from Main to ReportList view
 const val PreSelectedFilterExtra = "$MainFragmentTransaction.preselected_filter"
 const val CreateReportTransaction = "$ProjectPkgName.create_report"
 const val CreateReportPracticeExtra = "$CreateReportTransaction.health_practice"
+const val NavDrawerCloseNavArgKey = "$ProjectPkgName.nav_drawer.close_drawer"
 
 // SharedTransitionNames
 const val ReportTypeTextViewTransition = "$ProjectPkgName.report_type_textview_transition"
@@ -31,6 +32,17 @@ const val SelectedFilterParcel = "$SortFilterRequestKey.selected_filters"
 const val EditTextDialogRequestKey = "$ProjectPkgName.edit_text_dialog"
 const val EditTextDialogPreferenceKey = "$EditTextDialogRequestKey.preference_key" // Gets key from bundle for findPref() to get PrefView
 const val EditTextDialogPreferenceValue = "$EditTextDialogRequestKey.preference_value" // Gets value from bundle to update UI
+
+// CustomAlertDialog Keys + Tags
+const val CreateReportAlertDialogTag = "$ProjectPkgName.createReport_missing_date_alert_dialog"
+const val SettingsEditTextPreferenceDialogTag = "$ProjectPkgName.settings_editText_preference_dialog"
+const val CustomAlertDialogBundle = "$ProjectPkgName.custom_alert_dialog"
+const val AlertDialogBundleTitleKey = "$CustomAlertDialogBundle.title" // Used to get title from bundle to set a title textview
+const val AlertDialogBundleMessageKey = "$CustomAlertDialogBundle.message" // Used to get message from bundle to set a message textview
+const val AlertDialogBundleHintKey = "$CustomAlertDialogBundle.hint" // Used to get hint from bundle to set hint in a editText
+const val AlertDialogBundleOkButtonListenerKey = "$CustomAlertDialogBundle.ok_button_listener"
+const val AlertDialogBundleNeedBasicCancelButtonKey = "$CustomAlertDialogBundle.need_basic_cancel_button"
+const val AlertDialogBundleCancelButtonListenerKey = "$CustomAlertDialogBundle.cancel_button_listener"
 
 // Settings Preferences
 const val PreferenceCategoryUser = "user_category"

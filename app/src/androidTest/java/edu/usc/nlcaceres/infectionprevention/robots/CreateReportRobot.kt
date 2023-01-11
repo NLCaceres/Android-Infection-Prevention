@@ -6,7 +6,6 @@ import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.contrib.PickerActions
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.withClassName
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -113,8 +112,7 @@ class CreateReportRobot: BaseRobot() {
     // Can use string resources for decreased flakiness!
 
     fun snackbar(): ViewInteraction = onView(withId(com.google.android.material.R.id.snackbar_text))
-    fun alertDialog(): ViewInteraction = onView(allOf(withId(R.id.parentPanel),
-      hasDescendant(withText(R.string.date_alert_dialog_title))))
+    fun alertDialog(): ViewInteraction = onView(allOf(withId(R.id.alertTitle), withText(R.string.date_alert_dialog_title)))
     // -1 = no ID, R.id.button2 == Cancel, R.id.button1 == OK // isDescendant == within vs withParent == directly within
     fun dialogCancelButton(): ViewInteraction = onView(allOf(withParent(withId(-1)), withText("Cancel")))
     fun dialogOkButton(): ViewInteraction = onView(allOf(withParent(withId(-1)),

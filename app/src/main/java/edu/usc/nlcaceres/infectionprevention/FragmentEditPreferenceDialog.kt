@@ -21,9 +21,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.preference.PreferenceManager
 import edu.usc.nlcaceres.infectionprevention.databinding.PreferencesEdittextDialogBinding
-import edu.usc.nlcaceres.infectionprevention.util.EditTextDialogRequestKey
-import edu.usc.nlcaceres.infectionprevention.util.EditTextDialogPreferenceKey
-import edu.usc.nlcaceres.infectionprevention.util.EditTextDialogPreferenceValue
+import edu.usc.nlcaceres.infectionprevention.util.*
 
 class FragmentEditPreferenceDialog: DialogFragment() {
   private lateinit var viewBinding : PreferencesEdittextDialogBinding
@@ -42,13 +40,13 @@ class FragmentEditPreferenceDialog: DialogFragment() {
     super.onViewCreated(view, savedInstanceState)
 
     val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-    val key = arguments?.getString("Key")
+    val key = arguments?.getString(EditTextDialogPreferenceKey)
     val currentVal = sharedPrefs.getString(key, "") // Returns currentVal or our default, empty string, ""
 
     alertIcon = viewBinding.alertIcon.apply { setImageDrawable(ContextCompat.getDrawable(context, R.drawable.usc_shield_mono_gold)) }
-    alertTitle = viewBinding.title.apply { text = arguments?.getString("Title") }
+    alertTitle = viewBinding.title.apply { text = arguments?.getString(AlertDialogBundleTitleKey) }
     alertEditText = viewBinding.edit.apply {
-      hint = arguments?.getString("Hint")
+      hint = arguments?.getString(AlertDialogBundleHintKey)
       setText(currentVal)
     }
     alertOKButton = viewBinding.alertOkButton.apply { setOnClickListener {
@@ -61,7 +59,7 @@ class FragmentEditPreferenceDialog: DialogFragment() {
       dismiss()
     }}
     alertCancelButton = viewBinding.alertCancelButton.apply {
-      val needCancelButton = arguments?.getBoolean("NeedCancelButton") ?: false
+      val needCancelButton = arguments?.getBoolean(AlertDialogBundleNeedBasicCancelButtonKey) ?: false
       visibility = if (needCancelButton) View.VISIBLE else View.INVISIBLE
       setOnClickListener { dismiss() }
     }
@@ -101,10 +99,10 @@ class FragmentEditPreferenceDialog: DialogFragment() {
       : FragmentEditPreferenceDialog {
         val frag = FragmentEditPreferenceDialog()
         frag.arguments = Bundle().apply {
-          putString("Key", key) // Used to update text value
-          putString("Title", title) // For textview
-          putString("Hint", hint) // For editText hint
-          putBoolean("NeedCancelButton", needCancelButton)
+          putString(EditTextDialogPreferenceKey, key) // Used to update text value
+          putString(AlertDialogBundleTitleKey, title) // For textview
+          putString(AlertDialogBundleHintKey, hint) // For editText hint
+          putBoolean(AlertDialogBundleNeedBasicCancelButtonKey, needCancelButton)
         }
         return frag
     }
