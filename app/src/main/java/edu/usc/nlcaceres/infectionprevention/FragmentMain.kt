@@ -5,15 +5,12 @@ import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.os.bundleOf
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.*
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
 import androidx.transition.Slide
 import dagger.hilt.android.AndroidEntryPoint
 import edu.usc.nlcaceres.infectionprevention.adapters.PrecautionAdapter
@@ -83,13 +80,13 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
     precautionRecyclerView = viewBinding.precautionRV.apply {
       setHasFixedSize(true)
       precautionAdapter = PrecautionAdapter { itemView, healthPractice ->
-        val createReportBundle = bundleOf(CreateReportPracticeExtra to healthPractice.name)
         // Set the transitionName to ID the view in BOTH HealthPracticeAdapter & FragmentCreateReport
         val reportTypeTV = itemView.findViewById<View>(R.id.precautionButtonTV)
+        val navExtras = FragmentNavigatorExtras(reportTypeTV to TransitionName(ReportTypeTextViewTransition, healthPractice.name))
         // Instead of fragmentManager.commit w/ setReorderingAllowed(true), addSharedElement(view, transitionName),
         // addToBackStack(null) + replace(fragmentContainer, args), Just let the NavComponent handle most of it!
-        findNavController().navigate(R.id.actionToCreateReportFragment, createReportBundle, null,
-          FragmentNavigatorExtras(reportTypeTV to TransitionName(ReportTypeTextViewTransition, healthPractice.name)))
+        val actionDirections = FragmentMainDirections.actionToCreateReportFragment(healthPractice.name)
+        findNavController().navigate(actionDirections, navExtras)
       }
       adapter = precautionAdapter
     }

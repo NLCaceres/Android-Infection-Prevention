@@ -15,7 +15,10 @@
 
     <action
         android:id="@+id/actionToCreateReportFragment"
-        app:destination="@id/createReportFragment" />
+        app:destination="@id/createReportFragment">
+        <argument android:name="edu.usc.nlcaceres.infectionprevention.create_report.health_practice"
+            app:argType="string" android:defaultValue="" />
+    </action>
 
     <!-- Special items in DrawerLayout in MainFragment -->
     <!-- Since can't send parcelable over as a default value, the following 2 actions send a -->
@@ -26,16 +29,14 @@
       app:destination="@id/reportListFragment">
       <argument
           android:name="edu.usc.nlcaceres.infectionprevention.main.preselected_filter"
-          app:argType="string"
-          android:defaultValue="Standard"/>
+          app:argType="string" android:defaultValue="Standard"/>
     </action>
     <action
       android:id="@+id/actionToReportListFragmentWithIsolationFilter"
       app:destination="@id/reportListFragment">
       <argument
           android:name="edu.usc.nlcaceres.infectionprevention.main.preselected_filter"
-          app:argType="string"
-          android:defaultValue="Isolation"/>
+          app:argType="string" android:defaultValue="Isolation"/>
     </action>
   </fragment>
 
