@@ -64,7 +64,7 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
     super.onViewCreated(view, savedInstanceState)
     postponeEnterTransition()
 
-    requireActivity().addMenuProvider(CreateReportMenu(), viewLifecycleOwner, Lifecycle.State.RESUMED)
+    requireActivity().addMenuProvider(MenuProviderBase(findNavController()), viewLifecycleOwner, Lifecycle.State.RESUMED)
 
     setupProgressIndicator()
     setupHeaderTextView()
@@ -174,5 +174,10 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
     setFragmentResult(CreateReportRequestKey, bundleOf())
     viewModel.submitReport()
     findNavController().navigateUp() // NavComponent allows multi-step pop back if needed!
+  }
+
+  override fun onDestroyView() {
+    super.onDestroyView()
+    _viewBinding = null
   }
 }

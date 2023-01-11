@@ -53,15 +53,10 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
     // MUST delay transition until recyclerview loads & renders all its data so its itemViews can animate properly
     postponeEnterTransition() // Call start in precautionStateObserver below
 
-    requireActivity().addMenuProvider(FragmentMainMenu(), viewLifecycleOwner, Lifecycle.State.RESUMED)
+    requireActivity().addMenuProvider(MenuProviderBase(findNavController()), viewLifecycleOwner, Lifecycle.State.RESUMED)
 
     setupStateViews()
     setupPrecautionRV()
-  }
-
-  private inner class FragmentMainMenu: MenuProvider {
-    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) = menuInflater.inflate(R.menu.action_buttons, menu)
-    override fun onMenuItemSelected(item: MenuItem) = onNavDestinationSelected(item, findNavController())
   }
 
   private fun setupStateViews() {
@@ -123,6 +118,6 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
 
   override fun onDestroyView() {
     super.onDestroyView()
-    _viewBinding = null
+    _viewBinding = null // Prevent access to view if Fragment paused but view destroyed
   }
 }

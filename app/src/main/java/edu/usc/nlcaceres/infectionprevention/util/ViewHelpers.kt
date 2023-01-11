@@ -8,12 +8,8 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
-import edu.usc.nlcaceres.infectionprevention.R
 import androidx.core.widget.doOnTextChanged
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.Dispatchers
@@ -46,20 +42,7 @@ fun HideProgressIndicator(hidden : Boolean, progressBar : ProgressBar) {
     progressBar.visibility = if (hidden) View.INVISIBLE else View.VISIBLE
 }
 
-/* Toolbar across activities all setup fairly similar so consolidate! */
 // Resources are actually ints so that's why upIndicator is an Int rather than a Drawable
-fun SetupToolbar(activity: AppCompatActivity, toolbar: Toolbar, upIndicator: Int = 0, title: String = ""): Toolbar {
-    activity.setSupportActionBar(toolbar)
-    activity.supportActionBar?.apply {
-        setHomeAsUpIndicator(upIndicator) // Override up button (so back button)
-        setDisplayHomeAsUpEnabled(true)
-        if (title != "") { // Explicitly passing " " (as opposed to default "") sets an empty title
-            setTitle(title)
-            toolbar.setTitleTextColor(ContextCompat.getColor(activity, R.color.colorLight))
-        }
-    }
-    return toolbar
-}
 fun ActionBar.setUpIndicator(upIndicator: Int) {
   setHomeAsUpIndicator(upIndicator)
   setDisplayHomeAsUpEnabled(true)

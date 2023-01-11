@@ -48,13 +48,11 @@ class ActivityMain : AppCompatActivity() {
   }
 
   private fun setupActionBar(): NavController {
-    // Since MainLauncher Activity label gives the app icon AND the toolbar its title, so need to remove it here
-    toolbar = viewBinding.toolbarLayout.homeToolbar.apply {
-      title = ""
-      setTitleTextColor(ContextCompat.getColor(this@ActivityMain, R.color.colorLight))
-      setSupportActionBar(this)
+    toolbar = viewBinding.toolbarLayout.homeToolbar.apply { // Let NavGraph fragment element's label set Title
+      setTitleTextColor(ContextCompat.getColor(this@ActivityMain, R.color.colorLight)) // Just add color
+      setSupportActionBar(this) // Establish this as the app-wide toolbar
     }
-
+    // Then link the actionBar to the navGraph via the navController & appBarConfig
     val navHost = supportFragmentManager.findFragmentById(R.id.fragment_nav_host) as NavHostFragment
     val navController = navHost.navController
 

@@ -160,6 +160,11 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
     }
   }
 
+  override fun onDestroyView() {
+    super.onDestroyView()
+    _viewBinding = null
+  }
+
   private inner class ReportListMenu: MenuProvider {
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
       menuInflater.inflate(R.menu.report_list_actions, menu)

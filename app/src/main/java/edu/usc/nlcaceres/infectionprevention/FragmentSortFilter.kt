@@ -132,4 +132,9 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
       if (addedIndex != -1) { selectedFilterAdapter.notifyItemInserted(addedIndex) }
     }
   }
+
+  override fun onDestroyView() {
+    super.onDestroyView()
+    _viewBinding = null
+  }
 }
