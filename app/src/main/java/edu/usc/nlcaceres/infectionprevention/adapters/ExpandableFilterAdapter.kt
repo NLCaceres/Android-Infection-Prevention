@@ -56,13 +56,11 @@ class ExpandableFilterAdapter(private val filterSelectedListener: OnFilterSelect
   }
 
   override fun onBindViewHolder(holder: ExpandableFilterViewHolder, position: Int, payloads: MutableList<Any>) {
-    if (payloads.isNotEmpty()) {
-      val expandPayload = payloads.firstOrNull { payload -> (payload as String) == "Expanded-Changed" } as? String
-      if (expandPayload != null) { // If not null, we SHOULD have "Expanded-Changed" so get filterGroup via getItem
-          holder.viewBinding.filterRecyclerView.visibility = if (getItem(position).isExpanded) View.VISIBLE else View.GONE
-      }
+    if (payloads.isEmpty()) { onBindViewHolder(holder, position); return } // Ensure normal version fires in case payloads are indeed empty
+    val expandPayload = payloads.firstOrNull { payload -> (payload as String) == "Expanded-Changed" } as? String
+    expandPayload?.run { // If not null, we SHOULD have "Expanded-Changed" so get filterGroup via getItem
+      holder.viewBinding.filterRecyclerView.visibility = if (getItem(position).isExpanded) View.VISIBLE else View.GONE
     }
-    else onBindViewHolder(holder, position) // Ensure normal version fires in case payloads are indeed empty
   }
 }
 
