@@ -1,141 +1,141 @@
 [
   {
-    "_id": "1",
+    "id": "1",
     "employee": {
-      "_id": "1",
-      "first_name": "John",
+      "id": "1",
+      "firstName": "John",
       "surname": "Smith",
-      "profession": "",
+      "profession": {},
       "__v": 0
     },
     "healthPractice": {
-      "_id": "1",
+      "id": "1",
       "name": "Hand Hygiene",
       "__v": 0,
-      "precautionType": [
-        ""
-      ]
+      "precaution": {
+        "name": "Standard"
+      }
     },
     "location": {
-      "_id": "1",
+      "id": "1",
       "facilityName": "USC",
       "unitNum": "2",
       "roomNum": "123",
       "__v": 0
     },
-    "date_reported": "2021-04-12T06:36:05.017Z",
+    "date": "2021-04-12T06:36:05.017Z",
     "__v": 0,
     "url": "/records/report/1"
   },
   {
-    "_id": "2",
+    "id": "2",
     "employee": {
-      "_id": "2",
-      "first_name": "Jill",
+      "id": "2",
+      "firstName": "Jill",
       "surname": "Chambers",
-      "profession": "",
+      "profession": {},
       "__v": 0
     },
     "healthPractice": {
-      "_id": "2",
+      "id": "2",
       "name": "Contact",
       "__v": 0,
-      "precautionType": [
-        ""
-      ]
+      "precaution": {
+        "name": "Isolation"
+      }
     },
     "location": {
-      "_id": "2",
+      "id": "2",
       "facilityName": "USC",
       "unitNum": "4",
       "roomNum": "202",
       "__v": 0
     },
-    "date_reported": "2021-04-13T06:36:05.017Z",
+    "date": "2021-04-13T06:36:05.017Z",
     "__v": 0,
     "url": "/records/report/2"
   },
   {
-    "_id": "3",
+    "id": "3",
     "employee": {
-      "_id": "3",
-      "first_name": "Victor",
+      "id": "3",
+      "firstName": "Victor",
       "surname": "Richards",
-      "profession": "",
+      "profession": {},
       "__v": 0
     },
     "healthPractice": {
-      "_id": "3",
+      "id": "3",
       "name": "Droplet",
       "__v": 0,
-      "precautionType": [
-        ""
-      ]
+      "precaution": {
+        "name": "Isolation"
+      }
     },
     "location": {
-      "_id": "3",
+      "id": "3",
       "facilityName": "HSC",
       "unitNum": "3",
       "roomNum": "213",
       "__v": 0
     },
-    "date_reported": "2021-04-17T06:36:05.017Z",
+    "date": "2021-04-17T06:36:05.017Z",
     "__v": 0,
     "url": "/records/report/3"
   },
   {
-    "_id": "4",
+    "id": "4",
     "employee": {
-      "_id": "4",
-      "first_name": "Brian",
+      "id": "4",
+      "firstName": "Brian",
       "surname": "Ishida",
-      "profession": "",
+      "profession": {},
       "__v": 0
     },
     "healthPractice": {
-      "_id": "4",
+      "id": "4",
       "name": "Hand Hygiene",
       "__v": 0,
-      "precautionType": [
-        ""
-      ]
+      "precaution": {
+        "name": "Standard"
+      }
     },
     "location": {
-      "_id": "4",
+      "id": "4",
       "facilityName": "HSC",
       "unitNum": "3",
       "roomNum": "321",
       "__v": 0
     },
-    "date_reported": "2021-04-19T06:36:05.017Z",
+    "date": "2021-04-19T06:36:05.017Z",
     "__v": 0,
     "url": "/records/report/4"
   },
   {
-    "_id": "5",
+    "id": "5",
     "employee": {
-      "_id": "5",
-      "first_name": "Melody",
+      "id": "5",
+      "firstName": "Melody",
       "surname": "Rios",
-      "profession": "",
+      "profession": {},
       "__v": 0
     },
     "healthPractice": {
-      "_id": "5",
+      "id": "5",
       "name": "PPE",
       "__v": 0,
-      "precautionType": [
-        ""
-      ]
+      "precaution": {
+        "name": "Standard"
+      }
     },
     "location": {
-      "_id": "5",
+      "id": "5",
       "facilityName": "HSC",
       "unitNum": "5",
       "roomNum": "121",
       "__v": 0
     },
-    "date_reported": "2021-04-22T06:36:05.017Z",
+    "date": "2021-04-22T06:36:05.017Z",
     "__v": 0,
     "url": "/records/report/5"
   }

@@ -50,31 +50,31 @@ class ReportDeserializerTest {
   }
 
   private fun inspectReportJson(reportJson: JsonObject, report: Report, expectedID: String) {
-    assertEquals(reportJson.get("_id").asString, report.id) // Could do assertThat(string, StringContains(someVal)) for flexibility
+    assertEquals(reportJson.get("id").asString, report.id) // Could do assertThat(string, StringContains(someVal)) for flexibility
     assertEquals(expectedID, report.id)
 
     assertNotNull(report.employee)
     val employeeJson = reportJson.get("employee").asJsonObject
-    assertEquals(employeeJson.get("_id").asString, report.employee?.id)
+    assertEquals(employeeJson.get("id").asString, report.employee?.id)
     assertEquals(expectedID, report.employee?.id)
-    assertEquals(employeeJson.get("first_name").asString, report.employee?.firstName)
+    assertEquals(employeeJson.get("firstName").asString, report.employee?.firstName)
     assertEquals(employeeJson.get("surname").asString, report.employee?.surname)
 
     assertNotNull(report.healthPractice)
     val healthPracticeJson = reportJson.get("healthPractice").asJsonObject
-    assertEquals(healthPracticeJson.get("_id").asString, report.healthPractice?.id)
+    assertEquals(healthPracticeJson.get("id").asString, report.healthPractice?.id)
     assertEquals(expectedID, report.healthPractice?.id)
     assertEquals(healthPracticeJson.get("name").asString, report.healthPractice?.name)
 
     assertNotNull(report.location)
     val locationJson = reportJson.get("location").asJsonObject
-    assertEquals(locationJson.get("_id").asString, report.location?.id)
+    assertEquals(locationJson.get("id").asString, report.location?.id)
     assertEquals(expectedID, report.location?.id)
     assertEquals(locationJson.get("facilityName").asString, report.location?.facilityName)
     assertEquals(locationJson.get("unitNum").asString, report.location?.unitNum)
     assertEquals(locationJson.get("roomNum").asString, report.location?.roomNum)
 
-    val dateJson = reportJson.get("date_reported").asString
+    val dateJson = reportJson.get("date").asString
     assertEquals(dateJson, report.date.toString())
   }
 }

@@ -1,28 +1,26 @@
 {
-  "_id": "1",
+  "id": "1",
   "employee": {
-    "_id": "1",
-    "first_name": "John",
+    "id": "1",
+    "firstName": "John",
     "surname": "Smith",
-    "profession": "",
+    "profession": {},
     "__v": 0
   },
   "healthPractice": {
-    "_id": "1",
+    "id": "1",
     "name": "Hand Hygiene",
     "__v": 0,
-    "precautionType": [
-      ""
-    ]
+    "precaution": {}
   },
   "location": {
-    "_id": "1",
+    "id": "1",
     "facilityName": "USC",
     "unitNum": "2",
     "roomNum": "123",
     "__v": 0
   },
-  "date_reported": "2021-04-12T06:36:05.017Z",
+  "date": "2021-04-12T06:36:05.017Z",
   "__v": 0,
   "url": "/records/report/1"
 }

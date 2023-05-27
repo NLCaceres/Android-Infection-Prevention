@@ -38,12 +38,22 @@ class ReportsTest {
   }
 
   @Test fun `Check Overriden Equals Method of Precaution Class`() {
-    val precaution1 = Precaution("123", "FooPrecaution", null)
-    val precaution2 = Precaution("234", "BarPrecaution", null)
-    assertFalse(precaution1 == precaution2)
-    val precaution3 = Precaution("123", "FoobarPrecaution", null)
-    assertFalse(precaution1 == precaution3)
-    val precaution4 = Precaution("123", "FooPrecaution", null)
-    assertTrue(precaution1 == precaution4)
+    val healthPracticeList = listOf(HealthPractice(null, "Foobar", null))
+    val precaution1 = Precaution("123", "FooPrecaution", healthPracticeList)
+    val diffIdAndNamePrecaution = Precaution("234", "BarPrecaution", healthPracticeList)
+    assertFalse(precaution1 == diffIdAndNamePrecaution) // No matching ID nor name
+
+    val diffNamePrecaution = Precaution("123", "FoobarPrecaution", healthPracticeList)
+    assertFalse(precaution1 == diffNamePrecaution) // No matching name
+
+    val sameIdAndNamePrecaution = Precaution("123", "FooPrecaution", healthPracticeList)
+    assertTrue(precaution1 == sameIdAndNamePrecaution) // Matching name and ID
+
+    val diffHealthPracticeList = listOf(HealthPractice(null, "Barfoo", null))
+    val sameIdAndNameDiffListPrecaution = Precaution("123", "FooPrecaution", diffHealthPracticeList)
+    assertTrue(precaution1 == sameIdAndNameDiffListPrecaution) // Matching name and ID BUT the healthPracticeList changed!
+    // Is it fine for List<HealthPractice> changes to not affect the outcome?
+    // In practice, this may occur w/ an updated Precaution
+    // OR w/ an updated HealthPractice or if a new one declared this Precaution as its parent
   }
 }

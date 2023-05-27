@@ -6,10 +6,10 @@ import org.junit.Test
 class ConstantsTest {
   @Test fun `Check Endpoint Strings Correct`() {
     assertEquals("https://infection-prevention-express.herokuapp.com/api/", BaseURL)
-    assertEquals("http://10.0.2.2:3000/api/", BaseDevURL)
+    assertEquals("http://10.0.2.2:8080/api/", BaseDevURL)
 
     assertEquals("precautions", PrecautionsPath)
-    assertEquals("healthpractices", HealthPracticesPath)
+    assertEquals("healthPractices", HealthPracticesPath)
     assertEquals("locations", LocationsPath)
     assertEquals("professions", ProfessionsPath)
     assertEquals("employees", EmployeesPath)

@@ -32,11 +32,11 @@ class PrecautionAdapter(private val healthPracticeClickListener : HealthPractice
           addItemDecoration(MarginsItemDecoration(dpUnits(30), orientation = DividerItemDecoration.VERTICAL))
           adapter = HealthPracticeAdapter(healthPracticeClickListener)
           EspressoIdlingResource.increment()
-          (adapter as HealthPracticeAdapter).submitList(precaution.practices)
+          (adapter as HealthPracticeAdapter).submitList(precaution.healthPractices)
           EspressoIdlingResource.decrement()
         }
         // > 2 items means the rest may be off screen so animating the arrows SHOULD let users know they can scroll
-        precaution.practices?.let { if (it.size > 2) { // Can use imageView.context w/ imageView.drawable.setTint to change arrows' color
+        precaution.healthPractices.let { if (it.size > 2) { // Can use imageView.context w/ imageView.drawable.setTint to change arrows' color
           backwardIndicatorArrow.visibility = View.VISIBLE; forwardIndicatorArrow.visibility = View.VISIBLE
           // Could call animate() on the indicators as a quicker way to animate the alpha property BUT
           // animate() is better for animating multiple properties on 1 view, not coordinating two views w/ a single prop animation
@@ -63,5 +63,5 @@ private class PrecautionDiffCallback : DiffUtil.ItemCallback<Precaution>() {
     oldPrecaution.name == newPrecaution.name
 
   override fun areContentsTheSame(oldPrecaution: Precaution, newPrecaution: Precaution): Boolean =
-    oldPrecaution.practices == newPrecaution.practices // Should just work thanks to kotlin data classes (which override equals)
+    oldPrecaution.healthPractices == newPrecaution.healthPractices // Should just work thanks to kotlin data classes (which override equals)
 }

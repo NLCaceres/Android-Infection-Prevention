@@ -94,7 +94,7 @@ class ReportRemoteDataSourceTest {
   private lateinit var precautionAPI: ReportService.PrecautionAPI
 
   @Test fun `Fetch Precaution List`() = runTest {
-    val precautionList = arrayListOf(ReportsFactory.buildPrecaution(PrecautionType.Standard))
+    val precautionList = arrayListOf(ReportsFactory.buildPrecaution())
     precautionAPI = mock() { onBlocking { fetchPrecautionList() } doReturn Response.success(precautionList) }
 
     val precautionRemoteDataSource = PrecautionRemoteDataSource(precautionAPI)

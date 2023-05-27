@@ -93,12 +93,12 @@ class SortFilterReportsUseCaseTest {
   @Test fun `Filter Reports by Precaution Type`() {
     val filterGroup = "Precaution Type"
 
-    val standardPrecautionReport = buildReport(healthPractice = buildHealthPractice())
+    val standardPrecautionReport = buildReport(healthPractice = buildHealthPractice("Standard"))
     val standardTypeFilter = "Standard"
     val keepStandardReports = sortFilterListUseCase.filterReportsBy(standardPrecautionReport, filterGroup, standardTypeFilter)
     assert(keepStandardReports) // Filter returns true
 
-    val isolationPrecautionReport = buildReport(healthPractice = buildHealthPractice(PrecautionType.Isolation))
+    val isolationPrecautionReport = buildReport(healthPractice = buildHealthPractice("Isolation"))
     val dontKeepIsolationReports = sortFilterListUseCase.filterReportsBy(isolationPrecautionReport, filterGroup, standardTypeFilter)
     assertFalse(dontKeepIsolationReports) // Isolation reports filtered out. Filter returns false
 

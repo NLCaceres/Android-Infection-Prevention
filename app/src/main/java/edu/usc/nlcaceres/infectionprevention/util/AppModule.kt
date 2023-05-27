@@ -11,11 +11,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.CoroutineDispatcher
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializer
 import edu.usc.nlcaceres.infectionprevention.data.*
 import edu.usc.nlcaceres.infectionprevention.data.ReportService.*
+import java.time.Instant
 
 // Whether Dagger or Hilt, @Module establishes how certain types are provided
 // In particular, Hilt needs info on interfaces and types that use builders to be instantiated
@@ -31,8 +32,7 @@ object AppModule {
   @Singleton
   @Provides
   fun provideGson(): Gson = GsonBuilder()
-    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES) // Catches underscored names e.g. first_name
-    .registerTypeAdapter(Report::class.java, ReportDeserializer()) // Needs to handle Profession nested in Employee field
+    .registerTypeAdapter(Instant::class.java, JsonDeserializer { json, _, _ -> Instant.parse(json.asString) })
     .create()
 
   @Singleton
@@ -70,6 +70,7 @@ object AppModule {
   fun providePrecautionAPI(retrofit: Retrofit): PrecautionAPI = retrofit.create(PrecautionAPI::class.java)
 }
 
+//TODO: Merge this DataSourceModule into main AppModule
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataSourceModule {
@@ -109,6 +110,7 @@ abstract class DataSourceModule {
   abstract fun bindPrecautionRemoteDataSource(precautionRemoteDataSource: PrecautionRemoteDataSource): PrecautionDataSource
 }
 
+//TODO: Attempt to convert @Provides into @Binds (so object becomes abstract class + implementations need @Inject constructor)
 @Module // Separating repository into its own module allows instrumentedTests to swap it out via @TestInstallIn(components, replaces)
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {

@@ -2,11 +2,11 @@ package edu.usc.nlcaceres.infectionprevention.util
 
 // Backend Endpoints - Base URLS need to end with '/' for Retrofit!
 const val BaseURL = "https://infection-prevention-express.herokuapp.com/api/"
-const val BaseDevURL = "http://10.0.2.2:3000/api/" // LocalHost if connecting to locally spun up dev server
+const val BaseDevURL = "http://10.0.2.2:8080/api/" // LocalHost if connecting to locally spun up dev server
 const val ReportsPath = "reports"
 const val ReportCreationPath = "reports/create"
 const val EmployeesPath = "employees"
-const val HealthPracticesPath = "healthpractices"
+const val HealthPracticesPath = "healthPractices" // The backend is case-insensitive BUT camelCase is more readable
 const val LocationsPath = "locations"
 const val PrecautionsPath = "precautions"
 const val ProfessionsPath = "professions"
