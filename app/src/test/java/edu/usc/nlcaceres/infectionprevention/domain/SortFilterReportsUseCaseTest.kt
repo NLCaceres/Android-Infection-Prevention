@@ -254,7 +254,7 @@ class SortFilterReportsUseCaseTest {
 
   // Main driver function. Rest all tested so just verify they are called as expected!
   @Test fun `Check SortAndFilter Func Calls Expected Helper Funcs`() {
-    sortFilterListUseCase = mock() { on { beginSortAndFilter(any(), any()) }.thenCallRealMethod()  }
+    sortFilterListUseCase = mock { on { beginSortAndFilter(any(), any()) }.thenCallRealMethod() }
     val reportList = listOf(buildReport(), buildReport(), buildReport())
     val filterList = arrayListOf(FilterItem("SomeSorter", false, "Sort By"))
 

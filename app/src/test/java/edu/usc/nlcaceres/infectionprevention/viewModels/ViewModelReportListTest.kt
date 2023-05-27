@@ -38,7 +38,7 @@ class ViewModelReportListTest {
 
   @Test fun `Observe Report State`() {
     val reportsList = arrayListOf(ReportsFactory.buildReport(), ReportsFactory.buildReport())
-    fakeRepository = mock() { on { fetchReportList() } doReturn flow { emit(emptyList()); emit(reportsList) } }
+    fakeRepository = mock { on { fetchReportList() } doReturn flow { emit(emptyList()); emit(reportsList) } }
     val viewModel = ViewModelReportList(fakeRepository)
 
     viewModel.reportState.observeForever(reportObserver)
@@ -53,7 +53,7 @@ class ViewModelReportListTest {
   }
   @Test fun `Observe Report State after Refreshing`() {
     val reportList = arrayListOf(ReportsFactory.buildReport(), ReportsFactory.buildReport())
-    fakeRepository = mock() { on { fetchReportList() } doReturn flow { emit(emptyList()); emit(reportList) } }
+    fakeRepository = mock { on { fetchReportList() } doReturn flow { emit(emptyList()); emit(reportList) } }
     val viewModel = ViewModelReportList(fakeRepository)
 
     viewModel.reportState.observeForever(reportObserver)
@@ -80,7 +80,7 @@ class ViewModelReportListTest {
   }
   @Test fun `Check If Report List is Empty`() {
     val reportList = arrayListOf(ReportsFactory.buildReport(), ReportsFactory.buildReport())
-    fakeRepository = mock() { on { fetchReportList() } doReturn flow { emit(reportList) } }
+    fakeRepository = mock { on { fetchReportList() } doReturn flow { emit(reportList) } }
     val viewModel = ViewModelReportList(fakeRepository)
 
     assertEquals(viewModel.reportState.value?.second?.size, null) // No default list so null
@@ -93,7 +93,7 @@ class ViewModelReportListTest {
   @Test fun `Get a Sorted and Filtered Report List`() {
     val report = ReportsFactory.buildReport(); val report2 = ReportsFactory.buildReport()
     val reportList = arrayListOf(report, report2)
-    fakeRepository = mock() { on { fetchReportList() } doReturn flow { emit(reportList) } }
+    fakeRepository = mock { on { fetchReportList() } doReturn flow { emit(reportList) } }
     val fakeUseCase = mock<SortFilterReportsUseCase>()
     val viewModel = ViewModelReportList(fakeRepository, fakeUseCase)
 
@@ -120,9 +120,9 @@ class ViewModelReportListTest {
   @Test fun `Get a Text Filtered List`() {
     val report = ReportsFactory.buildReport(); val report2 = ReportsFactory.buildReport()
     val reportList = arrayListOf(report, report2)
-    fakeRepository = mock() { on { fetchReportList() } doReturn flow { emit(reportList) } }
+    fakeRepository = mock { on { fetchReportList() } doReturn flow { emit(reportList) } }
     // Need to mock returns of useCase since it isn't calling the real methods!
-    val fakeUseCase = mock<SortFilterReportsUseCase>() { on { beginSortAndFilter(any(), any()) }
+    val fakeUseCase = mock<SortFilterReportsUseCase> { on { beginSortAndFilter(any(), any()) }
       .thenReturn(emptyList(), reportList) }
     val viewModel = ViewModelReportList(fakeRepository, fakeUseCase)
 
@@ -171,7 +171,7 @@ class ViewModelReportListTest {
   }
   @Test fun `Observe Toast Message`() {
     // If we don't mock the returned flow, the combine func throws causing the flow's catch block to emit the generic toast message
-    fakeRepository = mock() { on { fetchReportList() } doReturn flow { emptyList<Report>() } }
+    fakeRepository = mock { on { fetchReportList() } doReturn flow { emptyList<Report>() } }
     val viewModel = ViewModelReportList(fakeRepository)
 
     viewModel.toastMessage.observeForever(toastObserver)
@@ -184,7 +184,7 @@ class ViewModelReportListTest {
     verify(toastObserver, times(1)).onChanged("")
   }
   @Test fun `Observe Toast Message from Basic Exception Thrown`() {
-    fakeRepository = mock() { on { fetchReportList() } doReturn flow { throw Exception("Problem") } }
+    fakeRepository = mock { on { fetchReportList() } doReturn flow { throw Exception("Problem") } }
     val viewModel = ViewModelReportList(fakeRepository)
 
     viewModel.toastMessage.observeForever(toastObserver)
@@ -200,7 +200,7 @@ class ViewModelReportListTest {
     inOrderCheck.verify(toastObserver, times(1)).onChanged("Sorry! Seems we're having an issue on our end!")
   }
   @Test fun `Observe Toast Message from IO Exception Thrown`() {
-    fakeRepository = mock() { on { fetchReportList() } doReturn flow { throw IOException("Problem") } }
+    fakeRepository = mock { on { fetchReportList() } doReturn flow { throw IOException("Problem") } }
     val viewModel = ViewModelReportList(fakeRepository)
 
     viewModel.toastMessage.observeForever(toastObserver)

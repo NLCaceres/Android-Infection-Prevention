@@ -28,7 +28,7 @@ class PrecautionRepositoryTest {
   @Test fun `Fetch Successful Precaution List`() = runTest {
     val precautionList = arrayListOf(buildPrecaution())
     val successfulResult = Result.success(precautionList)
-    remoteDataSource = mock() { onBlocking { fetchPrecautionList() } doReturn successfulResult }
+    remoteDataSource = mock { onBlocking { fetchPrecautionList() } doReturn successfulResult }
 
     val precautionRepository = AppPrecautionRepository(remoteDataSource, mainDispatcherRule.testDispatcher)
 
@@ -42,7 +42,7 @@ class PrecautionRepositoryTest {
 
   @Test fun `Fetch Failure Precaution List`() = runTest {
     val failureResult: Result<List<Precaution>> = Result.failure(Exception("Problem"))
-    remoteDataSource = mock() { onBlocking { fetchPrecautionList() } doReturn failureResult }
+    remoteDataSource = mock { onBlocking { fetchPrecautionList() } doReturn failureResult }
 
     val precautionRepository = AppPrecautionRepository(remoteDataSource, mainDispatcherRule.testDispatcher)
 

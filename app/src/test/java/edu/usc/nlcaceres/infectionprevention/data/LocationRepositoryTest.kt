@@ -28,7 +28,7 @@ class LocationRepositoryTest {
   @Test fun `Fetch Successful Location List`() = runTest {
     val locationList = arrayListOf(buildLocation())
     val successfulResult = Result.success(locationList)
-    remoteDataSource = mock() { onBlocking { fetchLocationList() } doReturn successfulResult }
+    remoteDataSource = mock { onBlocking { fetchLocationList() } doReturn successfulResult }
 
     val reportRepository = AppLocationRepository(remoteDataSource, mainDispatcherRule.testDispatcher)
 
@@ -42,7 +42,7 @@ class LocationRepositoryTest {
 
   @Test fun `Fetch Failure Location List`() = runTest {
     val failureResult: Result<List<Location>> = Result.failure(Exception("Problem"))
-    remoteDataSource = mock() { onBlocking { fetchLocationList() } doReturn failureResult }
+    remoteDataSource = mock { onBlocking { fetchLocationList() } doReturn failureResult }
 
     val locationRepository = AppLocationRepository(remoteDataSource, mainDispatcherRule.testDispatcher)
 

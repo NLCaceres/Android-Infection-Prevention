@@ -23,7 +23,7 @@ class ReportRemoteDataSourceTest {
   @Test fun `Fetch Report List`() = runTest { // Works like runBlocking{} BUT skips delays in any suspend funcs it calls
     // BUT using runTest won't stub out Dispatchers in those funcs UNLESS we inject new Dispatchers in our tests
     val reportList = arrayListOf(ReportsFactory.buildReport(null, null, null))
-    reportAPI = mock() { onBlocking { fetchReportList() } doReturn Response.success(reportList) }
+    reportAPI = mock { onBlocking { fetchReportList() } doReturn Response.success(reportList) }
 
     val reportRemoteDataSource = ReportRemoteDataSource(reportAPI)
     val actualResult = reportRemoteDataSource.fetchReportList()
@@ -41,7 +41,7 @@ class ReportRemoteDataSourceTest {
 
   @Test fun `Fetch Employee List`() = runTest {
     val employeeList = arrayListOf(ReportsFactory.buildEmployee())
-    employeeAPI = mock() { onBlocking { fetchEmployeeList() } doReturn Response.success(employeeList) }
+    employeeAPI = mock { onBlocking { fetchEmployeeList() } doReturn Response.success(employeeList) }
 
     val reportRemoteDataSource = EmployeeRemoteDataSource(employeeAPI)
     val actualResult = reportRemoteDataSource.fetchEmployeeList()
@@ -59,7 +59,7 @@ class ReportRemoteDataSourceTest {
 
   @Test fun `Fetch Health Practice List`() = runTest {
     val healthPracticeList = arrayListOf(ReportsFactory.buildHealthPractice())
-    healthPracticeAPI = mock() { onBlocking { fetchHealthPracticeList() } doReturn Response.success(healthPracticeList) }
+    healthPracticeAPI = mock { onBlocking { fetchHealthPracticeList() } doReturn Response.success(healthPracticeList) }
 
     val healthPracticeRemoteDataSource = HealthPracticeRemoteDataSource(healthPracticeAPI)
     val actualResult = healthPracticeRemoteDataSource.fetchHealthPracticeList()
@@ -77,7 +77,7 @@ class ReportRemoteDataSourceTest {
 
   @Test fun `Fetch Location List`() = runTest {
     val locationList = arrayListOf(ReportsFactory.buildLocation())
-    locationAPI = mock() { onBlocking { fetchLocationList() } doReturn Response.success(locationList) }
+    locationAPI = mock { onBlocking { fetchLocationList() } doReturn Response.success(locationList) }
 
     val locationRemoteDataSource = LocationRemoteDataSource(locationAPI)
     val actualResult = locationRemoteDataSource.fetchLocationList()
@@ -95,7 +95,7 @@ class ReportRemoteDataSourceTest {
 
   @Test fun `Fetch Precaution List`() = runTest {
     val precautionList = arrayListOf(ReportsFactory.buildPrecaution())
-    precautionAPI = mock() { onBlocking { fetchPrecautionList() } doReturn Response.success(precautionList) }
+    precautionAPI = mock { onBlocking { fetchPrecautionList() } doReturn Response.success(precautionList) }
 
     val precautionRemoteDataSource = PrecautionRemoteDataSource(precautionAPI)
     val actualResult = precautionRemoteDataSource.fetchPrecautionList()

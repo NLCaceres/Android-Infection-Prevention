@@ -28,7 +28,7 @@ class ReportRepositoryTest {
   @Test fun `Fetch Successful Report List`() = runTest {
     val reportList = arrayListOf(buildReport())
     val successfulResult = Result.success(reportList)
-    remoteDataSource = mock() { onBlocking { fetchReportList() } doReturn successfulResult }
+    remoteDataSource = mock { onBlocking { fetchReportList() } doReturn successfulResult }
 
     val reportRepository = AppReportRepository(remoteDataSource, mainDispatcherRule.testDispatcher)
 
@@ -42,7 +42,7 @@ class ReportRepositoryTest {
 
   @Test fun `Fetch Failure Report List`() = runTest {
     val failureResult: Result<List<Report>> = Result.failure(Exception("Problem"))
-    remoteDataSource = mock() { onBlocking { fetchReportList() } doReturn failureResult }
+    remoteDataSource = mock { onBlocking { fetchReportList() } doReturn failureResult }
 
     val reportRepository = AppReportRepository(remoteDataSource, mainDispatcherRule.testDispatcher)
 

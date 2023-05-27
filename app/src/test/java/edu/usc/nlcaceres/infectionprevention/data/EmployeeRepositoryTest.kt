@@ -28,7 +28,7 @@ class EmployeeRepositoryTest {
   @Test fun `Fetch Successful Employee List`() = runTest {
     val employeeList = arrayListOf(buildEmployee())
     val successfulResult = Result.success(employeeList)
-    remoteDataSource = mock() { onBlocking { fetchEmployeeList() } doReturn successfulResult }
+    remoteDataSource = mock { onBlocking { fetchEmployeeList() } doReturn successfulResult }
 
     // Following uses UnconfinedTestDispatcher from the mainDispatcherRule via its testDispatcher prop
     // BUT could pass in StandardTestDispatcher so our tests don't eager launch coroutines
@@ -44,7 +44,7 @@ class EmployeeRepositoryTest {
 
   @Test fun `Fetch Failure Employee List`() = runTest {
     val failureResult: Result<List<Employee>> = Result.failure(Exception("Problem"))
-    remoteDataSource = mock() { onBlocking { fetchEmployeeList() } doReturn failureResult }
+    remoteDataSource = mock { onBlocking { fetchEmployeeList() } doReturn failureResult }
 
     val employeeRepository = AppEmployeeRepository(remoteDataSource, mainDispatcherRule.testDispatcher)
 

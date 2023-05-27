@@ -47,9 +47,9 @@ class ViewModelCreateReportTest {
     val employeeList = listOf(buildEmployee(), buildEmployee())
     val healthPracticeList = listOf(buildHealthPractice())
     val locationList = listOf(buildLocation(), buildLocation(), buildLocation())
-    employeeRepository = mock() { on { fetchEmployeeList() } doReturn flow { emit(employeeList) } }
-    healthPracticeRepository = mock() { on { fetchHealthPracticeList() } doReturn flow { emit(healthPracticeList) } }
-    locationRepository = mock() { on { fetchLocationList() } doReturn flow { emit(locationList) } }
+    employeeRepository = mock { on { fetchEmployeeList() } doReturn flow { emit(employeeList) } }
+    healthPracticeRepository = mock { on { fetchHealthPracticeList() } doReturn flow { emit(healthPracticeList) } }
+    locationRepository = mock { on { fetchLocationList() } doReturn flow { emit(locationList) } }
     reportRepository = mock()
     val viewModel = ViewModelCreateReport(employeeRepository, healthPracticeRepository, locationRepository, reportRepository)
     assertFalse(viewModel.loadingState.value!!) // Should default to false
@@ -70,9 +70,9 @@ class ViewModelCreateReportTest {
     verify(adapterDataObserver, times(1)).onChanged(expectedTriple)
   }
   @Test fun `Observe Repositories Failed with Basic Exception`() {
-    employeeRepository = mock() { on { fetchEmployeeList() } doReturn flow { throw Exception("Failed Employees") } }
-    healthPracticeRepository = mock() { on { fetchHealthPracticeList() } doReturn flow { emit(emptyList()) } }
-    locationRepository = mock() { on { fetchLocationList() } doReturn flow { emit(emptyList()) } }
+    employeeRepository = mock { on { fetchEmployeeList() } doReturn flow { throw Exception("Failed Employees") } }
+    healthPracticeRepository = mock { on { fetchHealthPracticeList() } doReturn flow { emit(emptyList()) } }
+    locationRepository = mock { on { fetchLocationList() } doReturn flow { emit(emptyList()) } }
     reportRepository = mock()
     val viewModel = ViewModelCreateReport(employeeRepository, healthPracticeRepository, locationRepository, reportRepository)
 
@@ -82,9 +82,9 @@ class ViewModelCreateReportTest {
     assertEquals(defaultSnackbarErrorMessage, viewModel.toastMessage.value)
   }
   @Test fun `Observe Repositories All Failed`() {
-    employeeRepository = mock() { on { fetchEmployeeList() } doReturn flow { throw Exception("Failed Employees") } }
-    healthPracticeRepository = mock() { on { fetchHealthPracticeList() } doReturn flow { throw Exception("Failed Employees") } }
-    locationRepository = mock() { on { fetchLocationList() } doReturn flow { throw Exception("Failed Employees") } }
+    employeeRepository = mock { on { fetchEmployeeList() } doReturn flow { throw Exception("Failed Employees") } }
+    healthPracticeRepository = mock { on { fetchHealthPracticeList() } doReturn flow { throw Exception("Failed Employees") } }
+    locationRepository = mock { on { fetchLocationList() } doReturn flow { throw Exception("Failed Employees") } }
     reportRepository = mock()
     val viewModel = ViewModelCreateReport(employeeRepository, healthPracticeRepository, locationRepository, reportRepository)
 
@@ -94,9 +94,9 @@ class ViewModelCreateReportTest {
     assertEquals(defaultSnackbarErrorMessage, viewModel.toastMessage.value)
   }
   @Test fun `Observe Repositories Failed with IO Exception`() {
-    employeeRepository = mock() { on { fetchEmployeeList() } doReturn flow { emit(emptyList()) } }
-    healthPracticeRepository = mock() { on { fetchHealthPracticeList() } doReturn flow { throw IOException("Failed Health Practices") } }
-    locationRepository = mock() { on { fetchLocationList() } doReturn flow { emit(emptyList()) } }
+    employeeRepository = mock { on { fetchEmployeeList() } doReturn flow { emit(emptyList()) } }
+    healthPracticeRepository = mock { on { fetchHealthPracticeList() } doReturn flow { throw IOException("Failed Health Practices") } }
+    locationRepository = mock { on { fetchLocationList() } doReturn flow { emit(emptyList()) } }
     reportRepository = mock()
     val viewModel = ViewModelCreateReport(employeeRepository, healthPracticeRepository, locationRepository, reportRepository)
 
@@ -139,9 +139,9 @@ class ViewModelCreateReportTest {
     val emittedHealthPracticeList = listOf(HealthPractice(null, "Droplet", null),
       buildHealthPractice(), buildHealthPractice(), buildHealthPractice())
     // Since the repos are zipped, they MUST ALL emit a list to make 1 Triple(empty, healthPracticeList, empty)
-    employeeRepository = mock() { on { fetchEmployeeList() } doReturn flow { emit(emptyList()) } }
-    healthPracticeRepository = mock() { on { fetchHealthPracticeList() } doReturn flow { emit(emittedHealthPracticeList) } }
-    locationRepository = mock() { on { fetchLocationList() } doReturn flow { emit(emptyList()) } }
+    employeeRepository = mock { on { fetchEmployeeList() } doReturn flow { emit(emptyList()) } }
+    healthPracticeRepository = mock { on { fetchHealthPracticeList() } doReturn flow { emit(emittedHealthPracticeList) } }
+    locationRepository = mock { on { fetchLocationList() } doReturn flow { emit(emptyList()) } }
     reportRepository = mock()
     val viewModel = ViewModelCreateReport(employeeRepository, healthPracticeRepository, locationRepository, reportRepository)
 
@@ -207,7 +207,7 @@ class ViewModelCreateReportTest {
     assertEquals(dateTimeStringMidnight, viewModel.dateTimeString.value!!)
     assertNotNull("ViewModel Report Date not set!", viewModel.newReport().date)
     val viewModelDate4 = viewModel.newReport().date.atZone(ZoneId.systemDefault())
-    assertEquals(0, viewModelDate4.hour) // in 24-hour setup, midnight == 0
+    assertEquals(0, viewModelDate4.hour) // In 24-hour mode, midnight == 0
     assertEquals(34, viewModelDate4.minute)
     assertEquals(10, viewModelDate4.monthValue)
     assertEquals(11, viewModelDate4.dayOfMonth)

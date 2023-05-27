@@ -25,7 +25,8 @@ class ViewModelMain @Inject constructor(private val precautionRepository: Precau
     .onCompletion { _isLoading.value = false; EspressoIdlingResource.decrement() }
   // Can use currentCoroutineContext() from inside the flow block to notice that it produces Pair on main thread
   private val loadingPrecautionsFlow = loadingFlow // Combine loading state with precautionList
-    .combine(precautionsFlow) { loading, newList -> Pair(loading, newList) }.onStart { _isLoading.value = true }
+    .combine(precautionsFlow) { loading, newList -> Pair(loading, newList) }
+    .onStart { _isLoading.value = true }
     .catch { e -> // No more flow collection if catch runs so let toastMessage handle the rest in view
         _toastMessage.value = when (e) { // IOException covers a number of Retrofit or server issues
           is IOException -> "Sorry! Having trouble with the internet connection!"

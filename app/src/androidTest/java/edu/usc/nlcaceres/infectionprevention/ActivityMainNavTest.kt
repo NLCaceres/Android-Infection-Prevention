@@ -72,7 +72,6 @@ class ActivityMainNavTest: RoboTest() {
       }
   }
 
-  // Next 2 tests fail w/out Hilt stubs since backend currently DOESN'T send precautionTypes w/ reports
   @Test fun click_NavDrawer_Standard_Report_Only_Filter_To_Go_To_Report_List_Fragment() {
       mainActivity {
         checkNavDrawerOpen(false) // Not open

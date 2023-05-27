@@ -28,7 +28,7 @@ class HealthPracticeRepositoryTest {
   @Test fun `Fetch Successful Health Practice List`() = runTest {
     val healthPracticeList = arrayListOf(buildHealthPractice())
     val successfulResult = Result.success(healthPracticeList)
-    remoteDataSource = mock() { onBlocking { fetchHealthPracticeList() } doReturn successfulResult }
+    remoteDataSource = mock { onBlocking { fetchHealthPracticeList() } doReturn successfulResult }
 
     val reportRepository = AppHealthPracticeRepository(remoteDataSource, mainDispatcherRule.testDispatcher)
 
@@ -42,7 +42,7 @@ class HealthPracticeRepositoryTest {
 
   @Test fun `Fetch Failure Health Practice List`() = runTest {
     val failureResult: Result<List<HealthPractice>> = Result.failure(Exception("Problem"))
-    remoteDataSource = mock() { onBlocking { fetchHealthPracticeList() } doReturn failureResult }
+    remoteDataSource = mock { onBlocking { fetchHealthPracticeList() } doReturn failureResult }
 
     val healthPracticeRepository = AppHealthPracticeRepository(remoteDataSource, mainDispatcherRule.testDispatcher)
 
