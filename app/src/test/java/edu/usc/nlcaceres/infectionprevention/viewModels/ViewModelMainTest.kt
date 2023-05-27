@@ -45,14 +45,19 @@ class ViewModelMainTest {
     viewModel.precautionState.observeForever(precautionObserver)
     viewModel.precautionState.removeObserver(precautionObserver)
 
-    verify(precautionObserver, times(3)).onChanged(any())
+    // Why only two invocations? Kotlin Flows that are combined ONLY take the MOST RECENTLY emitted values!
+    // The above flow {} could be written more asynchronously as `flowOf(emptyList(), precautionList).onEach { delay(10) }
+    verify(precautionObserver, times(2)).onChanged(any()) // But an async version could lead to more fickle tests
+
+    // Since flows ONLY combine the most recent values, the loadingFlow skips its default 'false' value and emits the onStart 'true' value
+    // Meanwhile the mock flow, skips the emptyList() and sends precautionsList WHICH
     val inOrderCheck = inOrder(precautionObserver)
-    val firstExpectedPair = Pair(true, emptyList<Precaution>()) // No observation of default false value in loading liveData
+    val firstExpectedPair = Pair(true, precautionsList) // LEADS to the 1st pair being this
     inOrderCheck.verify(precautionObserver, times(1)).onChanged(firstExpectedPair)
-    val secondExpectedPair = Pair(true, precautionsList)
+
+    // AND FINALLY, the flow completes calling the onCompletion block with 2nd pair being the following
+    val secondExpectedPair = Pair(false, precautionsList)
     inOrderCheck.verify(precautionObserver, times(1)).onChanged(secondExpectedPair)
-    val thirdExpectedPair = Pair(false, precautionsList) // OnCompletion called!
-    inOrderCheck.verify(precautionObserver, times(1)).onChanged(thirdExpectedPair)
   }
   @Test fun `Check If Precaution List is Empty`() {
     val precautionList = arrayListOf(buildPrecaution(), buildPrecaution())

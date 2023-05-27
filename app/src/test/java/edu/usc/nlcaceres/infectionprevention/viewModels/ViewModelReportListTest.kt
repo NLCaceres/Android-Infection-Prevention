@@ -44,42 +44,37 @@ class ViewModelReportListTest {
     viewModel.reportState.observeForever(reportObserver)
     viewModel.reportState.removeObserver(reportObserver)
 
-    verify(reportObserver, times(3)).onChanged(any())
+    verify(reportObserver, times(2)).onChanged(any())
     val inOrderCheck = inOrder(reportObserver)
-    val firstExpectedPair = Pair(true, emptyList<Report>()) // No observation of default false value in loading liveData
+    val firstExpectedPair = Pair(true, reportsList)
     inOrderCheck.verify(reportObserver, times(1)).onChanged(firstExpectedPair)
-    val secondExpectedPair = Pair(true, reportsList)
+    val secondExpectedPair = Pair(false, reportsList) // OnCompletion called!
     inOrderCheck.verify(reportObserver, times(1)).onChanged(secondExpectedPair)
-    val thirdExpectedPair = Pair(false, reportsList) // OnCompletion called!
-    inOrderCheck.verify(reportObserver, times(1)).onChanged(thirdExpectedPair)
   }
   @Test fun `Observe Report State after Refreshing`() {
     val reportList = arrayListOf(ReportsFactory.buildReport(), ReportsFactory.buildReport())
     fakeRepository = mock() { on { fetchReportList() } doReturn flow { emit(emptyList()); emit(reportList) } }
-    // Would return two flows w/ different lists BUT mockito consecutive returns don't seem to work with flows
-    // Consequently this test mimics the process -> 1st round = 1.(true, [])   2.(true, [filled])   3.(false, [filled])
-    // 2nd round is expected to be EXACTLY the same but 2nd fetch() seems to ignore the initial emit emptyList in #1 above
-    // Alternative is to use runTest BUT it yields VERY unexpected results due to the async nature of flows AND liveData
     val viewModel = ViewModelReportList(fakeRepository)
 
     viewModel.reportState.observeForever(reportObserver)
-
-    verify(reportObserver, times(3)).onChanged(any())
+    // Since combined flows only take the most recent values, the initial observe gets two pairs
+    verify(reportObserver, times(2)).onChanged(any())
     val inOrderCheck = inOrder(reportObserver)
-    val firstExpectedPair = Pair(true, emptyList<Report>()) // No observation of default false value in loading liveData
+    // 1st Pair on initial observe
+    val firstExpectedPair = Pair(true, reportList)
     inOrderCheck.verify(reportObserver, times(1)).onChanged(firstExpectedPair)
-    val secondExpectedPair = Pair(true, reportList)
+    // 2nd pair onComplete
+    val secondExpectedPair = Pair(false, reportList) // OnCompletion called!
     inOrderCheck.verify(reportObserver, times(1)).onChanged(secondExpectedPair)
-    val thirdExpectedPair = Pair(false, reportList) // OnCompletion called!
+
+    viewModel.refreshReportList() // Calling refresh results in an identical flow
+    verify(reportObserver, times(4)).onChanged(any()) // So two more observations occur
+    // onStart occurs again, emitting a new loading value PLUS the most recent value from the flow, a filled list
+    val thirdExpectedPair = Pair(true, reportList)
     inOrderCheck.verify(reportObserver, times(1)).onChanged(thirdExpectedPair)
-
-    viewModel.refreshReportList()
-
-    verify(reportObserver, times(5)).onChanged(any())
-    val fourthExpectedPair = Pair(true, reportList) // OnStart called again BUT weirdly already get recently returned reportsList, not emptyList
+    // OnComplete called again, emitting a 'false' loading value with the same completed/filled list
+    val fourthExpectedPair = Pair(false, reportList) // On Complete called again!
     inOrderCheck.verify(reportObserver, times(1)).onChanged(fourthExpectedPair)
-    val fifthExpectedPair = Pair(false, reportList) // On Complete called again!
-    inOrderCheck.verify(reportObserver, times(1)).onChanged(fifthExpectedPair)
 
     viewModel.reportState.removeObserver(reportObserver)
   }
