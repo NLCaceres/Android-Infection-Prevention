@@ -66,6 +66,7 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
 
     setupProgressIndicator()
     setupHeaderTextView()
+    setupToast()
     setupDateEditText()
     setupSpinners()
 
@@ -91,6 +92,14 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
     } // Unclear if this transition runs if selectedPractice == "" (i.e. when arriving at this fragment via shortcut)
 
     viewModel.healthPracticeHeaderText.observe(viewLifecycleOwner) { headerTV.text = it } // emits a string from flow map func
+  }
+  private fun setupToast() {
+    viewModel.toastMessage.observe(viewLifecycleOwner) { errMsg ->
+      if (errMsg.isNotBlank()) {
+        (activity as? ActivityMain)?.showSnackbar(errMsg)
+        startPostponedEnterTransition()
+      }
+    }
   }
   private fun setupDateEditText() {
     // Kotlin can use "apply" (and other scope funcs) as convenient extension funcs that can often times help in setting up
