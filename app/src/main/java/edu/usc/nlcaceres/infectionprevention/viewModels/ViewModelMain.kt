@@ -45,7 +45,7 @@ class ViewModelMain @Inject constructor(private val precautionRepository: Precau
     val healthPracticeNames = arrayListOf<String>()
     precautionList.forEach { precaution ->
       precautionNames.add(precaution.name)
-      precaution.practices?.forEach { healthPractice -> healthPracticeNames.add(healthPractice.name) }
+      precaution.healthPractices.forEach { healthPractice -> healthPracticeNames.add(healthPractice.name) }
     }
     return Pair(precautionNames, healthPracticeNames)
   }

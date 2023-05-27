@@ -43,16 +43,16 @@ dependencies {
     implementation(fileTree(mapOf("include" to listOf("*.jar"), "dir" to "libs")))
 
     // Basic Android Dependencies
-    implementation("androidx.appcompat:appcompat:1.5.1")
-    implementation("androidx.core:core-ktx:1.9.0") // AndroidStudio has the preloaded Java versions
-    implementation("androidx.fragment:fragment-ktx:1.5.5") // SO need to add "-ktx" Kotlin versions!
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.core:core-ktx:1.10.1") // Android seems to preload the Java versions
+    implementation("androidx.fragment:fragment-ktx:1.5.7") // SO need to add "-ktx" for the Kotlin versions!
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
     // lifecycle-viewModel gets its needed viewModels() delegate from androidx.activity transitively thru .fragment
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     // Basic Android View Dependencies
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.preference:preference-ktx:1.2.0")
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
+    implementation("androidx.recyclerview:recyclerview:1.3.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4") // Seems to transitively get coroutines-core & its Dispatchers.Main
     // Navigation Graph Dependencies
@@ -61,7 +61,7 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
 
     // Google & Square Dependencies
-    implementation("com.google.android.material:material:1.7.0")
+    implementation("com.google.android.material:material:1.9.0")
     implementation("com.google.android.flexbox:flexbox:3.0.0")
     implementation("com.google.code.gson:gson:2.9.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -73,7 +73,7 @@ dependencies {
     // Test Dependencies - Unit Test Specific
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.test.ext:junit-ktx:1.1.5")
-    testImplementation("androidx.arch.core:core-testing:2.1.0") // Helps with liveData in tests
+    testImplementation("androidx.arch.core:core-testing:2.2.0") // Helps with liveData in tests
     testImplementation("androidx.test.espresso:espresso-core:3.5.1") // For robolectric UI-Unit testing
     testImplementation("org.robolectric:robolectric:4.9")
     testImplementation("org.mockito:mockito-inline:4.4.0")

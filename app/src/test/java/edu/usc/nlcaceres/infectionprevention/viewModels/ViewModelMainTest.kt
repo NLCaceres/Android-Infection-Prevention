@@ -3,8 +3,6 @@ package edu.usc.nlcaceres.infectionprevention.viewModels
 import androidx.lifecycle.Observer
 import edu.usc.nlcaceres.infectionprevention.data.Precaution
 import edu.usc.nlcaceres.infectionprevention.data.PrecautionRepository
-import edu.usc.nlcaceres.infectionprevention.data.PrecautionType.Standard
-import edu.usc.nlcaceres.infectionprevention.data.PrecautionType.Isolation
 import edu.usc.nlcaceres.infectionprevention.helpers.data.ReportsFactory.Factory.buildPrecaution
 import edu.usc.nlcaceres.infectionprevention.helpers.util.MainDispatcherRule
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -40,7 +38,7 @@ class ViewModelMainTest {
   @Mock lateinit var toastObserver: Observer<String>
 
   @Test fun `Observe Precaution State`() {
-    val precautionsList = arrayListOf(buildPrecaution(Standard), buildPrecaution(Isolation))
+    val precautionsList = arrayListOf(buildPrecaution(), buildPrecaution())
     fakeRepository = mock() { on { fetchPrecautionList() } doReturn flow { emit(emptyList()); emit(precautionsList) } }
     val viewModel = ViewModelMain(fakeRepository)
 
