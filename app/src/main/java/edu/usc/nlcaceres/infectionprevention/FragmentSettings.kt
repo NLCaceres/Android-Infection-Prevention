@@ -12,6 +12,9 @@ import androidx.preference.Preference
 import androidx.preference.forEach
 import edu.usc.nlcaceres.infectionprevention.util.*
 
+/* Fragment listing basic settings for the App as well as settings for Admins to provide a more finely-tuned experience for their teams
+* Many settings can be updated via an AlertDialog that contains an EditText to update the value
+* Launches from: FragmentMain, FragmentCreateReport, FragmentReportList, FragmentSortFilter */
 class FragmentSettings : PreferenceFragmentCompat() {
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) { // Called in onCreate
     setPreferencesFromResource(R.xml.preferences, rootKey)

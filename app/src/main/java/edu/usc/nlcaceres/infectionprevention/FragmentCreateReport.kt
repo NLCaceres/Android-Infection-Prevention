@@ -27,7 +27,8 @@ import edu.usc.nlcaceres.infectionprevention.util.*
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelCreateReport
 import java.time.LocalTime
 
-/* Activity to File a New Health Report */
+/* Fragment to File a New HealthPractice Violation Report
+* Launches from: FragmentMain */
 @AndroidEntryPoint
 class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
   private val viewModel: ViewModelCreateReport by viewModels()

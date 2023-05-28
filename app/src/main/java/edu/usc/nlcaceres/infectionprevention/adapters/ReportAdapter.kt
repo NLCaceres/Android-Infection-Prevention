@@ -9,7 +9,8 @@ import androidx.recyclerview.widget.ListAdapter
 import edu.usc.nlcaceres.infectionprevention.data.Report
 import edu.usc.nlcaceres.infectionprevention.databinding.ItemReportBinding
 
-/* Adapter for ReportsList RecyclerView */
+/* RecyclerView Adapter listing HealthPractice Violation Reports. Filterable, and sortable. Sorted by most recent by default
+* Focuses on listing type of HealthPractice violation, Date Occurred, offending Employee, and location of violation */
 // If not specifying specific ViewHolder class, then some casting needed. See ln 37.
 class ReportAdapter : ListAdapter<Report, RecyclerView.ViewHolder>(ReportDiffCallback()) {
 

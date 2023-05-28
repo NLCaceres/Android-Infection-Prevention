@@ -17,7 +17,8 @@ import edu.usc.nlcaceres.infectionprevention.util.MarginsItemDecoration
 import edu.usc.nlcaceres.infectionprevention.util.createFlashingAnimation
 import edu.usc.nlcaceres.infectionprevention.util.dpUnits
 
-/* Adapter to render sets of buttons to launch CreateReportActivity based on precaution type */
+/* RecyclerView Adapter to render groups of buttons corresponding to particular HealthPractice violations, grouped by Precaution type
+* Each button in each Precaution grouping launches FragmentCreateReport */
 class PrecautionAdapter(private val healthPracticeClickListener : HealthPracticeClickListener) :
   ListAdapter<Precaution, PrecautionAdapter.PrecautionViewHolder>(PrecautionDiffCallback()) {
 
@@ -35,7 +36,7 @@ class PrecautionAdapter(private val healthPracticeClickListener : HealthPractice
           (adapter as HealthPracticeAdapter).submitList(precaution.healthPractices)
           EspressoIdlingResource.decrement()
         }
-        // > 2 items means the rest may be off screen so animating the arrows SHOULD let users know they can scroll
+        // > 2 items means the rest may be off-screen so animating the arrows SHOULD let users know they can scroll
         precaution.healthPractices.let { if (it.size > 2) { // Can use imageView.context w/ imageView.drawable.setTint to change arrows' color
           backwardIndicatorArrow.visibility = View.VISIBLE; forwardIndicatorArrow.visibility = View.VISIBLE
           // Could call animate() on the indicators as a quicker way to animate the alpha property BUT

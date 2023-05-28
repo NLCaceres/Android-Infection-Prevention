@@ -31,8 +31,8 @@ import edu.usc.nlcaceres.infectionprevention.util.*
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelMain
 import kotlinx.coroutines.launch
 
-/* Activity with 2 RecyclerViews - Top handles the selected filters, Bottom the filters to be selected
- Launches from: FragmentReportList */
+/* Fragment with 2 RecyclerViews - Top tracks the selected filters from the Bottom containing filters to select
+* Launches from: FragmentReportList */
 @AndroidEntryPoint
 class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
 

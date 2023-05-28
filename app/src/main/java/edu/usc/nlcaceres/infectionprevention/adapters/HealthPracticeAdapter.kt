@@ -12,8 +12,8 @@ import androidx.core.view.ViewCompat
 import edu.usc.nlcaceres.infectionprevention.util.TransitionName
 import edu.usc.nlcaceres.infectionprevention.util.ReportTypeTextViewTransition
 
-/* Adapter to render each particular health practice button in a horizontal RV to launch FragmentCreateReport */
-// Great new updates: viewBinding + built in DiffUtil via ListAdapter!
+/* RecyclerView Adapter to render each particular HealthPractice button to launch FragmentCreateReport from a horizontal RV */
+// Great new updates: viewBinding + ListAdapter's built-in DiffUtil
 class HealthPracticeAdapter(private val healthPracticeClickListener : HealthPracticeClickListener) :
   ListAdapter<HealthPractice, HealthPracticeAdapter.PracticeViewHolder>(HealthPracticeDiffCallback()) {
 

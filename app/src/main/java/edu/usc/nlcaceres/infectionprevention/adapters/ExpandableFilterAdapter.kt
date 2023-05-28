@@ -16,7 +16,8 @@ import edu.usc.nlcaceres.infectionprevention.util.DivideAllButLastItemDecoration
 import edu.usc.nlcaceres.infectionprevention.util.dpUnits
 
 /* RecyclerViewAdapter that contains a list of GROUPS of different filter types. Each items opens accordion-style
-* containing a RecyclerView full of specific filters from that group */
+* containing a RecyclerView full of specific filters from that group
+* Linked to: SelectedFilterAdapter through each of this Adapter's FilterAdapters */
 class ExpandableFilterAdapter(private val filterSelectedListener: OnFilterSelectedListener) :
   ListAdapter<FilterGroup, ExpandableFilterAdapter.ExpandableFilterViewHolder>(ExpandableFilterDiffCallback()) {
 

@@ -11,7 +11,8 @@ import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 import edu.usc.nlcaceres.infectionprevention.databinding.ItemFilterCheckboxBinding
 
 /* RecyclerView Adapter used to select different types of filters each contained in an expandable/accordion view
-* that is multichoice by default (typical checkbox behavior) and single choice if enabled.  */
+* that is multi-choice by default (typical checkbox behavior) and single choice if enabled
+* Linked to: SelectedFilterAdapter through its parent ExpandableFilterAdapter */
 class FilterAdapter(private val singleSelectionEnabled : Boolean, private val filterSelectedListener : OnFilterSelectedListener) :
   ListAdapter<FilterItem, FilterAdapter.FilterViewHolder>(FilterDiffCallback()) {
 

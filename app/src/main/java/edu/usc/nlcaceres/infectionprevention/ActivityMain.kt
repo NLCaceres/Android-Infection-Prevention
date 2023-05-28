@@ -22,9 +22,8 @@ import edu.usc.nlcaceres.infectionprevention.databinding.ActivityMainBinding
 import edu.usc.nlcaceres.infectionprevention.util.*
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelMain
 
-/* Homepage that allows users to choose a type of health violation that occurred
- and create a report for it
- Links to: FragmentCreateReport + FragmentReportList */
+/* Container for Fragment Views, setting up the Navbar, NavDrawer, and Back Button
+* Also, provides convenience methods for the Keyboard, App-wide Snackbar, and Navbar ActionView */
 @AndroidEntryPoint
 class ActivityMain : AppCompatActivity() {
 

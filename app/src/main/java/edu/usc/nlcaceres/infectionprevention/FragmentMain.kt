@@ -18,12 +18,15 @@ import edu.usc.nlcaceres.infectionprevention.databinding.FragmentMainBinding
 import edu.usc.nlcaceres.infectionprevention.util.*
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelMain
 
+/* Fragment listing Buttons grouped by Precaution type, each Button corresponds to possible HealthPractice violations
+* Each Button leads to FragmentCreateReport, populating the new Report with the selected HealthPractice violation
+* Launches from: App Icon. Also, briefly, as a trampoline for FragmentCreateReport Shortcut */
 @AndroidEntryPoint
 class FragmentMain: Fragment(R.layout.fragment_main) {
   private val viewModel: ViewModelMain by activityViewModels()
   // Why have a nullable viewBinding? Because fragments can outlive their views!
   private var _viewBinding: FragmentMainBinding? = null
-  private val viewBinding get() = _viewBinding!! // So only access from this prop and we can guarantee null safety!
+  private val viewBinding get() = _viewBinding!! // So only access from this prop, and we can guarantee null safety!
   private lateinit var progIndicator : ProgressBar
   private lateinit var sorryMsgTextView : TextView
   private lateinit var precautionRecyclerView : RecyclerView
@@ -90,7 +93,7 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
       }
       adapter = precautionAdapter
     }
-    // Set listener for FragmentCreateReport so we can react to submissions and go to FragmentReportList
+    // Set listener for FragmentCreateReport, so we can react to submissions and go to FragmentReportList
     parentFragmentManager.setFragmentResultListener(CreateReportRequestKey, viewLifecycleOwner) { requestKey, _ ->
       if (requestKey != CreateReportRequestKey) { return@setFragmentResultListener } // SHOULD ALWAYS receive this key
       // NavComponent makes transitions even simpler (as long as it doesn't need Navigator Extras like for Transitions)
