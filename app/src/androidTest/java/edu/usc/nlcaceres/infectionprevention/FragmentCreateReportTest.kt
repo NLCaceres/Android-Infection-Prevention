@@ -2,7 +2,6 @@ package edu.usc.nlcaceres.infectionprevention
 
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -26,17 +25,6 @@ class FragmentCreateReportTest: RoboTest() {
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1)
   val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
-
-  @BindValue @JvmField
-  var employeeRepository: EmployeeRepository = FakeEmployeeRepository()
-  @BindValue @JvmField
-  var healthPracticeRepository: HealthPracticeRepository = FakeHealthPracticeRepository()
-  @BindValue @JvmField
-  var locationRepository: LocationRepository = FakeLocationRepository()
-  @BindValue @JvmField
-  var precautionRepository: PrecautionRepository = FakePrecautionRepository()
-  @BindValue @JvmField
-  var reportRepository: ReportRepository = FakeReportRepository()
 
   @Before
   fun navigate_To_Create_Report_Activity() {
@@ -88,7 +76,7 @@ class FragmentCreateReportTest: RoboTest() {
       setTime(15, 24) // 3PM 24 minutes
       pressOkButton() // Opens dateDialog
       setDate(2021, 4, 12) // This sets 2021, APRIL, 12th based on an 1-indexed month & day!
-      // BUT the listener still receives a 0-indexed month so it must compensate for it!
+      // BUT the listener still receives a 0-indexed month, so it must compensate for it!
       pressOkButton() // Finalize date
       checkTimeDateET("3:24 PM 4/12/2021") // American date
     }
@@ -127,7 +115,7 @@ class FragmentCreateReportTest: RoboTest() {
       pressSubmitButton() // Should open dialog since no date selected
       checkAlertDialog()
       pressCancelButton()
-      checkSnackBar() // Cancel button opens snackbar telling user to set time/date
+      checkSnackBar() // Cancel button opens Snackbar telling user to set time/date
     }
   }
   @Test fun submit_With_Date() {

@@ -2,7 +2,6 @@ package edu.usc.nlcaceres.infectionprevention
 
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -23,17 +22,6 @@ class FragmentSortFilterTest: RoboTest() {
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1)
   val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
-
-  @BindValue @JvmField
-  var employeeRepository: EmployeeRepository = FakeEmployeeRepository()
-  @BindValue @JvmField
-  var healthPracticeRepository: HealthPracticeRepository = FakeHealthPracticeRepository()
-  @BindValue @JvmField
-  var locationRepository: LocationRepository = FakeLocationRepository()
-  @BindValue @JvmField
-  var precautionRepository: PrecautionRepository = FakePrecautionRepository()
-  @BindValue @JvmField
-  var reportRepository: ReportRepository = FakeReportRepository()
 
   @Before
   fun register_Idling_Resource() {
@@ -87,7 +75,7 @@ class FragmentSortFilterTest: RoboTest() {
 
       selectFilterLabeled("Employee Name (A-Z)")
       checkSelectedFilters("Employee Name (A-Z)") // Should only be EmployeeName! Date Reported gone!
-      selectedFilterMap["Sort By"]?.set(0, "Employee Name (A-Z)") // Set overwrites (vs add() pushing elems to right)
+      selectedFilterMap["Sort By"]?.set(0, "Employee Name (A-Z)") // Set overwrites (vs add() pushing items to right)
       checkMarkedFiltersIn(selectedFilterMap)
     }
   }

@@ -1,7 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention
 
 import androidx.test.core.app.ActivityScenario.launch
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -9,9 +8,11 @@ import edu.usc.nlcaceres.infectionprevention.data.*
 import edu.usc.nlcaceres.infectionprevention.helpers.di.*
 import edu.usc.nlcaceres.infectionprevention.robots.RoboTest
 import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
+import javax.inject.Inject
 
 @UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
@@ -19,17 +20,12 @@ class ActivityMainRenderProgressTest: RoboTest() {
   @get:Rule
   val hiltRule = HiltAndroidRule(this)
 
-  // Each test gets its own version of the repositories so no variable pollution like the closures
-  @BindValue @JvmField
-  var employeeRepository: EmployeeRepository = FakeEmployeeRepository()
-  @BindValue @JvmField
-  var healthPracticeRepository: HealthPracticeRepository = FakeHealthPracticeRepository()
-  @BindValue @JvmField
-  var locationRepository: LocationRepository = FakeLocationRepository()
-  @BindValue @JvmField
-  var precautionRepository: PrecautionRepository = FakePrecautionRepository().apply { clearList() }
-  @BindValue @JvmField
-  var reportRepository: ReportRepository = FakeReportRepository()
+  @Inject // In order to manipulate the stubbed repositories, @Inject needs to be used here SO THAT BELOW
+  lateinit var precautionRepository: PrecautionRepository
+  @Before // Manual injection into the TestSuite itself can be performed before use in tests
+  fun injectDependencies() {
+    hiltRule.inject()
+  }
 
   @Test fun view_Loading() { // Probably not a perfect test across devices BUT doesn't slow test suite
     // Freeze load/flow state to run the Espresso checks since EspressoIdling doesn't check during idle state

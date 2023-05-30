@@ -6,7 +6,6 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import dagger.hilt.android.testing.BindValue
 import edu.usc.nlcaceres.infectionprevention.data.*
 import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
 import edu.usc.nlcaceres.infectionprevention.helpers.di.*
@@ -24,17 +23,6 @@ class FragmentSettingsTest: RoboTest() {
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1)
   val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
-
-  @BindValue @JvmField
-  var employeeRepository: EmployeeRepository = FakeEmployeeRepository()
-  @BindValue @JvmField
-  var healthPracticeRepository: HealthPracticeRepository = FakeHealthPracticeRepository()
-  @BindValue @JvmField
-  var locationRepository: LocationRepository = FakeLocationRepository()
-  @BindValue @JvmField
-  var precautionRepository: PrecautionRepository = FakePrecautionRepository()
-  @BindValue @JvmField
-  var reportRepository: ReportRepository = FakeReportRepository()
 
   @Before
   fun register_Idling_Resource() {

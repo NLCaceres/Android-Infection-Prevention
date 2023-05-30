@@ -8,7 +8,6 @@ import dagger.Provides
 import javax.inject.Qualifier
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.CoroutineDispatcher
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.google.gson.Gson
@@ -18,74 +17,76 @@ import edu.usc.nlcaceres.infectionprevention.data.*
 import edu.usc.nlcaceres.infectionprevention.data.ReportService.*
 import java.time.Instant
 
-// Whether Dagger or Hilt, @Module establishes how certain types are provided
-// In particular, Hilt needs info on interfaces and types that use builders to be instantiated
-// Predominantly provides Retrofit Services to activities/fragments that need it
-@Module
-@InstallIn(SingletonComponent::class) // Inject into Application (available everywhere)
-object AppModule {
+/* This module helps provide Retrofit Services to Activities/Fragments that need it via DataSources/Repositories */
 
-  @Singleton // Same instance provided across the life of the App
-  @Provides // Even though dispatcher in repository constructors as default param value, this lets swap as needed!
-  fun provideIoDispatcher() = Dispatchers.IO // Useful for a ton of coroutine off-main-thread work
+@Module // Whether Dagger or Hilt, @Module declares how certain types should be injected, built or instantiated
+@InstallIn(SingletonComponent::class) // Inject at Application level, making these dependencies available everywhere
+abstract class AppModule {
 
-  @Singleton
-  @Provides
-  fun provideGson(): Gson = GsonBuilder()
-    .registerTypeAdapter(Instant::class.java, JsonDeserializer { json, _, _ -> Instant.parse(json.asString) })
-    .create()
+  // Technically, we CAN'T use @Binds and @Provides in the same module! BUT with a few tricks, it IS possible!
+  // PROBLEM 1: @Binds never actually implements any methods under Dagger's hood, nor does it ever invoke anything
+  // It just scans abstract funcs to make Dagger's Dependency Graph so its factories can grab each interface's supplied implementations
+  // PROBLEM 2: Meanwhile @Provides works by letting Dagger's factories simply call our declared builder funcs
+  // SOLUTION 1: Pre-Dagger 2.26, this issue could be solved via Java static methods or @Module marked Kotlin companion objects
+  // SOLUTION 2: In Dagger 2.26+, Kotlin companion objects don't need @Module, nor should they mark their methods with @JvmStatic
+  // Because companion objects translate into Java static classes, so Dagger can easily invoke our @Provide methods, static or not
+  companion object {
+    // MARK: Retrofit Dependencies
+    @Singleton // Same instance provided across the life of the App
+    @Provides // Even though repository constructors' use dispatcher as a default param value, this lets swap as needed!
+    fun provideIoDispatcher() = Dispatchers.IO // Useful for a ton of coroutine off-main-thread jobs
 
-  @Singleton
-  @Provides // Could add qualifier BUT only will use one type of converter (Gson) so unlikely to matter
-  fun provideGsonConverterFactory(gson: Gson): retrofit2.Converter.Factory = GsonConverterFactory.create(gson)
+    @Singleton
+    @Provides
+    fun provideGson(): Gson = GsonBuilder()
+      .registerTypeAdapter(Instant::class.java, JsonDeserializer { json, _, _ -> Instant.parse(json.asString) })
+      .create()
 
-  // The next funcs work together to build Retrofit API interfaces rather than use the typical
-  // companion object pattern to create a retrofit instance then create APIs from our interfaces
-  // No lazy retrofit instance needed and across the app only one instance per API to request data over the network
-  @Singleton
-  @Provides
-  fun provideBaseRetrofitInstance(gsonConverterFactory: retrofit2.Converter.Factory): Retrofit {
-    return Retrofit.Builder().baseUrl(BaseURL) // BaseUrl must end in '/'
+    @Singleton
+    @Provides // Could add qualifier BUT only will use one type of converter (Gson) so unlikely to matter
+    fun provideGsonConverterFactory(gson: Gson): retrofit2.Converter.Factory = GsonConverterFactory.create(gson)
+
+    @Singleton // Excellent example of Dagger's benefits, avoiding a semi-complex companion obj lazily creating a Singleton
+    @Provides // Easily making a SINGLE Retrofit instance, designated to create ONLY 1 of each of our @Bind API interfaces
+    fun provideBaseRetrofitInstance(gsonConverterFactory: retrofit2.Converter.Factory): Retrofit {
+      return Retrofit.Builder().baseUrl(BaseURL) // BaseUrl must end in '/'
         .addConverterFactory(gsonConverterFactory) // Custom Gson factory based on a GsonBuilder instance
         .build()
+    }
+
+    // MARK: API Services
+    @Singleton
+    @Provides // Injects the above retrofitInstance via this func's param, so we can use it to build a Report API concrete instance
+    fun provideReportAPI(retrofit: Retrofit): ReportAPI = retrofit.create(ReportAPI::class.java)
+
+    @Singleton
+    @Provides // Similarly, grab above provided retrofit instance and let it build the Employee API
+    fun provideEmployeeAPI(retrofit: Retrofit): EmployeeAPI = retrofit.create(EmployeeAPI::class.java)
+
+    @Singleton
+    @Provides
+    fun provideHealthPracticeAPI(retrofit: Retrofit): HealthPracticeAPI = retrofit.create(HealthPracticeAPI::class.java)
+
+    @Singleton
+    @Provides
+    fun provideLocationAPI(retrofit: Retrofit): LocationAPI = retrofit.create(LocationAPI::class.java)
+
+    @Singleton
+    @Provides
+    fun providePrecautionAPI(retrofit: Retrofit): PrecautionAPI = retrofit.create(PrecautionAPI::class.java)
   }
-  @Singleton
-  @Provides // Use above retrofitInstance in this func parameter then let Retrofit create instance of our Report API
-  fun provideReportAPI(retrofit: Retrofit): ReportAPI = retrofit.create(ReportAPI::class.java)
 
-  @Singleton
-  @Provides // Similarly, grab above provided retrofit instance and let it create Employee API from interface
-  fun provideEmployeeAPI(retrofit: Retrofit): EmployeeAPI = retrofit.create(EmployeeAPI::class.java)
-
-  @Singleton
-  @Provides
-  fun provideHealthPracticeAPI(retrofit: Retrofit): HealthPracticeAPI = retrofit.create(HealthPracticeAPI::class.java)
-
-  @Singleton
-  @Provides
-  fun provideLocationAPI(retrofit: Retrofit): LocationAPI = retrofit.create(LocationAPI::class.java)
-
-  @Singleton
-  @Provides
-  fun providePrecautionAPI(retrofit: Retrofit): PrecautionAPI = retrofit.create(PrecautionAPI::class.java)
-}
-
-//TODO: Merge this DataSourceModule into main AppModule
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class DataSourceModule {
-  // Why not Object? Because @Binds must be attached to an abstract function which must be placed in abstract classes
-  // Qualifiers (Used to differentiate between specific implementations of various interfaces)
-  @Qualifier
+  // MARK: Data Sources
+  @Qualifier // Qualifiers (Used to differentiate between specific implementations of various interfaces)
   @Retention // By Default = AnnotationRetention.RUNTIME making type visible by reflection (vs BINARY where type is invisible)
-  annotation class RemoteDataSource // Remote is server network based data source
+  annotation class RemoteDataSource // Remote is for Data received from the Server via Retrofit Networking
 
   @Qualifier
   @Retention
-  annotation class LocalDataSource  // Local will be Room DB related classes
+  annotation class LocalDataSource  // Local will be for the Android Room database related classes
 
   @Singleton
-  @RemoteDataSource // RemoteDataSource implementation sent when injections are marked with this qualifier
+  @RemoteDataSource // The RemoteDataSource implementation will be injected when marked with this qualifier
   @Binds
   abstract fun bindReportRemoteDataSource(reportRemoteDataSource: ReportRemoteDataSource): ReportDataSource
 
@@ -110,38 +111,28 @@ abstract class DataSourceModule {
   abstract fun bindPrecautionRemoteDataSource(precautionRemoteDataSource: PrecautionRemoteDataSource): PrecautionDataSource
 }
 
-//TODO: Attempt to convert @Provides into @Binds (so object becomes abstract class + implementations need @Inject constructor)
-@Module // Separating repository into its own module allows instrumentedTests to swap it out via @TestInstallIn(components, replaces)
-@InstallIn(SingletonComponent::class)
-object RepositoryModule {
+// MARK: Repositories providing data from both the API and Android Room cache
+@Module // Separating repositories into its own module lets instrumentedTests stub them with dummy data
+@InstallIn(SingletonComponent::class) // Via @Inject, @Module @TestInstallIn(components, replaces), or @BindValue @JvmField var someStub
+abstract class RepositoryModule {
 
   @Singleton
-  @Provides
-  fun provideReportRepository(@DataSourceModule.RemoteDataSource reportRemoteDataSource: ReportDataSource,
-                              ioDispatcher: CoroutineDispatcher): ReportRepository =
-    AppReportRepository(reportRemoteDataSource, ioDispatcher)
+  @Binds
+  abstract fun provideReportRepository(appReportRepository: AppReportRepository): ReportRepository
 
   @Singleton
-  @Provides
-  fun provideEmployeeRepository(@DataSourceModule.RemoteDataSource employeeRemoteDataSource: EmployeeDataSource,
-                                  ioDispatcher: CoroutineDispatcher): EmployeeRepository =
-    AppEmployeeRepository(employeeRemoteDataSource, ioDispatcher)
+  @Binds
+  abstract fun provideEmployeeRepository(appEmployeeRepository: AppEmployeeRepository): EmployeeRepository
 
   @Singleton
-  @Provides
-  fun provideHealthPracticeRepository(@DataSourceModule.RemoteDataSource healthPracticeRemoteDataSource: HealthPracticeDataSource,
-                                  ioDispatcher: CoroutineDispatcher): HealthPracticeRepository =
-    AppHealthPracticeRepository(healthPracticeRemoteDataSource, ioDispatcher)
+  @Binds
+  abstract fun provideHealthPracticeRepository(appHealthPracticeRepository: AppHealthPracticeRepository): HealthPracticeRepository
 
   @Singleton
-  @Provides
-  fun provideLocationRepository(@DataSourceModule.RemoteDataSource locationRemoteDataSource: LocationDataSource,
-                                  ioDispatcher: CoroutineDispatcher): LocationRepository =
-    AppLocationRepository(locationRemoteDataSource, ioDispatcher)
+  @Binds
+  abstract fun provideLocationRepository(appLocationRepository: AppLocationRepository): LocationRepository
 
   @Singleton
-  @Provides
-  fun providePrecautionRepository(@DataSourceModule.RemoteDataSource precautionRemoteDataSource: PrecautionDataSource,
-                                  ioDispatcher: CoroutineDispatcher): PrecautionRepository =
-    AppPrecautionRepository(precautionRemoteDataSource, ioDispatcher)
+  @Binds
+  abstract fun providePrecautionRepository(appPrecautionRepository: AppPrecautionRepository): PrecautionRepository
 }
