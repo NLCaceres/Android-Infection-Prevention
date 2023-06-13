@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention
 
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ActivityScenario.launch
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -17,8 +18,10 @@ import javax.inject.Inject
 @UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
 class ActivityMainRenderProgressTest: RoboTest() {
-  @get:Rule
+  @get:Rule(order = 0)
   val hiltRule = HiltAndroidRule(this)
+  @get:Rule(order = 1)
+  val composeTestRule = createComposeRule()
 
   @Inject // In order to manipulate the stubbed repositories, @Inject needs to be used here SO THAT BELOW
   lateinit var precautionRepository: PrecautionRepository
@@ -34,7 +37,7 @@ class ActivityMainRenderProgressTest: RoboTest() {
     // MUST use scenario as follows, NOT the rule version since it'll immediately start & finish the flow before
     // Any updates can be made to the underlying that would affect the view's state
     launch(ActivityMain::class.java).use { // Use will ensure scenario auto-closes on test end
-      mainActivity {
+      mainActivity(composeTestRule) {
         checkSorryMessage("Looking up precautions")
         checkProgressBar(true)
       }
@@ -46,7 +49,7 @@ class ActivityMainRenderProgressTest: RoboTest() {
     val newClosure: () -> Unit =  { throw Exception("Error!") }
     (precautionRepository as FakePrecautionRepository).optionalClosure = newClosure
     launch(ActivityMain::class.java).use {
-      mainActivity {
+      mainActivity(composeTestRule) {
         checkSorryMessage("Sorry! Seems we're having an issue on our end!")
         checkProgressBar()
       }
@@ -57,7 +60,7 @@ class ActivityMainRenderProgressTest: RoboTest() {
     val newClosure: () -> Unit =  { throw IOException("Error!") }
     (precautionRepository as FakePrecautionRepository).optionalClosure = newClosure
     launch(ActivityMain::class.java).use {
-      mainActivity {
+      mainActivity(composeTestRule) {
         checkSorryMessage("Sorry! Having trouble with the internet connection!")
         checkProgressBar()
       }
@@ -66,7 +69,7 @@ class ActivityMainRenderProgressTest: RoboTest() {
   @Test fun view_Receives_No_Data() {
     (precautionRepository as FakePrecautionRepository).someList = emptyList()
     launch(ActivityMain::class.java).use {
-      mainActivity {
+      mainActivity(composeTestRule) {
         checkSorryMessage("Weird! Seems we don't have any available precautions to choose from!")
         checkProgressBar()
       }
@@ -74,6 +77,6 @@ class ActivityMainRenderProgressTest: RoboTest() {
   }
   @Test fun view_Receives_Some_Data() {
     (precautionRepository as FakePrecautionRepository).populateList()
-    launch(ActivityMain::class.java).use { mainActivity { checkViewLoaded() } }
+    launch(ActivityMain::class.java).use { mainActivity(composeTestRule) { checkViewLoaded() } }
   }
 }

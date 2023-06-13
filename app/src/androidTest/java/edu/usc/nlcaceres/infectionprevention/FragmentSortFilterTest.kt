@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention
 
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -21,22 +22,24 @@ class FragmentSortFilterTest: RoboTest() {
   @get:Rule(order = 0)
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1)
+  val composeTestRule = createComposeRule()
+  @get:Rule(order = 2)
   val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
 
   @Before
   fun register_Idling_Resource() {
     IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
-    mainActivity {
+    mainActivity(composeTestRule) {
       checkNavDrawerOpen(false) // Not open
       openNavDrawer()
       checkNavDrawerOpen(true) // Now Open
       goToReportList()
     }
-    reportListFragment {  // Verify made it to reportList (have to wait until RV loads)
+    reportListFragment(composeTestRule) {  // Verify made it to reportList (have to wait until RV loads)
       checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
       startSelectingSortAndFilters()
     }
-    sortFilterFragment { checkLoaded() } // Filters loaded and ready to tap
+    sortFilterFragment(composeTestRule) { checkLoaded() } // Filters loaded and ready to tap
   }
   @After
   fun unregister_Idling_Resource() {
@@ -45,12 +48,12 @@ class FragmentSortFilterTest: RoboTest() {
 
   // Navigation
   @Test fun navigate_To_Settings() {
-    sortFilterFragment { goToSettings() }
-    settingsFragment { checkInitLoad() }
+    sortFilterFragment(composeTestRule) { goToSettings() }
+    settingsFragment(composeTestRule) { checkInitLoad() }
   }
   @Test fun navigate_Back_Up_To_Report_List() {
-    sortFilterFragment { pressCloseButton() } // X button
-    reportListFragment {
+    sortFilterFragment(composeTestRule) { pressCloseButton() } // X button
+    reportListFragment(composeTestRule) {
       checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
       checkFiltersLoaded()
     }
@@ -58,7 +61,7 @@ class FragmentSortFilterTest: RoboTest() {
 
   // Important Features (Select - Single/Multiselect and Removal)
   @Test fun select_Filter() {
-    sortFilterFragment {
+    sortFilterFragment(composeTestRule) {
       openFilterGroupLabeled("Health Practice Type")
       selectFilterLabeled("Hand Hygiene")
       checkSelectedFilters("Hand Hygiene")
@@ -66,7 +69,7 @@ class FragmentSortFilterTest: RoboTest() {
     }
   }
   @Test fun select_Filter_Single_Selection() { // RadioButton Single Selection Style (only 1 filter added)
-    sortFilterFragment {
+    sortFilterFragment(composeTestRule) {
       openFilterGroupLabeled("Sort By")
       selectFilterLabeled("New Reports")
       checkSelectedFilters("New Reports") // Should be New Reports
@@ -80,7 +83,7 @@ class FragmentSortFilterTest: RoboTest() {
     }
   }
   @Test fun select_Filter_Multi_Selection() { // Checkbox multiple choice style (all checked added as filters)
-    sortFilterFragment {
+    sortFilterFragment(composeTestRule) {
       openFilterGroupLabeled("Health Practice Type")
       selectFilterLabeled("Hand Hygiene")
       val selectedFilterMap = buildMap { put("Health Practice Type", arrayListOf("Hand Hygiene")) }
@@ -94,7 +97,7 @@ class FragmentSortFilterTest: RoboTest() {
     }
   }
   @Test fun remove_Selected_Filter() { // Remove by X button, not by unchecking filters
-    sortFilterFragment {
+    sortFilterFragment(composeTestRule) {
       openFilterGroupLabeled("Health Practice Type")
       selectFilterLabeled("Hand Hygiene")
       checkSelectedFilters("Hand Hygiene")
@@ -131,7 +134,7 @@ class FragmentSortFilterTest: RoboTest() {
 
   // Toolbar Features
   @Test fun reset_Filters_Chosen() {
-    sortFilterFragment {
+    sortFilterFragment(composeTestRule) {
       // Select filters, reset and check no filters still there
       openFilterGroupLabeled("Health Practice Type")
       selectFilterLabeled("Hand Hygiene")
@@ -152,7 +155,7 @@ class FragmentSortFilterTest: RoboTest() {
     }
   }
   @Test fun finalize_Filters_Chosen() { // Select filters, finalize choices, see them in reportList
-    sortFilterFragment {
+    sortFilterFragment(composeTestRule) {
       openFilterGroupLabeled("Health Practice Type")
       selectFilterLabeled("Hand Hygiene")
       selectFilterLabeled("PPE")
@@ -164,6 +167,6 @@ class FragmentSortFilterTest: RoboTest() {
       checkMarkedFiltersIn(selectedFilterMap)
       finalizeFilters()
     }
-    reportListFragment { checkFiltersLoaded("Hand Hygiene", "PPE") }
+    reportListFragment(composeTestRule) { checkFiltersLoaded("Hand Hygiene", "PPE") }
   }
 }

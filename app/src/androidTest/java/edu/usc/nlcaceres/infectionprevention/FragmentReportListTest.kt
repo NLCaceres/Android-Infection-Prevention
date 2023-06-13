@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention
 
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -21,18 +22,20 @@ class FragmentReportListTest: RoboTest() {
   @get:Rule(order = 0)
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1)
+  val composeTestRule = createComposeRule()
+  @get:Rule(order = 2)
   val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
 
   @Before
   fun register_Idling_Resource() {
     IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
-    mainActivity {
+    mainActivity(composeTestRule) {
       checkNavDrawerOpen(false) // Not open
       openNavDrawer()
       checkNavDrawerOpen(true) // Now Open
       goToReportList()
     }
-    reportListFragment { // Verify made it to reportList (have to wait until RV loads)
+    reportListFragment(composeTestRule) { // Verify made it to reportList (have to wait until RV loads)
       checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
     }
   }
@@ -43,21 +46,21 @@ class FragmentReportListTest: RoboTest() {
 
   // Navigation
   @Test fun navigate_To_Sort_Filter_Fragment() {
-    reportListFragment { startSelectingSortAndFilters() }
-    sortFilterFragment { checkLoaded() }
+    reportListFragment(composeTestRule) { startSelectingSortAndFilters() }
+    sortFilterFragment(composeTestRule) { checkLoaded() }
   }
   @Test fun navigate_To_Settings() {
-    reportListFragment { goToSettings() }
-    settingsFragment { checkInitLoad() }
+    reportListFragment(composeTestRule) { goToSettings() }
+    settingsFragment(composeTestRule) { checkInitLoad() }
   }
   @Test fun navigate_Back_To_Home_Page() {
-    reportListFragment { pressUpButton() } // Back button on toolbar
-    mainActivity { checkViewLoaded() }
+    reportListFragment(composeTestRule) { pressUpButton() } // Back button on toolbar
+    mainActivity(composeTestRule) { checkViewLoaded() }
   }
 
   // SearchBar filter
   @Test fun expand_SearchBar_ActionView_When_Empty() {
-    reportListFragment {
+    reportListFragment(composeTestRule) {
       // Normal flow - Tap search icon, use searchBar, press x to close
       expandSearchBar()
       checkFirstSearchBarExpansion()
@@ -71,7 +74,7 @@ class FragmentReportListTest: RoboTest() {
     }
   }
   @Test fun expand_SearchBar_ActionView_With_Text() {
-    reportListFragment {
+    reportListFragment(composeTestRule) {
       expandSearchBar()
       checkFirstSearchBarExpansion()
       enterSearchQuery("USC")
@@ -86,7 +89,7 @@ class FragmentReportListTest: RoboTest() {
     }
   }
   @Test fun filter_With_SearchBar() {
-    reportListFragment {
+    reportListFragment(composeTestRule) {
       expandSearchBar()
       checkFirstSearchBarExpansion()
       checkListCount(5)
@@ -108,8 +111,8 @@ class FragmentReportListTest: RoboTest() {
 
   // ForResult Features (SortFilterFragment)
   @Test fun add_One_Filter() {
-    reportListFragment { startSelectingSortAndFilters() }
-    sortFilterFragment {
+    reportListFragment(composeTestRule) { startSelectingSortAndFilters() }
+    sortFilterFragment(composeTestRule) {
       checkLoaded()
 
       openFilterGroupLabeled("Precaution Type")
@@ -117,14 +120,14 @@ class FragmentReportListTest: RoboTest() {
       checkSelectedFilters("Isolation")
       finalizeFilters()
     }
-    reportListFragment { // Works thanks to Hilt stubs
+    reportListFragment(composeTestRule) { // Works thanks to Hilt stubs
       checkFiltersLoaded("Isolation")
       checkListCount(2) // Backend still needs to send precautionType in production
     }
   }
   @Test fun add_Multiple_Filters() {
-    reportListFragment { startSelectingSortAndFilters() }
-    sortFilterFragment {
+    reportListFragment(composeTestRule) { startSelectingSortAndFilters() }
+    sortFilterFragment(composeTestRule) {
       checkLoaded()
 
       openFilterGroupLabeled("Health Practice Type")
@@ -137,7 +140,7 @@ class FragmentReportListTest: RoboTest() {
       checkSelectedFilters("Hand Hygiene", "Employee Name (A-Z)")
       finalizeFilters()
     }
-    reportListFragment {
+    reportListFragment(composeTestRule) {
       checkFiltersLoaded("Hand Hygiene", "Employee Name (A-Z)")
       checkListCount(2) // Should only get two hand hygiene related reports
       val handHygieneReports = arrayOf(Triple("Hand Hygiene", "John Smith", "May 18"),
@@ -146,8 +149,8 @@ class FragmentReportListTest: RoboTest() {
     }
   }
   @Test fun remove_Filter_And_Reprocess_List() {
-    reportListFragment { startSelectingSortAndFilters() }
-    sortFilterFragment {
+    reportListFragment(composeTestRule) { startSelectingSortAndFilters() }
+    sortFilterFragment(composeTestRule) {
       checkLoaded()
 
       openFilterGroupLabeled("Health Practice Type")
@@ -157,7 +160,7 @@ class FragmentReportListTest: RoboTest() {
 
       finalizeFilters()
     }
-    reportListFragment {
+    reportListFragment(composeTestRule) {
       checkFiltersLoaded("Hand Hygiene")
       checkListCount(2) // Only two reports that are hand hygiene based
       removeSelectedFilterLabeled("Hand Hygiene")

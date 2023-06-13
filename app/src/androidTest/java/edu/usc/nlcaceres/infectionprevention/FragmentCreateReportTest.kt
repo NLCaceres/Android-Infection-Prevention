@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention
 
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -24,16 +25,18 @@ class FragmentCreateReportTest: RoboTest() {
   @get:Rule(order = 0) // Best to start from MainActivity for a normal user Task experience
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1)
+  val composeTestRule = createComposeRule()
+  @get:Rule(order = 2)
   val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
 
   @Before
   fun navigate_To_Create_Report_Activity() {
     IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
-    mainActivity {
+    mainActivity(composeTestRule) {
       checkViewLoaded()
       goCreateStandardReportLabeled("Hand Hygiene")
     }
-    createReportActivity {
+    createReportActivity(composeTestRule) {
       checkCorrectTitle("New Hand Hygiene Observation")
       checkSpinnersLoaded()
     }
@@ -45,22 +48,22 @@ class FragmentCreateReportTest: RoboTest() {
 
   // Checking Initial Loading
   @Test fun check_Default_Header() { // Double Check!
-    createReportActivity { checkCorrectTitle("New Hand Hygiene Observation") }
+    createReportActivity(composeTestRule) { checkCorrectTitle("New Hand Hygiene Observation") }
   }
 
   // Navigation
   @Test fun handle_Back_Navigation() { // May fail if not coming from mainActivity (which in this case is just closing app)
     tapBackButton()
-    mainActivity { checkViewLoaded() }
+    mainActivity(composeTestRule) { checkViewLoaded() }
   }
   @Test fun handle_Up_Navigation() {
-    createReportActivity { pressUpButton() }
-    mainActivity { checkViewLoaded() }
+    createReportActivity(composeTestRule) { pressUpButton() }
+    mainActivity(composeTestRule) { checkViewLoaded() }
   }
 
   // Time and Date
   @Test fun select_Time() {
-    createReportActivity {
+    createReportActivity(composeTestRule) {
       openTimeDialog()
       setTime(15, 24) // 3PM 24 minutes
       pressOkButton() // Goes to dateDialog
@@ -71,7 +74,7 @@ class FragmentCreateReportTest: RoboTest() {
     }
   }
   @Test fun select_Time_And_Date() {
-    createReportActivity {
+    createReportActivity(composeTestRule) {
       openTimeDialog()
       setTime(15, 24) // 3PM 24 minutes
       pressOkButton() // Opens dateDialog
@@ -84,14 +87,14 @@ class FragmentCreateReportTest: RoboTest() {
 
   // Spinners
   @Test fun select_Employee() {
-    createReportActivity {
+    createReportActivity(composeTestRule) {
       openEmployeeSpinner()
       selectEmployee("Melody Rios")
       checkSelectedEmployee("Melody Rios")
     }
   }
   @Test fun select_Health_Practice() {
-    createReportActivity {
+    createReportActivity(composeTestRule) {
       openHealthPracticeSpinner()
       selectHealthPractice("Droplet")
       checkSelectedHealthPractice("Droplet")
@@ -99,7 +102,7 @@ class FragmentCreateReportTest: RoboTest() {
     }
   }
   @Test fun select_Location() {
-    createReportActivity {
+    createReportActivity(composeTestRule) {
       openFacilitySpinner()
       selectFacility("USC 2 123")
       checkSelectedFacility("USC 2 123")
@@ -111,7 +114,7 @@ class FragmentCreateReportTest: RoboTest() {
     // Since our Snackbar helper uses EspressoIdling to wait the 1500 to 2750ms its on screen,
     // Need to unregister the Idler if we want Espresso to be able to check if its on screen
     IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
-    createReportActivity {
+    createReportActivity(composeTestRule) {
       pressSubmitButton() // Should open dialog since no date selected
       checkAlertDialog()
       pressCancelButton()
@@ -119,7 +122,7 @@ class FragmentCreateReportTest: RoboTest() {
     }
   }
   @Test fun submit_With_Date() {
-    createReportActivity {
+    createReportActivity(composeTestRule) {
       openTimeDialog()
       setTime(5, 45) // 3PM 24 minutes
       pressOkButton() // Opens dateDialog
@@ -131,7 +134,7 @@ class FragmentCreateReportTest: RoboTest() {
     // Technically goes through mainActivity to get to reportList BUT
     // Android seems to optimize around actually needing to nav to mainActivity
     // Instead, just running the resultHandler that launches the intent toward the reportList view
-    reportListFragment { // Should be no filters BUT should be a list of reports!
+    reportListFragment(composeTestRule) { // Should be no filters BUT should be a list of reports!
       checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
     }
   }

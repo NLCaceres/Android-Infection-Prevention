@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention
 
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -22,13 +23,15 @@ class FragmentSettingsTest: RoboTest() {
   @get:Rule(order = 0)
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1)
+  val composeTestRule = createComposeRule()
+  @get:Rule(order = 2)
   val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
 
   @Before
   fun register_Idling_Resource() {
     IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
-    mainActivity { goToSettings() }
-    settingsFragment { checkInitLoad() }
+    mainActivity(composeTestRule) { goToSettings() }
+    settingsFragment(composeTestRule) { checkInitLoad() }
   }
   @After
   fun unregister_Idling_Resource() {
@@ -36,27 +39,27 @@ class FragmentSettingsTest: RoboTest() {
   }
 
   @Test fun check_Back_Navigation() { // Check nav from all views that can reach Settings view
-    settingsFragment { pressBack() } // 1st back to main, starting from Settings view
-    mainActivity { // Back at main, go to reportList
+    settingsFragment(composeTestRule) { pressBack() } // 1st back to main, starting from Settings view
+    mainActivity(composeTestRule) { // Back at main, go to reportList
       checkViewLoaded()
       openNavDrawer()
       goToReportList()
     }
-    reportListFragment { // Go to settings and then back to reportList
+    reportListFragment(composeTestRule) { // Go to settings and then back to reportList
       checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
       goToSettings()
     }
-    settingsFragment { // Now need to make it back to reportList, NOT main like originally
+    settingsFragment(composeTestRule) { // Now need to make it back to reportList, NOT main like originally
       checkInitLoad()
       pressBack()
     }
-    reportListFragment {
+    reportListFragment(composeTestRule) {
       checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
     }
   }
 
   @Test fun check_One_Time_Defined_Preferences() { // Check preferences made by preference.xml BUT defined on signup
-    settingsFragment { // These do NOT launch dialogs
+    settingsFragment(composeTestRule) { // These do NOT launch dialogs
       findAndOpenPreference("Username")
       checkDialogNotLoaded("Username")
 
@@ -68,7 +71,7 @@ class FragmentSettingsTest: RoboTest() {
     }
   }
   @Test fun check_Commonly_Changed_Preferences() { // Normal users should be able to see these. Defined in xml
-    settingsFragment { // Launch EditTextDialogs, so should check for EditText hint too
+    settingsFragment(composeTestRule) { // Launch EditTextDialogs, so should check for EditText hint too
       findAndOpenPreference("Phone Number")
       eraseOldPrefValue()
       checkDialogLoaded("Phone Number", "", "Ex: (123) 456-7890")
@@ -80,7 +83,7 @@ class FragmentSettingsTest: RoboTest() {
     }
   }
   @Test fun check_Admin_Preferences() {
-    settingsFragment {
+    settingsFragment(composeTestRule) {
       findAndOpenPreference("Healthcare Group or Clinic Name")
       checkDialogLoaded("Healthcare Group or Clinic Name", "", "New Name")
       dismissDialog()
@@ -106,7 +109,7 @@ class FragmentSettingsTest: RoboTest() {
   // Basic Process: 1. findAndOpen to enter new value 2. Check updated summary
   // 3. Open dialog again, enter empty value. 4. Check default summary
   @Test fun update_Normal_Preferences() {
-    settingsFragment {
+    settingsFragment(composeTestRule) {
       findAndOpenPreference("Phone Number") // Step 1
       enterNewPrefValue("123 456 7890")
       tapDialogOkButton()
@@ -127,7 +130,7 @@ class FragmentSettingsTest: RoboTest() {
     }
   }
   @Test fun update_Admin_Preferences() {
-    settingsFragment {
+    settingsFragment(composeTestRule) {
       findAndOpenPreference("Healthcare Group or Clinic Name")
       enterNewPrefValue("Some New Name")
       tapDialogOkButton()

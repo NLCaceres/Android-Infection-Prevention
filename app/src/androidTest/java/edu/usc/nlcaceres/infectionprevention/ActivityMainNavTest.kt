@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention
 
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import org.junit.Rule
 import org.junit.Test
@@ -25,7 +26,9 @@ import org.junit.Before
 class ActivityMainNavTest: RoboTest() {
   @get:Rule(order = 0) // Each TestSuite and each Test will get its own set of the Stubbed Repositories, avoiding any variable pollution
   val hiltRule = HiltAndroidRule(this)
-  @get:Rule(order = 1) // This rule runs launch(ActivityClass) & can access the activity via this prop instead!
+  @get:Rule(order = 1)
+  val composeTestRule = createComposeRule()
+  @get:Rule(order = 2) // This rule runs launch(ActivityClass) & can access the activity via this prop instead!
   val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
 
   @Before
@@ -39,57 +42,57 @@ class ActivityMainNavTest: RoboTest() {
 
   // androidTest dir DOESN'T allow `Back tick function names`() like test dir does! Snake case is fine for now!
   @Test fun click_Health_Practice_To_Go_To_Create_Report_Activity() {
-      mainActivity {
+      mainActivity(composeTestRule) {
         checkViewLoaded()
         goCreateIsoReportLabeled("Contact Enteric")
       }
-      createReportActivity {
+      createReportActivity(composeTestRule) {
         checkCorrectTitle("New Contact Enteric Observation")
       }
   }
 
   @Test fun click_NavDrawer_Generic_Report_Button_To_Go_To_Report_List_Fragment() {
-      mainActivity {
+      mainActivity(composeTestRule) {
         checkNavDrawerOpen(false) // Not open
         openNavDrawer()
         checkNavDrawerOpen(true) // Now Open
         goToReportList()
       }
-      reportListFragment { // Verify in reportList (have to wait until RV loads)
+      reportListFragment(composeTestRule) { // Verify in reportList (have to wait until RV loads)
         checkInitListLoaded("Hand Hygiene", "John Smith", "May 18")
       }
   }
 
   @Test fun click_NavDrawer_Standard_Report_Only_Filter_To_Go_To_Report_List_Fragment() {
-      mainActivity {
+      mainActivity(composeTestRule) {
         checkNavDrawerOpen(false) // Not open
         openNavDrawer()
         checkNavDrawerOpen(true) // Now Open
         goToFilteredStandardReportList()
       }
-      reportListFragment {
+      reportListFragment(composeTestRule) {
         checkFiltersLoaded("Standard")
         checkListCount(3)
       }
   }
   @Test fun click_NavDrawer_Isolation_Reports_Only_Filter_To_Go_To_Report_List_Fragment() {
-      mainActivity {
+      mainActivity(composeTestRule) {
         checkNavDrawerOpen(false) // Not open
         openNavDrawer()
         checkNavDrawerOpen(true) // Now Open
         goToFilteredIsolationReportList()
       }
-      reportListFragment {
+      reportListFragment(composeTestRule) {
         checkFiltersLoaded("Isolation")
         checkListCount(2)
       }
   }
 
   @Test fun click_Settings_Toolbar_Button_To_Go_To_Settings_Fragment() {
-    mainActivity {
+    mainActivity(composeTestRule) {
       checkNavDrawerOpen(false) // Not open
       goToSettings()
     }
-    settingsFragment { checkInitLoad() }
+    settingsFragment(composeTestRule) { checkInitLoad() }
   }
 }
