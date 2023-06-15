@@ -1,52 +1,77 @@
 package edu.usc.nlcaceres.infectionprevention.adapters
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import edu.usc.nlcaceres.infectionprevention.R
+import com.google.accompanist.themeadapter.appcompat.AppCompatTheme
 import edu.usc.nlcaceres.infectionprevention.data.FilterItem
-import edu.usc.nlcaceres.infectionprevention.databinding.ItemFilterCheckboxBinding
 
 /* RecyclerView Adapter used to select different types of filters each contained in an expandable/accordion view
 * that is multi-choice by default (typical checkbox behavior) and single choice if enabled
 * Linked to: SelectedFilterAdapter through its parent ExpandableFilterAdapter */
-class FilterAdapter(private val singleSelectionEnabled : Boolean, private val filterSelectedListener : OnFilterSelectedListener) :
-  ListAdapter<FilterItem, FilterAdapter.FilterViewHolder>(FilterDiffCallback()) {
+class FilterAdapter(private val singleSelectionEnabled : Boolean, private val filterSelectedListener : OnFilterSelectedListener,
+                    private val parentListener: FilterGroupListener) : ListAdapter<FilterItem, ComposeFilterViewHolder>(FilterDiffCallback()) {
 
-  /* Inner class needed to set up handleSingleSelection (maybe best passed into constructor?) */
-  inner class FilterViewHolder(private val viewBinding : ItemFilterCheckboxBinding) : RecyclerView.ViewHolder(viewBinding.root) {
-    fun bind(filter : FilterItem) {
-      viewBinding.filterCheckNameTextView.apply {
-        text = filter.name
-        isChecked = filter.isSelected
-        if (singleSelectionEnabled) { setCheckMarkDrawable(R.drawable.custom_radio_button) }
-        setOnClickListener {
-          if (singleSelectionEnabled && !this.isChecked) { handleSingleSelection() }
-          this.isChecked = !this.isChecked
-          filter.isSelected = this.isChecked
-          filterSelectedListener.onFilterSelected(this, filter, singleSelectionEnabled)
-        }
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+    ComposeFilterViewHolder(ComposeView(parent.context), singleSelectionEnabled, filterSelectedListener, parentListener) selector@{
+      val currentlyCheckmarkedFilterIndex = currentList.indexOfFirst { it.isSelected }
+      if (currentlyCheckmarkedFilterIndex == -1) { return@selector } // Nothing currently selected, so need to deselect anything, move on.
+      currentList[currentlyCheckmarkedFilterIndex].isSelected = false // Unmark it
+      notifyItemChanged(currentlyCheckmarkedFilterIndex)
+      /* An alternative to the parentListener + singleSelectionHandler is a SortedList, efficiently notifying the RecyclerViewAdapter
+      * of changes, commonly via the SortedListAdapterCallback implementation, similar to DiffUtil.ItemCallback BUT w/ added sorting! */
+    } // The sorting aspect isn't needed here BUT it could be useful in the ReportList RV
+
+  // Why not bind the listeners here? Because it would happen EVERY TIME the user scrolls and views are recycled, so ONLY BIND THE DATA
+  override fun onBindViewHolder(holder: ComposeFilterViewHolder, position: Int) {
+    holder.bind(getItem(position))
+  }
+}
+
+class ComposeFilterViewHolder(private val composeView: ComposeView, private val singleSelectionEnabled: Boolean,
+                              private val filterSelectedListener : OnFilterSelectedListener, private val parentListener: FilterGroupListener,
+                              private val handleSingleSelection: () -> Unit): RecyclerView.ViewHolder(composeView) {
+  fun bind(filter: FilterItem) {
+    composeView.setContent {
+      FilterRow(filter, singleSelectionEnabled) {
+        if (singleSelectionEnabled && !filter.isSelected) { handleSingleSelection() }
+        filter.isSelected = !filter.isSelected
+        parentListener.onChildSelected(filter, bindingAdapterPosition) // See ExpandedFilterAdapter for diff between binding vs absolute
+        filterSelectedListener.onFilterSelected(composeView, filter, singleSelectionEnabled)
       }
     }
   }
+}
 
-  fun handleSingleSelection() {
-    val currentlyCheckmarkedFilterIndex = currentList.indexOfFirst { it.isSelected }
-    if (currentlyCheckmarkedFilterIndex == -1) return // Nothing currently selected, so need to deselect anything, move on.
-    currentList[currentlyCheckmarkedFilterIndex].isSelected = false // Unmark it
-    notifyItemChanged(currentlyCheckmarkedFilterIndex)
-    /* Shouldn't need notifyDateSetChanged() anymore BUT if it is, then a SortedList may work (it binds outside of the adapter / in view)
-    SortedList takes the class type contained + a SortedList.Callback (SortedList.BatchedCallback or SortedListAdapterCallback, the latter = better) */
-  }
-
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilterViewHolder = FilterViewHolder(
-    ItemFilterCheckboxBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-
-  override fun onBindViewHolder(holder: FilterViewHolder, position: Int) {
-    holder.bind(getItem(position))
+@Preview(widthDp = 200, showBackground = true)
+@Composable
+fun FilterRow(filter: FilterItem = FilterItem("Filter Name", false, "Filter Group"),
+              singleSelectionEnabled: Boolean = false, onClick: () -> Unit = {}) {
+  AppCompatTheme {
+    Row(Modifier.fillMaxWidth().height(50.dp).testTag("FilterRow"), Arrangement.SpaceBetween) {
+      Text(filter.name, modifier = Modifier.padding(start = 10.dp).align(Alignment.CenterVertically), fontSize = 20.sp)
+      if (singleSelectionEnabled) {
+        RadioButton(filter.isSelected, onClick, Modifier.padding(end = 20.dp).align(Alignment.CenterVertically),
+          colors = RadioButtonDefaults.colors(Color.Red, Color.Red))
+      }
+      else {
+        Checkbox(filter.isSelected, { _ -> onClick() }, Modifier.padding(end = 20.dp).align(Alignment.CenterVertically),
+          colors = CheckboxDefaults.colors(Color.Red, Color.Red, Color.Yellow))
+      }
+    }
   }
 }
 

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import edu.usc.nlcaceres.infectionprevention.R
 import edu.usc.nlcaceres.infectionprevention.data.FilterGroup
+import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 import edu.usc.nlcaceres.infectionprevention.databinding.ItemExpandableFilterBinding
 import edu.usc.nlcaceres.infectionprevention.util.DivideAllButLastItemDecoration
 import edu.usc.nlcaceres.infectionprevention.util.dpUnits
@@ -32,10 +33,11 @@ class ExpandableFilterAdapter(private val filterSelectedListener: OnFilterSelect
         filterGroup.isExpanded = !filterGroup.isExpanded
         notifyItemChanged(bindingAdapterPosition, "Expanded-Changed")
         /* bindingAdapterPosition = This adapter's view on the items position. absoluteAdapterPosition here would
-        * probably return the same int BUT if using ConcatAdapter (vs ListAdapter), absoluteAdapterPos CAN return
-        * a very different number! there4 best to use bindingAdapterPos */
+        * probably return the same int BUT if using ConcatAdapter to merge Adapters and their lists (as opposed to this ListAdapter),
+        * absoluteAdapterPos CAN return a very different number! there4 best to use bindingAdapterPos */
       }
-      filterAdapter = FilterAdapter(filterGroup.singleSelectionEnabled, filterSelectedListener)
+      filterAdapter = FilterAdapter(filterGroup.singleSelectionEnabled,
+        filterSelectedListener) { _, position -> filterAdapter.notifyItemChanged(position) } // Helps update ComposeView
       viewBinding.filterRecyclerView.apply {
         adapter = filterAdapter
         (adapter as FilterAdapter).submitList(filterGroup.filters)
@@ -71,4 +73,8 @@ private class ExpandableFilterDiffCallback : DiffUtil.ItemCallback<FilterGroup>(
 
   override fun areContentsTheSame(oldFilterGroup: FilterGroup, newFilterGroup: FilterGroup): Boolean =
     oldFilterGroup.filters.size == newFilterGroup.filters.size
+}
+
+fun interface FilterGroupListener {
+  fun onChildSelected(selectedFilter : FilterItem, childPosition: Int)
 }
