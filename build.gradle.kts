@@ -1,27 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
-buildscript {
-    val kotlin_version = "1.8.21"
-    val nav_version = "2.5.3"
-
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:7.4.2")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.43.2")
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
-        // App Dependencies do NOT go here. They go in the module build.gradle.kts file
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
+@Suppress("DSL_SCOPE_VIOLATION")
+plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.kapt) apply false
+    alias(libs.plugins.kotlin.parcelize) apply false
+    alias(libs.plugins.google.dagger.hilt) apply false
+    alias(libs.plugins.androidx.navigation.safeargs.kotlin) apply false
 }
 
 tasks.register("clean", Delete::class) {
