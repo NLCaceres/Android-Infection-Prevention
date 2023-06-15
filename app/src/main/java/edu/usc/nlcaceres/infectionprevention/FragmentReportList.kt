@@ -13,8 +13,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.JustifyContent
 import androidx.core.view.MenuProvider
 import android.text.InputType.TYPE_CLASS_TEXT
@@ -134,8 +132,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
 
     selectedFilterRV = viewBinding.selectedFilterRV.apply {
       adapter = selectedFilterAdapter.apply { submitList(viewModel.selectedFilters) }
-      layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW, FlexWrap.WRAP)
-        .apply { justifyContent = JustifyContent.CENTER }
+      layoutManager = FlexboxLayoutManager(context).apply { justifyContent = JustifyContent.CENTER }
     }
   }
   private fun setupReportRV() {

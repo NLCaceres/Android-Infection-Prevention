@@ -15,8 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import dagger.hilt.android.AndroidEntryPoint
@@ -119,7 +117,7 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
 
     selectedFilterRV = viewBinding.selectedFiltersRecyclerView.apply {
       adapter = selectedFilterAdapter
-      layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW, FlexWrap.WRAP).apply { justifyContent = JustifyContent.CENTER }
+      layoutManager = FlexboxLayoutManager(context).apply { justifyContent = JustifyContent.CENTER }
     }
     viewModel.selectedFilterList.observe(viewLifecycleOwner) { newList -> selectedFilterAdapter.submitList(newList) }
   }
