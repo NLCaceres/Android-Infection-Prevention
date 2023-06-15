@@ -17,7 +17,7 @@ import javax.inject.Inject
 class ViewModelReportList @Inject constructor(private val reportRepository: ReportRepository,
                                               private val sortFilterUseCase: SortFilterReportsUseCase = SortFilterReportsUseCase(),
                                               private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
-  // Since Lists can't "add()", best way to keep this state simple.
+  // Since Lists can't "add()", it's easiest to just use an arrayList
   var selectedFilters: ArrayList<FilterItem> = arrayListOf()
 
   private val _isLoading = MutableLiveData(false)
@@ -28,8 +28,8 @@ class ViewModelReportList @Inject constructor(private val reportRepository: Repo
     .onCompletion { _isLoading.value = false; EspressoIdlingResource.decrement() }
   private val loadingReportsFlow = loadingFlow // Combine loading state with reportList
     .combine(reportsFlow) { loading, newList -> Pair(loading, newList) }.onStart { _isLoading.value = true }
-    .catch { e -> // No more flow collection if catch runs so let toastMessage handle the rest in view
-        _toastMessage.value = when (e) { // IOException covers a number of Retrofit or server issues
+    .catch { e -> // No more flow collection if catch runs so let snackbarMessage handle the rest in view
+        _snackbarMessage.value = when (e) { // IOException covers a number of Retrofit or server issues
           is IOException -> "Sorry! Having trouble with the internet connection!"
           else -> "Sorry! Seems we're having an issue on our end!" // Always important to have a default!
         }
@@ -45,7 +45,7 @@ class ViewModelReportList @Inject constructor(private val reportRepository: Repo
   fun textFilteredList(text: String, list: List<Report> = reportState.value?.second ?: emptyList()) =
     sortFilterUseCase.filterReportsByText(text, sortedFilteredList(list))
 
-  private val _toastMessage = MutableLiveData("")
-  val toastMessage: LiveData<String> = _toastMessage // Err msg displayed as toast or alertDialog
+  private val _snackbarMessage = MutableLiveData("")
+  val snackbarMessage: LiveData<String> = _snackbarMessage // Err msg displayed as Snackbar or alertDialog
   // Can let UI calculate if sorryMsg needs displaying (signaling empty list returned)
 }

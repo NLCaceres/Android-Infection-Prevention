@@ -1,6 +1,5 @@
 package edu.usc.nlcaceres.infectionprevention
 
-import android.util.Log
 import android.os.Bundle
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
@@ -69,7 +68,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
     requireActivity().addMenuProvider(ReportListMenu(), viewLifecycleOwner, Lifecycle.State.RESUMED)
 
     setupRefresh()
-    setupToastMessage()
+    setupSnackbarMessage()
     setupFloatButtonToSortFilterView()
 
     setupSortFilterViews()
@@ -86,9 +85,9 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
     }
     viewModel.isLoading.observe(viewLifecycleOwner) { loading -> refreshLayout.isRefreshing = loading }
   }
-  private fun setupToastMessage() {
+  private fun setupSnackbarMessage() {
     sorryMsgTextView = viewBinding.sorryTextView // Fallback textview
-    viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
+    viewModel.snackbarMessage.observe(viewLifecycleOwner) { message ->
       if (message.isNotBlank()) { // Can't be empty ("") or just whitespace ("   ")
         with(sorryMsgTextView) {
           visibility = if (viewModel.reportListEmpty()) View.VISIBLE else View.INVISIBLE

@@ -63,7 +63,7 @@ class ViewModelCreateReport @Inject constructor(private val employeeRepository: 
       _locationList.value = locationList
       Triple(employeeList, healthPracticeList, locationList)
     }.onStart { _loadingState.value = true }.onCompletion { _loadingState.value = false; EspressoIdlingResource.decrement() }
-    .catch { e -> _toastMessage.value = when (e) {
+    .catch { e -> _snackbarMessage.value = when (e) {
       is IOException -> "Sorry! Having trouble with the internet connection!"
       else -> "Sorry! Seems we're having an issue on our end!"
     }} // If all 3 flows fail, whichever fails 1st is the 1 caught & stops EVERYTHING. The liveData WON'T restart the flow
@@ -81,6 +81,6 @@ class ViewModelCreateReport @Inject constructor(private val employeeRepository: 
     reportRepository.createReport() // Take newReport as input to submit to server
   }
 
-  private val _toastMessage = MutableLiveData("")
-  val toastMessage: LiveData<String> = _toastMessage
+  private val _snackbarMessage = MutableLiveData("")
+  val snackbarMessage: LiveData<String> = _snackbarMessage
 }

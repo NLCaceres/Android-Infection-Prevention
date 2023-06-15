@@ -34,7 +34,7 @@ class ViewModelReportListTest {
   private lateinit var fakeRepository: ReportRepository
   @Mock lateinit var reportObserver: Observer<Pair<Boolean, List<Report>>>
   @Mock lateinit var loadingObserver: Observer<Boolean>
-  @Mock lateinit var toastObserver: Observer<String>
+  @Mock lateinit var snackbarObserver: Observer<String>
 
   @Test fun `Observe Report State`() {
     val reportsList = arrayListOf(ReportsFactory.buildReport(), ReportsFactory.buildReport())
@@ -169,49 +169,49 @@ class ViewModelReportListTest {
     inOrderCheck.verify(loadingObserver, times(1)).onChanged(true)
     inOrderCheck.verify(loadingObserver, times(1)).onChanged(false)
   }
-  @Test fun `Observe Toast Message`() {
-    // If we don't mock the returned flow, the combine func throws causing the flow's catch block to emit the generic toast message
+  @Test fun `Observe Snackbar Message`() {
+    // If we don't mock the returned flow, the combine func throws causing the flow's catch block to emit the generic Snackbar message
     fakeRepository = mock { on { fetchReportList() } doReturn flow { emptyList<Report>() } }
     val viewModel = ViewModelReportList(fakeRepository)
 
-    viewModel.toastMessage.observeForever(toastObserver)
+    viewModel.snackbarMessage.observeForever(snackbarObserver)
     viewModel.reportState.observeForever(reportObserver)
 
     viewModel.reportState.removeObserver(reportObserver)
-    viewModel.toastMessage.removeObserver(toastObserver)
+    viewModel.snackbarMessage.removeObserver(snackbarObserver)
 
-    verify(toastObserver, times(1)).onChanged(any()) // Only called on its initial observeForever
-    verify(toastObserver, times(1)).onChanged("")
+    verify(snackbarObserver, times(1)).onChanged(any()) // Only called on its initial observeForever
+    verify(snackbarObserver, times(1)).onChanged("")
   }
-  @Test fun `Observe Toast Message from Basic Exception Thrown`() {
+  @Test fun `Observe Snackbar Message from Basic Exception Thrown`() {
     fakeRepository = mock { on { fetchReportList() } doReturn flow { throw Exception("Problem") } }
     val viewModel = ViewModelReportList(fakeRepository)
 
-    viewModel.toastMessage.observeForever(toastObserver)
+    viewModel.snackbarMessage.observeForever(snackbarObserver)
     viewModel.reportState.observeForever(reportObserver)
 
     viewModel.reportState.removeObserver(reportObserver)
-    viewModel.toastMessage.removeObserver(toastObserver)
+    viewModel.snackbarMessage.removeObserver(snackbarObserver)
 
-    verify(toastObserver, times(2)).onChanged(any())
-    val inOrderCheck = inOrder(toastObserver)
+    verify(snackbarObserver, times(2)).onChanged(any())
+    val inOrderCheck = inOrder(snackbarObserver)
     // 1st emits default value "" THEN exception throws emitting its message
-    inOrderCheck.verify(toastObserver, times(1)).onChanged("")
-    inOrderCheck.verify(toastObserver, times(1)).onChanged("Sorry! Seems we're having an issue on our end!")
+    inOrderCheck.verify(snackbarObserver, times(1)).onChanged("")
+    inOrderCheck.verify(snackbarObserver, times(1)).onChanged("Sorry! Seems we're having an issue on our end!")
   }
-  @Test fun `Observe Toast Message from IO Exception Thrown`() {
+  @Test fun `Observe Snackbar Message from IO Exception Thrown`() {
     fakeRepository = mock { on { fetchReportList() } doReturn flow { throw IOException("Problem") } }
     val viewModel = ViewModelReportList(fakeRepository)
 
-    viewModel.toastMessage.observeForever(toastObserver)
+    viewModel.snackbarMessage.observeForever(snackbarObserver)
     viewModel.reportState.observeForever(reportObserver)
 
     viewModel.reportState.removeObserver(reportObserver)
-    viewModel.toastMessage.removeObserver(toastObserver)
+    viewModel.snackbarMessage.removeObserver(snackbarObserver)
 
-    verify(toastObserver, times(2)).onChanged(any())
-    val inOrderCheck = inOrder(toastObserver)
-    inOrderCheck.verify(toastObserver, times(1)).onChanged("")
-    inOrderCheck.verify(toastObserver, times(1)).onChanged("Sorry! Having trouble with the internet connection!")
+    verify(snackbarObserver, times(2)).onChanged(any())
+    val inOrderCheck = inOrder(snackbarObserver)
+    inOrderCheck.verify(snackbarObserver, times(1)).onChanged("")
+    inOrderCheck.verify(snackbarObserver, times(1)).onChanged("Sorry! Having trouble with the internet connection!")
   }
 }

@@ -1,6 +1,5 @@
 package edu.usc.nlcaceres.infectionprevention
 
-import android.util.Log
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
@@ -66,7 +65,7 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
     }
 
     sorryMsgTextView = viewBinding.sorryTextView
-    viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
+    viewModel.snackbarMessage.observe(viewLifecycleOwner) { message ->
       // This will ONLY ever receive a value if the precautionState liveData fails!
       // SO NO POINT observing the message from precautionState, it couldn't ever receive it due to the flow crashing
       if (message.isNotBlank()) { // Can't be empty ("") or just whitespace ("   ")
@@ -75,6 +74,7 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
           text = message
         }
         (activity as? ActivityMain)?.showSnackbar(message)
+        startPostponedEnterTransition() // Since precautionStateObserver won't call it, MUST be called here!
       }
     }
   }

@@ -67,7 +67,7 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
 
     setupProgressIndicator()
     setupHeaderTextView()
-    setupToast()
+    setupSnackbar()
     setupDateEditText()
     setupSpinners()
 
@@ -94,8 +94,8 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
 
     viewModel.healthPracticeHeaderText.observe(viewLifecycleOwner) { headerTV.text = it } // emits a string from flow map func
   }
-  private fun setupToast() {
-    viewModel.toastMessage.observe(viewLifecycleOwner) { errMsg ->
+  private fun setupSnackbar() {
+    viewModel.snackbarMessage.observe(viewLifecycleOwner) { errMsg ->
       if (errMsg.isNotBlank()) {
         (activity as? ActivityMain)?.showSnackbar(errMsg)
         startPostponedEnterTransition()

@@ -79,7 +79,7 @@ class ViewModelCreateReportTest {
     viewModel.adapterData.observeForever(adapterDataObserver)
     viewModel.adapterData.removeObserver(adapterDataObserver)
     val defaultSnackbarErrorMessage = "Sorry! Seems we're having an issue on our end!"
-    assertEquals(defaultSnackbarErrorMessage, viewModel.toastMessage.value)
+    assertEquals(defaultSnackbarErrorMessage, viewModel.snackbarMessage.value)
   }
   @Test fun `Observe Repositories All Failed`() {
     employeeRepository = mock { on { fetchEmployeeList() } doReturn flow { throw Exception("Failed Employees") } }
@@ -91,7 +91,7 @@ class ViewModelCreateReportTest {
     viewModel.adapterData.observeForever(adapterDataObserver)
     viewModel.adapterData.removeObserver(adapterDataObserver)
     val defaultSnackbarErrorMessage = "Sorry! Seems we're having an issue on our end!"
-    assertEquals(defaultSnackbarErrorMessage, viewModel.toastMessage.value)
+    assertEquals(defaultSnackbarErrorMessage, viewModel.snackbarMessage.value)
   }
   @Test fun `Observe Repositories Failed with IO Exception`() {
     employeeRepository = mock { on { fetchEmployeeList() } doReturn flow { emit(emptyList()) } }
@@ -103,7 +103,7 @@ class ViewModelCreateReportTest {
     viewModel.adapterData.observeForever(adapterDataObserver)
     viewModel.adapterData.removeObserver(adapterDataObserver)
     val snackbarIOErrorMessage = "Sorry! Having trouble with the internet connection!"
-    assertEquals(snackbarIOErrorMessage, viewModel.toastMessage.value)
+    assertEquals(snackbarIOErrorMessage, viewModel.snackbarMessage.value)
   }
 
   @Test fun `Check and Update Selected Health Practice`() { // HeaderText + Report's HealthPractice

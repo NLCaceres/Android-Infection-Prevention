@@ -27,8 +27,8 @@ class ViewModelMain @Inject constructor(private val precautionRepository: Precau
   private val loadingPrecautionsFlow = loadingFlow // Combine loading state with precautionList
     .combine(precautionsFlow) { loading, newList -> Pair(loading, newList) }
     .onStart { _isLoading.value = true }
-    .catch { e -> // No more flow collection if catch runs so let toastMessage handle the rest in view
-        _toastMessage.value = when (e) { // IOException covers a number of Retrofit or server issues
+    .catch { e -> // No more flow collection if catch runs so let snackbarMessage handle the rest in view
+        _snackbarMessage.value = when (e) { // IOException covers a number of Retrofit or server issues
           is IOException -> "Sorry! Having trouble with the internet connection!"
           else -> "Sorry! Seems we're having an issue on our end!" // Always important to have a default!
         }
@@ -51,8 +51,8 @@ class ViewModelMain @Inject constructor(private val precautionRepository: Precau
     return Pair(precautionNames, healthPracticeNames)
   }
 
-  private val _toastMessage = MutableLiveData("")
-  val toastMessage: LiveData<String> = _toastMessage // Err msg displayed as toast or alertDialog
+  private val _snackbarMessage = MutableLiveData("")
+  val snackbarMessage: LiveData<String> = _snackbarMessage // Err msg displayed as Snackbar or alertDialog
   // Can let UI calculate if sorryMsg needs displaying (signaling empty list returned)
 }
 
