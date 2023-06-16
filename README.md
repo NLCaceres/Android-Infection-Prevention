@@ -9,17 +9,30 @@
   effortlessly meet the demands of a hospital or a local clinic the second it's adopted would be endlessly invaluable.  
 
 ## Features
-- Home view that allows users to quickly choose from a set of Health Violations and begin filing a Report
-- Navigation Drawer to view recent Reports in a list that can be filtered and sorted
-  - Options from the Nav Drawer to immediately filter out Reports based on Health Precaution
+- Home View that allows users to quickly choose from a set of Health Violations and begin filing a Report
+- Create Report View to collect date, look up and select employee as well as note place and type of violation
+- Navigation Drawer to view Health Practice violation Reports in a list, initially sorted by recency 
+  - Buttons in Nav Drawer to immediately filter out Reports based on type of health violation
+- Report List View with a Floating Sort Button so the user can better narrow down the reports via a list of sorting and filtering options
 - Settings to personalize app, individually and as a team
 
-### Recent Changes
+### Recent Updates
+- Jetpack Composable within the Sort & Filter's RecyclerView ViewHolders
+- Consolidate Hilt Modules into main AppModule, leaving improved RepositoryModule for UI Testing to easily stub in data
+- Updated RecyclerView Diff'ing for all Adapters
+- Sort/Filter Options + Search Bar working with Report List
+- Drop Toasts for Snackbars
+  - Update leftover references to Toasts
+- Reduced magic string usage
+  - Relevant to i18n and future l10n
+
+### Technical Upgrades
 - Integrated Android Navigation Component to simplify navigation logic
+- Dropped MVC for MVVM approach, splitting Views & ViewModels
 - Additions
     - Hilt
-      - Merged DataSourceModule into main AppModule by converting it into abstract class that includes a Kotlin Companion Object
-      - Simplified RepositoryModule by swapping @Provides for @Binds so @Inject works as intended in the Repository Implementations
+        - Merged DataSourceModule into main AppModule by converting it into abstract class that includes a Kotlin Companion Object
+        - Simplified RepositoryModule by swapping @Provides for @Binds so @Inject works as intended in the Repository Implementations
     - Retrofit
     - Animations
     - LeakCanary
@@ -28,29 +41,24 @@
     - Espresso
     - Mockito
     - Robolectric
-- Dropped MVC for MVVM approach, splitting Views & ViewModels
-- Updated RecyclerView Diff'ing for all Adapters
-- Sort/Filter Options + Search Bar working with Report List
-- Drop Toasts for Snackbars
 - Improved accessibility
+  - Sufficient contrast, text size, touch target size, and use of content descriptions
+  - Improved use of modern native elements for more intuitive User Experience
 - Complete Kotlin Conversion
-- Reduced magic string usage
-    - Relevant to i18n and future l10n
-  
+
 ### Future Changes
 - Jetpack Compose for future views
-    - Add data charts
-    - Employee Profile
-    - As well as progressively update current views
-        - Homepage (List of potential health precautions to create new report on)
-        - Create Report Screen
-          - Update spinner UX where each acts as a button navigating to a page listing selectable options
-              - I.e. Employee spinner takes user to list view that populates with Employee data BUT tapping
-              the Location spinner will populate list with location data
-        - Report List Screen
-            - Sort and Filter Options List
-        - Settings
-    - Incorporate MaterialUI 3
+  - Add data charts
+  - Employee Profile
+  - Progressively update current views
+    - Homepage (List of potential health precautions to create new report on)
+      - Create Report Screen
+        - Update spinner UX where each acts as a button navigating to a page listing selectable options
+          - I.e. Employee spinner takes user to list view that populates with Employee data BUT tapping
+          the Location spinner will populate list with location data
+    - Report List Screen
+    - Settings
+- Incorporate MaterialUI 3
 - Take advantage of AppManifest merging to set usesCleartext to false in release
 - Cache data via Room Database (SQLCipher to maintain an encrypted version?)
 - Split ReportList, Sort/Filter Options, and Selected Filters into their own reusable child fragments
