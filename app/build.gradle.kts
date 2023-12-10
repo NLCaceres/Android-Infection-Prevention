@@ -10,11 +10,11 @@ plugins {
 
 android {
     namespace = "edu.usc.nlcaceres.infectionprevention"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         applicationId = "edu.usc.nlcaceres.infectionprevention"
         minSdk = 26 // Android 8.0 Oreo
-        targetSdk = 33 // Robolectric can't handle 33 yet
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "edu.usc.nlcaceres.infectionprevention.HiltTestRunner"
