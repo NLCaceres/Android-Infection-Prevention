@@ -21,7 +21,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent"/>
+      app:layout_constraintBottom_toBottomOf="parent" />
   <!-- Checkmark seems to REQUIRE vectors in the selector for some reason. layer-lists, shapes etc don't seem allowed -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

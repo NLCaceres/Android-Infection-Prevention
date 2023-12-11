@@ -31,12 +31,12 @@
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 
-
   <TextView
       android:id="@+id/alertTitle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:paddingBottom="8dp"
+      android:paddingVertical="8dp"
+      android:background="#DF2935"
       android:text="@string/default_alert_dialog_title"
       android:textColor="@color/darkMode"
       android:textSize="26sp"
@@ -50,7 +50,7 @@
       app:layout_constraintStart_toEndOf="@id/imageViewBackground"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_weight="5"
-      app:layout_constraintVertical_bias="0.3"/>
+      app:layout_constraintVertical_bias="0" />
 
   <TextView
       android:id="@+id/alertMessage"

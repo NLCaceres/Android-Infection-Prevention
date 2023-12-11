@@ -10,8 +10,7 @@
       android:title="@string/set_filter_menu_label"
       android:icon="@drawable/ic_done"
       app:showAsAction="always" />
-  <item
-      android:id="@+id/globalActionToFragmentSettings"
+  <item android:id="@+id/globalActionToFragmentSettings"
       android:title="@string/action_settings"
       android:icon="@drawable/ic_settings"
       android:menuCategory="secondary"

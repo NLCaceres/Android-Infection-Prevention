@@ -19,7 +19,7 @@
         android:layout_marginEnd="40dp"
         app:layout_constraintBottom_toTopOf="@+id/navDrawerTitleTextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/navCloseButton"/>
+        app:layout_constraintEnd_toStartOf="@id/navCloseButton" />
 
     <Button
         android:id="@+id/navCloseButton"
@@ -28,7 +28,7 @@
         android:background="@drawable/ic_close"
         android:contentDescription="@string/close_nav_drawer_button_desc"
         app:layout_constraintTop_toTopOf="@+id/logoImageView"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/navDrawerTitleTextView"
@@ -39,6 +39,6 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:layout_marginStart="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

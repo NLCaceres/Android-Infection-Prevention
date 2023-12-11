@@ -29,14 +29,14 @@
       app:destination="@id/reportListFragment">
       <argument
           android:name="edu.usc.nlcaceres.infectionprevention.main.preselected_filter"
-          app:argType="string" android:defaultValue="Standard"/>
+          app:argType="string" android:defaultValue="Standard" />
     </action>
     <action
       android:id="@+id/actionToReportListFragmentWithIsolationFilter"
       app:destination="@id/reportListFragment">
       <argument
           android:name="edu.usc.nlcaceres.infectionprevention.main.preselected_filter"
-          app:argType="string" android:defaultValue="Isolation"/>
+          app:argType="string" android:defaultValue="Isolation" />
     </action>
   </fragment>
 
@@ -60,14 +60,14 @@
       android:id="@+id/sortFilterFragment"
       android:label=""
       android:name="edu.usc.nlcaceres.infectionprevention.FragmentSortFilter"
-      tools:layout="@layout/fragment_sort_filter"/>
+      tools:layout="@layout/fragment_sort_filter" />
 
   <!-- Center RecyclerView Buttons: CreateReportFragment -->
   <fragment
       android:id="@+id/createReportFragment"
       android:label=""
       android:name="edu.usc.nlcaceres.infectionprevention.FragmentCreateReport"
-      tools:layout="@layout/fragment_create_report"/>
+      tools:layout="@layout/fragment_create_report" />
 
   <!-- ActionBar Settings Item: SettingsFragment w/ GlobalAction to goto -->
   <fragment

@@ -1,9 +1,9 @@
-<vector android:height="96dp" android:viewportHeight="32"
-    android:viewportWidth="32" android:width="96dp" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="#cc2853" android:pathData="M25.63,6.22l-5,-4A1,1 0,0 0,20 2H7A1,1 0,0 0,6 3V16a1,1 0,0 0,1 1h8v2a1,1 0,0 0,1 1h9a1,1 0,0 0,1 -1V7A1,1 0,0 0,25.63 6.22Z"/>
-    <path android:fillColor="#e291a8" android:pathData="M29,18H17V16a1,1 0,0 0,-1 -1H5a2.73,2.73 0,0 0,-3 2.44v9.39C2,28.61 3.76,30 6,30H26c2.24,0 4,-1.39 4,-3.17V19A1,1 0,0 0,29 18Z"/>
-    <path android:fillColor="#e291a8" android:pathData="M25.63,6.22l-5,-4A1,1 0,0 0,19 3V7a1,1 0,0 0,1 1h5a1,1 0,0 0,0.63 -1.78Z"/>
-    <path android:fillColor="#cc2853" android:pathData="M18,23H17V22a1,1 0,0 0,-2 0v1H14a1,1 0,0 0,0 2h1v1a1,1 0,0 0,2 0V25h1a1,1 0,0 0,0 -2Z"/>
-    <path android:fillColor="#e291a8" android:pathData="M11,11H21a1,1 0,0 0,0 -2H11a1,1 0,0 0,0 2Z"/>
-    <path android:fillColor="#e291a8" android:pathData="M21,12H11a1,1 0,0 0,0 2H21a1,1 0,0 0,0 -2Z"/>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="96dp" android:width="96dp" android:viewportHeight="32" android:viewportWidth="32">
+    <path android:fillColor="#cc2853" android:pathData="M25.63,6.22l-5,-4A1,1 0,0 0,20 2H7A1,1 0,0 0,6 3V16a1,1 0,0 0,1 1h8v2a1,1 0,0 0,1 1h9a1,1 0,0 0,1 -1V7A1,1 0,0 0,25.63 6.22Z" />
+    <path android:fillColor="#e291a8" android:pathData="M29,18H17V16a1,1 0,0 0,-1 -1H5a2.73,2.73 0,0 0,-3 2.44v9.39C2,28.61 3.76,30 6,30H26c2.24,0 4,-1.39 4,-3.17V19A1,1 0,0 0,29 18Z" />
+    <path android:fillColor="#e291a8" android:pathData="M25.63,6.22l-5,-4A1,1 0,0 0,19 3V7a1,1 0,0 0,1 1h5a1,1 0,0 0,0.63 -1.78Z" />
+    <path android:fillColor="#cc2853" android:pathData="M18,23H17V22a1,1 0,0 0,-2 0v1H14a1,1 0,0 0,0 2h1v1a1,1 0,0 0,2 0V25h1a1,1 0,0 0,0 -2Z" />
+    <path android:fillColor="#e291a8" android:pathData="M11,11H21a1,1 0,0 0,0 -2H11a1,1 0,0 0,0 2Z" />
+    <path android:fillColor="#e291a8" android:pathData="M21,12H11a1,1 0,0 0,0 2H21a1,1 0,0 0,0 -2Z" />
 </vector>

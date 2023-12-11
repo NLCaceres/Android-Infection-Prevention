@@ -4,7 +4,7 @@
     <PreferenceCategory
         android:title="@string/settings_personal_info"
         android:layout="@layout/preferences_category"
-        android:key="@string/settings_personal_key" >
+        android:key="@string/settings_personal_key">
 
         <Preference
             android:title="@string/settings_username"
