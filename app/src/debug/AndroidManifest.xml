@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+<!-- xmlns:tools adds in merge rule markers to ensure the Manifest is merged exactly as we expect -->
+<!-- Without markers like `tools:node="merge"`, no attributes, elements, or child elements can be merged without a conflict error -->
+    <application
+        android:icon="@drawable/app_icon"
+        tools:replace="android:usesCleartextTraffic"
+        android:usesCleartextTraffic="true" />
+    <!-- usesCleartext enables dev urls by using HTTP instead of HTTPS -->
+
+</manifest>
