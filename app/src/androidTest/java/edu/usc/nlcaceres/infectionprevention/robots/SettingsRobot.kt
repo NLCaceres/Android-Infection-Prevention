@@ -1,5 +1,7 @@
 package edu.usc.nlcaceres.infectionprevention.robots
 
+import android.R as AndroidRes
+import androidx.preference.R as AndroidPrefRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
@@ -64,16 +66,16 @@ class SettingsRobot: BaseRobot() {
     fun personalInfoHeader(): ViewInteraction = onView(withText("Personal Info"))
     fun adminInfoHeader(): ViewInteraction = onView(withText("Hospital-wide Admin Settings"))
 
-    fun preferenceRV(): ViewInteraction = onView(withId(R.id.recycler_view))
+    fun preferenceRV(): ViewInteraction = onView(withId(AndroidPrefRes.id.recycler_view))
     fun goToPreference(title: String): ViewInteraction = preferenceRV().swipeToLabeled<RecyclerView.ViewHolder>(title)
     fun tapPreference(title: String): ViewInteraction = preferenceRV().tapItemLabeled<RecyclerView.ViewHolder>(title)
-    fun preferenceTitle(title: String): ViewInteraction = onView(allOf(withId(android.R.id.title), withText(title)))
-    fun preferenceSummary(summary: String, title: String): ViewInteraction = onView(allOf(withId(android.R.id.summary),
+    fun preferenceTitle(title: String): ViewInteraction = onView(allOf(withId(AndroidRes.id.title), withText(title)))
+    fun preferenceSummary(summary: String, title: String): ViewInteraction = onView(allOf(withId(AndroidRes.id.summary),
       withText(summary), withSibling(title)))
 
-    fun dialogTitle(title: String): ViewInteraction = onView(allOf(withId(android.R.id.title), withText(title),
+    fun dialogTitle(title: String): ViewInteraction = onView(allOf(withId(AndroidRes.id.title), withText(title),
       withSibling(R.id.alertCancelButton), withSibling(R.id.alertOkButton)))
-    fun dialogEditText(): ViewInteraction = onView(withId(android.R.id.edit))
+    fun dialogEditText(): ViewInteraction = onView(withId(AndroidRes.id.edit))
     fun dialogCancelButton(): ViewInteraction = onView(withId(R.id.alertCancelButton))
     fun dialogOkButton(): ViewInteraction = onView(withId(R.id.alertOkButton))
   }

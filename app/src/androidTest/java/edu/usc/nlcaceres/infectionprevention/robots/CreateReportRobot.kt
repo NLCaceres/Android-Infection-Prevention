@@ -12,6 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.matcher.ViewMatchers.withSpinnerText
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import com.google.android.material.R as AndroidMaterialRes
 import edu.usc.nlcaceres.infectionprevention.R
 import edu.usc.nlcaceres.infectionprevention.data.Employee
 import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
@@ -111,7 +112,7 @@ class CreateReportRobot: BaseRobot() {
     fun facilitySpinner(): ViewInteraction = onView(withId(R.id.facilitySpinner))
     // Can use string resources for decreased flakiness!
 
-    fun snackbar(): ViewInteraction = onView(withId(com.google.android.material.R.id.snackbar_text))
+    fun snackbar(): ViewInteraction = onView(withId(AndroidMaterialRes.id.snackbar_text))
     fun alertDialog(): ViewInteraction = onView(allOf(withId(R.id.alertTitle), withText(R.string.date_alert_dialog_title)))
     // -1 = no ID, R.id.button2 == Cancel, R.id.button1 == OK // isDescendant == within vs withParent == directly within
     fun dialogCancelButton(): ViewInteraction = onView(allOf(withParent(withId(-1)), withText("Cancel")))

@@ -3,6 +3,7 @@ package edu.usc.nlcaceres.infectionprevention.util
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.view.View
 import android.widget.ProgressBar
+import androidx.navigation.ui.R as AndroidNavRes
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.core.app.ActivityScenario.launch
@@ -95,13 +96,13 @@ class ViewHelperTest {
     launch(ActivityMain::class.java).use {
       onView(withId(R.id.home_toolbar)).check(matches(isDisplayed()))
       onView(withId(R.id.home_toolbar)).check(matches(withChild(withId(R.id.toolbar_logo))))
-      onView(withContentDescription(R.string.nav_app_bar_open_drawer_description)).
+      onView(withContentDescription(AndroidNavRes.string.nav_app_bar_open_drawer_description)).
         check(matches(isDisplayed())).check(matches(withDrawable(R.drawable.ic_menu)))
 
       // Go to settings and check if toolbar updated up indicator
       onView(withId(R.id.home_toolbar)).check(matches(isDisplayed()))
       onView(withContentDescription("Settings")).perform(click())
-      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).
+      onView(withContentDescription(AndroidNavRes.string.nav_app_bar_navigate_up_description)).
         check(matches(isDisplayed())).check(matches(withDrawable(R.drawable.ic_back_arrow)))
     }
   }
