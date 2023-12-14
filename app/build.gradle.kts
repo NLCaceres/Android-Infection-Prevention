@@ -121,4 +121,6 @@ dependencies {
     kaptAndroidTest(libs.google.dagger.hilt.android.compiler)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    androidTestImplementation(libs.kaspersky.kaspresso)
+    androidTestImplementation(libs.kaspersky.kaspresso.compose)
 }

@@ -9,6 +9,7 @@ androidx-compose-bom = "2023.10.01"
 hilt = "2.49"
 retrofit = "2.9.0"
 espresso = "3.5.1"
+kaspersky-kaspresso = "1.5.3"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version = "1.6.1" }
@@ -51,6 +52,8 @@ androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espres
 androidx-test-espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "espresso" }
 androidx-test-espresso-contrib = { group = "androidx.test.espresso", name = "espresso-contrib", version.ref = "espresso" }
 androidx-test-espresso-idling-resource = { group = "androidx.test.espresso", name = "espresso-idling-resource", version.ref = "espresso" }
+kaspersky-kaspresso = { group = "com.kaspersky.android-components", name = "kaspresso", version.ref = "kaspersky-kaspresso" }
+kaspersky-kaspresso-compose = { group = "com.kaspersky.android-components", name = "kaspresso-compose-support", version.ref = "kaspersky-kaspresso" }
 robolectric = { module = "org.robolectric:robolectric", version = "4.11.1" }
 accompanist-testharness = { group = "com.google.accompanist", name = "accompanist-testharness", version.ref = "accompanist" }
 mockito-inline = { group = "org.mockito", name = "mockito-inline", version = "5.2.0" }
