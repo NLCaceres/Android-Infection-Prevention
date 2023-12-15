@@ -8,6 +8,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import edu.usc.nlcaceres.infectionprevention.screens.CreateReportScreen
 import edu.usc.nlcaceres.infectionprevention.screens.MainActivityScreen
+import edu.usc.nlcaceres.infectionprevention.screens.SettingsScreen
 import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -36,6 +37,27 @@ class ActivityMainNavTestCase: TestCase() {
     }
     CreateReportScreen {
       headerTV.hasText("New Contact Enteric Observation")
+    }
+  }
+  @Test fun click_Settings_Toolbar_Button_To_Go_To_Settings_Screen() {
+    MainActivityScreen {
+      settingsButton.click()
+    }
+    SettingsScreen {
+      recyclerView.firstChild<SettingsScreen.PreferenceItem> {
+        title.hasText("Personal Info")
+      }
+      recyclerView.childWith<SettingsScreen.PreferenceItem> {
+        withDescendant { withText("Hospital-wide Admin Settings") }
+      }.isVisible()
+      recyclerView.childAt<SettingsScreen.PreferenceItem>(1) {
+        title.hasText("Username")
+        //? `preferences.xml` SHOULD be overriding the TextView's default text in `preference_main.xml`
+        // summary.hasEmptyText() // WHICH should make this assertion pass
+        // BUT for some reason it holds onto the default under the hood despite rendering an empty textView
+        summary.hasText("Preference Description")
+      }
+      recyclerView.lastChild<SettingsScreen.PreferenceItem> { summary.hasText("Using default color") }
     }
   }
 }

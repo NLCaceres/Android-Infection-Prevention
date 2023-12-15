@@ -10,11 +10,15 @@ import io.github.kakaocup.kakao.text.KTextView
 import org.hamcrest.Matcher
 import android.view.View
 import io.github.kakaocup.kakao.common.views.KView
+import io.github.kakaocup.kakao.text.KButton
+import io.github.kakaocup.kakao.toolbar.KToolbar
 
 object MainActivityScreen: KScreen<MainActivityScreen>() {
   override val layoutId: Int = R.layout.fragment_main
   override val viewClass: Class<*> = FragmentMain::class.java
 
+  val appToolbar = KToolbar { withId(R.id.home_toolbar) }
+  val settingsButton = KButton { withContentDescription("Settings") }
   val mainProgressBar = KProgressBar { withId(R.id.app_progressbar) }
   val sorryMessageTV = KTextView { withId(R.id.sorryTextView) }
   val precautionRV = KRecyclerView(builder = { withId(R.id.precautionRV) }, itemTypeBuilder = { itemType(::PrecautionRvItem) })
