@@ -70,8 +70,8 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android) // Seems to transitively get coroutines-core & its Dispatchers.Main
     // Jetpack Compose Dependencies
     implementation(libs.androidx.compose.ui)
-    debugImplementation(libs.androidx.compose.ui.tooling) // Preview support
     implementation(libs.androidx.compose.ui.tooling.preview) // Preview support
+    debugImplementation(libs.androidx.compose.ui.tooling) // Preview support
     implementation(libs.androidx.compose.material) // Needed for AppCompatTheme to work
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.runtime.livedata)
