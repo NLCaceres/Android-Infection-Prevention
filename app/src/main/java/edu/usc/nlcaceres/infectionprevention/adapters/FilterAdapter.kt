@@ -57,9 +57,9 @@ class ComposeFilterViewHolder(private val composeView: ComposeView, private val 
 }
 
 @Composable
-fun FilterRow(filter: FilterItem, singleSelectionEnabled: Boolean, onClick: () -> Unit) {
+fun FilterRow(filter: FilterItem, singleSelectionEnabled: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
   AppCompatTheme {
-    Row(Modifier.fillMaxWidth().height(50.dp).testTag("FilterRow"), Arrangement.SpaceBetween) {
+    Row(Modifier.height(50.dp).testTag("FilterRow").then(modifier), Arrangement.SpaceBetween) {
       Text(filter.name, Modifier.padding(start = 20.dp).align(Alignment.CenterVertically), fontSize = 20.sp)
       if (singleSelectionEnabled) {
         RadioButton(filter.isSelected, onClick,
@@ -77,7 +77,8 @@ fun FilterRow(filter: FilterItem, singleSelectionEnabled: Boolean, onClick: () -
 @Preview(widthDp = 350, showBackground = true)
 @Composable
 fun FilterRowPreview() {
-  FilterRow(FilterItem("Filter Name", false, "Filter Group"), false) { }
+  val filter = FilterItem("Filter Name", false, "Filter Group")
+  FilterRow(filter, false, Modifier.fillMaxWidth()) { }
 }
 
 fun interface OnFilterSelectedListener {

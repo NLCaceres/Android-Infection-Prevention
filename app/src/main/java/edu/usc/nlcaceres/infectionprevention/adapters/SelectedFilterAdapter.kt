@@ -69,9 +69,9 @@ class ComposeSelectedFilterViewHolder(private val composeView: ComposeView): Rec
 }
 
 @Composable
-fun SelectedFilterItem(filter: FilterItem, onClick: () -> Unit) {
+fun SelectedFilterItem(filter: FilterItem, modifier: Modifier = Modifier, onClick: () -> Unit) {
   AppCompatTheme {
-    Row(Modifier.background(Color.Gray, RoundedCornerShape(30.dp)).border(2.dp, Color.Black, RoundedCornerShape(30.dp))) {
+    Row(Modifier.background(Color.Gray, RoundedCornerShape(30.dp)).border(2.dp, Color.Black, RoundedCornerShape(30.dp)).then(modifier)) {
       Image(painterResource(R.drawable.ic_close), stringResource(R.string.remove_filter_button),
         Modifier.padding(4.dp).background(colorResource(R.color.colorPrimary), RoundedCornerShape(40.dp))
           .border(2.dp, Color.Black, RoundedCornerShape(40.dp))
@@ -86,7 +86,8 @@ fun SelectedFilterItem(filter: FilterItem, onClick: () -> Unit) {
 @Preview(widthDp = 200, showBackground = true)
 @Composable
 fun SelectedFilterItemPreview() {
-  SelectedFilterItem(FilterItem("Filter Name", false, "Filter Group")) { }
+  val filter = FilterItem("Filter Name", false, "Filter Group")
+  SelectedFilterItem(filter, Modifier.background(Color.Yellow, RoundedCornerShape(30.dp))) { }
 }
 
 // Adding 'fun' to interfaces w/ only 1 method inside, allows SAM conversion (aka kotlin lambdas) + trailing closures (a la Swift)
