@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.accompanist.themeadapter.appcompat.AppCompatTheme
 import edu.usc.nlcaceres.infectionprevention.R
 import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 import edu.usc.nlcaceres.infectionprevention.databinding.ItemSelectedFilterBinding
@@ -70,17 +69,15 @@ class ComposeSelectedFilterViewHolder(private val composeView: ComposeView): Rec
 
 @Composable
 fun SelectedFilterItem(filter: FilterItem, modifier: Modifier = Modifier, onClick: () -> Unit) {
-  AppCompatTheme {
-    Row(Modifier.background(Color.Gray, RoundedCornerShape(30.dp)).border(2.dp, Color.Black, RoundedCornerShape(30.dp)).then(modifier)) {
-      Image(painterResource(R.drawable.ic_close), stringResource(R.string.remove_filter_button),
-        Modifier.padding(4.dp).background(colorResource(R.color.colorPrimary), RoundedCornerShape(40.dp))
-          .border(2.dp, Color.Black, RoundedCornerShape(40.dp))
-          .clickable { onClick() }
-      )
-      Text(filter.name,
-        Modifier.padding(start = 5.dp, end = 15.dp).align(Alignment.CenterVertically),
-        fontSize = 12.sp, fontWeight = FontWeight.Bold)
-    }
+  Row(Modifier.background(Color.Gray, RoundedCornerShape(30.dp)).border(2.dp, Color.Black, RoundedCornerShape(30.dp)).then(modifier)) {
+    Image(painterResource(R.drawable.ic_close), stringResource(R.string.remove_filter_button),
+      Modifier.padding(4.dp).background(colorResource(R.color.colorPrimary), RoundedCornerShape(40.dp))
+        .border(2.dp, Color.Black, RoundedCornerShape(40.dp))
+        .clickable { onClick() }
+    )
+    Text(filter.name,
+      Modifier.padding(start = 5.dp, end = 15.dp).align(Alignment.CenterVertically),
+      fontSize = 12.sp, fontWeight = FontWeight.Bold)
   }
 }
 @Preview(widthDp = 200, showBackground = true)

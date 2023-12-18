@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.sp
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.accompanist.themeadapter.appcompat.AppCompatTheme
 import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 
 /* RecyclerView Adapter used to select different types of filters each contained in an expandable/accordion view
@@ -58,19 +57,17 @@ class ComposeFilterViewHolder(private val composeView: ComposeView, private val 
 
 @Composable
 fun FilterRow(filter: FilterItem, singleSelectionEnabled: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
-  AppCompatTheme {
-    Row(Modifier.height(50.dp).testTag("FilterRow").then(modifier), Arrangement.SpaceBetween) {
-      Text(filter.name, Modifier.padding(start = 20.dp).align(Alignment.CenterVertically), fontSize = 20.sp)
-      if (singleSelectionEnabled) {
-        RadioButton(filter.isSelected, onClick,
-          Modifier.padding(end = 20.dp).align(Alignment.CenterVertically),
-          colors = RadioButtonDefaults.colors(Color.Red, Color.Red))
-      }
-      else {
-        Checkbox(filter.isSelected, { _ -> onClick() },
-          Modifier.padding(end = 20.dp).align(Alignment.CenterVertically),
-          colors = CheckboxDefaults.colors(Color.Red, Color.Red, Color.Yellow))
-      }
+  Row(Modifier.height(50.dp).testTag("FilterRow").then(modifier), Arrangement.SpaceBetween) {
+    Text(filter.name, Modifier.padding(start = 20.dp).align(Alignment.CenterVertically), fontSize = 20.sp)
+    if (singleSelectionEnabled) {
+      RadioButton(filter.isSelected, onClick,
+        Modifier.padding(end = 20.dp).align(Alignment.CenterVertically),
+        colors = RadioButtonDefaults.colors(Color.Red, Color.Red))
+    }
+    else {
+      Checkbox(filter.isSelected, { _ -> onClick() },
+        Modifier.padding(end = 20.dp).align(Alignment.CenterVertically),
+        colors = CheckboxDefaults.colors(Color.Red, Color.Red, Color.Yellow))
     }
   }
 }

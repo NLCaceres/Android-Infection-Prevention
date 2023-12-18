@@ -69,25 +69,19 @@ dependencies {
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.kotlinx.coroutines.android) // Seems to transitively get coroutines-core & its Dispatchers.Main
     // Jetpack Compose Dependencies
-    implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview) // Preview support
     debugImplementation(libs.androidx.compose.ui.tooling) // Preview support
-    implementation(libs.androidx.compose.material) // Needed for AppCompatTheme to work
-    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material3) // Transitively gets `.compose.ui` aka the main Compose APIs
     implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.hilt.navigation.compose)
-    // Google Accompanist Dependencies
-    implementation(libs.accompanist.themeadapter.appcompat)
-    implementation(libs.accompanist.themeadapter.material)
-    implementation(libs.accompanist.placeholder.material)
     // Navigation Graph Dependencies
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.compose)
 
     // Google & Square Dependencies
-    implementation(libs.google.android.material)
+    implementation(libs.google.android.material) // Provide Material 3 XML Views + Theming
     implementation(libs.google.android.flexbox)
     implementation(libs.google.code.gson)
     implementation(libs.google.dagger.hilt.android)
@@ -102,7 +96,7 @@ dependencies {
     testImplementation(libs.androidx.arch.core.testing) // Helps with liveData in tests
     testImplementation(libs.androidx.test.espresso.core) // For robolectric UI-Unit testing
     testImplementation(libs.robolectric)
-    implementation(libs.accompanist.testharness)
+    implementation(libs.accompanist.testharness) // Tests Composables w/ diff device specs, lowers need to test on multiple devices
     testImplementation(libs.mockito.inline)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.kotlinx.coroutines.test) // Mocks out Dispatcher.Main for coroutine/suspended funs
