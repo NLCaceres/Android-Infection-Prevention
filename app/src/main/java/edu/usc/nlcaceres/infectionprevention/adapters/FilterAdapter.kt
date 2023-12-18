@@ -56,23 +56,28 @@ class ComposeFilterViewHolder(private val composeView: ComposeView, private val 
   }
 }
 
-@Preview(widthDp = 200, showBackground = true)
 @Composable
-fun FilterRow(filter: FilterItem = FilterItem("Filter Name", false, "Filter Group"),
-              singleSelectionEnabled: Boolean = false, onClick: () -> Unit = {}) {
+fun FilterRow(filter: FilterItem, singleSelectionEnabled: Boolean, onClick: () -> Unit) {
   AppCompatTheme {
     Row(Modifier.fillMaxWidth().height(50.dp).testTag("FilterRow"), Arrangement.SpaceBetween) {
-      Text(filter.name, modifier = Modifier.padding(start = 10.dp).align(Alignment.CenterVertically), fontSize = 20.sp)
+      Text(filter.name, Modifier.padding(start = 20.dp).align(Alignment.CenterVertically), fontSize = 20.sp)
       if (singleSelectionEnabled) {
-        RadioButton(filter.isSelected, onClick, Modifier.padding(end = 20.dp).align(Alignment.CenterVertically),
+        RadioButton(filter.isSelected, onClick,
+          Modifier.padding(end = 20.dp).align(Alignment.CenterVertically),
           colors = RadioButtonDefaults.colors(Color.Red, Color.Red))
       }
       else {
-        Checkbox(filter.isSelected, { _ -> onClick() }, Modifier.padding(end = 20.dp).align(Alignment.CenterVertically),
+        Checkbox(filter.isSelected, { _ -> onClick() },
+          Modifier.padding(end = 20.dp).align(Alignment.CenterVertically),
           colors = CheckboxDefaults.colors(Color.Red, Color.Red, Color.Yellow))
       }
     }
   }
+}
+@Preview(widthDp = 350, showBackground = true)
+@Composable
+fun FilterRowPreview() {
+  FilterRow(FilterItem("Filter Name", false, "Filter Group"), false) { }
 }
 
 fun interface OnFilterSelectedListener {

@@ -54,12 +54,11 @@ class SelectedFilterAdapter(private val removeButtonListener: RemoveFilterListen
 //  }
 
   override fun onBindViewHolder(holder: SelectedFilterViewHolder, position: Int) {
-//    holder.composeView.disposeComposition()
     holder.bind(getItem(position), removeButtonListener)
   }
 }
 
-class ComposeSelectedFilterViewHolder(val composeView: ComposeView): RecyclerView.ViewHolder(composeView) {
+class ComposeSelectedFilterViewHolder(private val composeView: ComposeView): RecyclerView.ViewHolder(composeView) {
   fun bind(filter: FilterItem, listener : RemoveFilterListener) {
     composeView.apply {
       setContent {
@@ -69,22 +68,25 @@ class ComposeSelectedFilterViewHolder(val composeView: ComposeView): RecyclerVie
   }
 }
 
-@Preview
 @Composable
-fun SelectedFilterItem(filter: FilterItem = FilterItem("Filter Name", false, "Filter Group"),
-                       onClick: () -> Unit = {}) {
+fun SelectedFilterItem(filter: FilterItem, onClick: () -> Unit) {
   AppCompatTheme {
     Row(Modifier.background(Color.Gray, RoundedCornerShape(30.dp)).border(2.dp, Color.Black, RoundedCornerShape(30.dp))) {
-      Image(painterResource(id = R.drawable.ic_close), stringResource(R.string.remove_filter_button),
-        Modifier.padding(4.dp)
-          .background(colorResource(R.color.colorPrimary), RoundedCornerShape(40.dp))
+      Image(painterResource(R.drawable.ic_close), stringResource(R.string.remove_filter_button),
+        Modifier.padding(4.dp).background(colorResource(R.color.colorPrimary), RoundedCornerShape(40.dp))
           .border(2.dp, Color.Black, RoundedCornerShape(40.dp))
           .clickable { onClick() }
       )
-      Text(filter.name, Modifier.padding(start = 5.dp, end = 15.dp).align(Alignment.CenterVertically),
+      Text(filter.name,
+        Modifier.padding(start = 5.dp, end = 15.dp).align(Alignment.CenterVertically),
         fontSize = 12.sp, fontWeight = FontWeight.Bold)
     }
   }
+}
+@Preview(widthDp = 200, showBackground = true)
+@Composable
+fun SelectedFilterItemPreview() {
+  SelectedFilterItem(FilterItem("Filter Name", false, "Filter Group")) { }
 }
 
 // Adding 'fun' to interfaces w/ only 1 method inside, allows SAM conversion (aka kotlin lambdas) + trailing closures (a la Swift)
