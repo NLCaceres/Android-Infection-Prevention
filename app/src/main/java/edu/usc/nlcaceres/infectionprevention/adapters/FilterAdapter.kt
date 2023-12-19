@@ -3,6 +3,7 @@ package edu.usc.nlcaceres.infectionprevention.adapters
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -10,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,9 +47,9 @@ class ComposeFilterViewHolder(private val composeView: ComposeView, private val 
                               private val handleSingleSelection: () -> Unit): RecyclerView.ViewHolder(composeView) {
   fun bind(filter: FilterItem) {
     composeView.setContent {
-      FilterRow(filter, singleSelectionEnabled) {
+      FilterRow(filter, singleSelectionEnabled, Modifier.fillMaxWidth()) { selected ->
         if (singleSelectionEnabled && !filter.isSelected) { handleSingleSelection() }
-        filter.isSelected = !filter.isSelected
+        filter.isSelected = selected
         parentListener.onChildSelected(filter, bindingAdapterPosition) // See ExpandedFilterAdapter for diff between binding vs absolute
         filterSelectedListener.onFilterSelected(composeView, filter, singleSelectionEnabled)
       }
@@ -56,16 +58,20 @@ class ComposeFilterViewHolder(private val composeView: ComposeView, private val 
 }
 
 @Composable
-fun FilterRow(filter: FilterItem, singleSelectionEnabled: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
-  Row(Modifier.height(50.dp).testTag("FilterRow").then(modifier), Arrangement.SpaceBetween) {
+fun FilterRow(filter: FilterItem, singleSelectionEnabled: Boolean, modifier: Modifier = Modifier, onClick: (Boolean) -> Unit) {
+  val role = if (singleSelectionEnabled) Role.RadioButton else Role.Checkbox
+  Row(
+    Modifier.toggleable(filter.isSelected, role = role, onValueChange = onClick)
+    .height(50.dp).testTag("FilterRow").then(modifier), Arrangement.SpaceBetween
+  ) {
     Text(filter.name, Modifier.padding(start = 20.dp).align(Alignment.CenterVertically), fontSize = 20.sp)
     if (singleSelectionEnabled) {
-      RadioButton(filter.isSelected, onClick,
+      RadioButton(filter.isSelected, null,
         Modifier.padding(end = 20.dp).align(Alignment.CenterVertically),
         colors = RadioButtonDefaults.colors(Color.Red, Color.Red))
     }
     else {
-      Checkbox(filter.isSelected, { _ -> onClick() },
+      Checkbox(filter.isSelected, null,
         Modifier.padding(end = 20.dp).align(Alignment.CenterVertically),
         colors = CheckboxDefaults.colors(Color.Red, Color.Red, Color.Yellow))
     }
@@ -74,8 +80,7 @@ fun FilterRow(filter: FilterItem, singleSelectionEnabled: Boolean, modifier: Mod
 @Preview(widthDp = 350, showBackground = true)
 @Composable
 fun FilterRowPreview() {
-  val filter = FilterItem("Filter Name", false, "Filter Group")
-  FilterRow(filter, false, Modifier.fillMaxWidth()) { }
+  FilterRow(FilterItem("Filter Name", false, "Filter Group"), false) { }
 }
 
 fun interface OnFilterSelectedListener {
