@@ -1,8 +1,8 @@
 package edu.usc.nlcaceres.infectionprevention.adapters
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +15,16 @@ import edu.usc.nlcaceres.infectionprevention.util.ReportTypeTextViewTransition
 /* RecyclerView Adapter to render each particular HealthPractice button to launch FragmentCreateReport from a horizontal RV */
 // Great new updates: viewBinding + ListAdapter's built-in DiffUtil
 class HealthPracticeAdapter(private val healthPracticeClickListener : HealthPracticeClickListener) :
-  ListAdapter<HealthPractice, HealthPracticeAdapter.PracticeViewHolder>(HealthPracticeDiffCallback()) {
+  ListAdapter<HealthPractice, ComposeHealthPracticeViewHolder>(HealthPracticeDiffCallback()) {
+
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+    ComposeHealthPracticeViewHolder(ComposeView(parent.context))
+//  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = PracticeViewHolder(
+//    ItemHealthPracticeBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+
+  override fun onBindViewHolder(holder: ComposeHealthPracticeViewHolder, position: Int) {
+    holder.bind(getItem(position), healthPracticeClickListener)
+  }
 
   class PracticeViewHolder(private val viewBinding : ItemHealthPracticeBinding) : RecyclerView.ViewHolder(viewBinding.root) {
     fun bind(healthPractice : HealthPractice, listener : HealthPracticeClickListener) {
@@ -26,13 +35,6 @@ class HealthPracticeAdapter(private val healthPracticeClickListener : HealthPrac
       // Following click listener will not work with buttons, instead imageView is used (buttons seem to consume clicks, but not running callback)
       viewBinding.practiceItemView.setOnClickListener { itemView -> listener.onHealthPracticeItemClick(itemView, healthPractice) }
     }
-  }
-
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PracticeViewHolder = PracticeViewHolder(
-    ItemHealthPracticeBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-
-  override fun onBindViewHolder(holder: PracticeViewHolder, position: Int) {
-    holder.bind(getItem(position), healthPracticeClickListener)
   }
 }
 
