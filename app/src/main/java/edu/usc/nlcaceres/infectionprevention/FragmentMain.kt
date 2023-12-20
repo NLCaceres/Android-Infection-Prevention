@@ -7,10 +7,7 @@ import android.widget.TextView
 import androidx.fragment.app.*
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
-import androidx.core.view.doOnPreDraw
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.transition.Slide
 import dagger.hilt.android.AndroidEntryPoint
 import edu.usc.nlcaceres.infectionprevention.adapters.PrecautionAdapter
 import edu.usc.nlcaceres.infectionprevention.databinding.FragmentMainBinding
@@ -33,7 +30,8 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    exitTransition = Slide(Gravity.LEFT)
+    //! Since Jetpack can't handle sharedElemTransitions, turn off ALL animations to avoid a blank
+    //exitTransition = Slide(Gravity.LEFT) // screen when the app first loads
 
     // Following is similar idea to a trampoline activity for shortcuts: Check intent & replace fragment
     if (requireActivity().intent.action == ShortcutIntentAction) { // If launched from shortcut
@@ -50,7 +48,7 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     // MUST delay transition until recyclerview loads & renders all its data so its itemViews can animate properly
-    postponeEnterTransition() // Call start in precautionStateObserver below
+    //postponeEnterTransition() // Call start in precautionStateObserver below //! Turned off since no animations currently
 
     requireActivity().addMenuProvider(MenuProviderBase(findNavController()), viewLifecycleOwner, Lifecycle.State.RESUMED)
 
@@ -74,7 +72,8 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
           text = message
         }
         (activity as? ActivityMain)?.showSnackbar(message)
-        startPostponedEnterTransition() // Since precautionStateObserver won't call it, MUST be called here!
+        //! Turned off postpone so no need to call startTransitions
+        //startPostponedEnterTransition() // Since precautionStateObserver won't call it, MUST be called here!
       }
     }
   }
@@ -83,13 +82,15 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
     precautionRecyclerView = viewBinding.precautionRV.apply {
       setHasFixedSize(true)
       precautionAdapter = PrecautionAdapter { itemView, healthPractice ->
-        // Set the transitionName to ID the view in BOTH HealthPracticeAdapter & FragmentCreateReport
-        val reportTypeTV = itemView.findViewById<View>(R.id.precautionButtonTV)
-        val navExtras = FragmentNavigatorExtras(reportTypeTV to TransitionName(ReportTypeTextViewTransition, healthPractice.name))
+        //TODO: Jetpack Compose as of 2023 STILL DOESN'T support Shared Element Transitions
+        // so can't grab Text of ComposeViewHealthPractice to link it to the FragmentCreateReport's headerTextView
+        //! Set the transitionName to ID the view in BOTH HealthPracticeAdapter & FragmentCreateReport
+        //val reportTypeTV = itemView.findViewById<View>(R.id.precautionButtonTV)
+        //val navExtras = FragmentNavigatorExtras(reportTypeTV to TransitionName(ReportTypeTextViewTransition, healthPractice.name))
         // Instead of fragmentManager.commit w/ setReorderingAllowed(true), addSharedElement(view, transitionName),
         // addToBackStack(null) + replace(fragmentContainer, args), Just let the NavComponent handle most of it!
         val actionDirections = FragmentMainDirections.actionToCreateReportFragment(healthPractice.name)
-        findNavController().navigate(actionDirections, navExtras)
+        findNavController().navigate(actionDirections/*, navExtras*/)
       }
       adapter = precautionAdapter
     }
@@ -110,9 +111,10 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
           else -> "Please try again later!"
         }
       }
-      if (!loading) { // Only start transition if fragment's parentView has drawn/laid out all children
-        (view?.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
-      }
+      //! Turned off postpone so no need to call startTransitions
+      //if (!loading) { // Only start transition if fragment's parentView has drawn/laid out all children
+        //(view?.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
+      //}
     }
   }
 
