@@ -17,7 +17,7 @@
 - Settings to personalize app, individually and as a team
 
 ### Recent Updates
-- Jetpack Composable within the Sort & Filter's RecyclerView ViewHolders
+- Jetpack Composables for each ViewHolder in the HealthPracticeAdapter, FilterAdapter and SelectedFilterAdapter 
 - Consolidate Hilt Modules into main AppModule, leaving improved RepositoryModule for UI Testing to easily stub in data
 - Updated RecyclerView Diff'ing for all Adapters
 - Sort/Filter Options + Search Bar working with Report List
@@ -25,14 +25,17 @@
   - Update leftover references to Toasts
 - Reduced magic string usage
   - Relevant to i18n and future l10n
+- Add Kaspersky Kaspresso to not only reduce flakiness of Android UI Tests BUT ALSO to further improve their readability and speed
+- Take advantage of AppManifest merging to set usesCleartext to false in all build variants EXCEPT for debug
+  - Ensures only the Debug build connects over HTTP, allowing the Debug variant to connect to a local server
 
 ### Technical Upgrades
 - Integrated Android Navigation Component to simplify navigation logic
 - Dropped MVC for MVVM approach, splitting Views & ViewModels
 - Additions
     - Hilt
-        - Merged DataSourceModule into main AppModule by converting it into abstract class that includes a Kotlin Companion Object
-        - Simplified RepositoryModule by swapping @Provides for @Binds so @Inject works as intended in the Repository Implementations
+      - Merged DataSourceModule into main AppModule by converting it into abstract class that includes a Kotlin Companion Object
+      - Simplified RepositoryModule by swapping @Provides for @Binds so @Inject works as intended in the Repository Implementations
     - Retrofit
     - Animations
     - LeakCanary
@@ -41,9 +44,11 @@
     - Espresso
     - Mockito
     - Robolectric
+    - Kaspersky Kaspresso
 - Improved accessibility
   - Sufficient contrast, text size, touch target size, and use of content descriptions
   - Improved use of modern native elements for more intuitive User Experience
+  - Leverage Jetpack Compose Semantics while developing improved UI
 - Complete Kotlin Conversion
 
 ### Future Changes
@@ -59,11 +64,25 @@
     - Report List Screen
     - Settings
 - Incorporate MaterialUI 3
-- Take advantage of AppManifest merging to set usesCleartext to false in release
+  - Leverage MaterialTheme to improve personalization for individuals and teams
 - Cache data via Room Database (SQLCipher to maintain an encrypted version?)
 - Split ReportList, Sort/Filter Options, and Selected Filters into their own reusable child fragments
-    - Possibly good candidates for converting into Jetpack Composables
+- Try using new Flow Layouts (experimental as Dec 2023) with SelectedFilters Composables to imitate FlexboxLayouts
 - Full Localization
+- Might be able to drop EspressoIdling because Kaspresso enables `waitUntil(result/timeOut)` style testing by default to reduce flakiness
+
+#### Note on Jetpack Compose
+- As of 2023, Jetpack Compose is getting very close to being full featured! With updates in availability for
+  Flow Layout, Material 3 Components, and much more coming, any spot in the app that can be converted to Compose
+  probably should be! To track these new features, [check here](https://developer.android.com/jetpack/androidx/compose-roadmap)
+  - HOWEVER, it does still lack in a few major ways namely:
+    - Jetpack Composables render significantly slower on startup of the app BUT likely not a big concern
+      since the release build runs very well, AND all subsequent Composables load plenty fast
+    - Shared Element Transitions is still unavailable
+    - Flow Layout while technically available is still experimental
+    - Material 3 is missing Swipe to Refresh still
+    - While super easy to use, ComposeTestRule is completely separate from Espresso UI Testing which makes
+    hybrid views a bit more difficult to test since neither is aware of the other's View Hierarchy and where they intersect
 
 ## Related Apps
 - Front-end website: https://github.com/NLCaceres/Angular-Infection-Prevention
