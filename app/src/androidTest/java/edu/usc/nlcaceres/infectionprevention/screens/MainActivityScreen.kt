@@ -26,11 +26,24 @@ object MainActivityScreen: KScreen<MainActivityScreen>() {
   class PrecautionRvItem(matcher: Matcher<View>): KRecyclerItem<PrecautionRvItem>(matcher) {
     val precautionTypeTV = KTextView(matcher) { withId(R.id.precautionTypeTView) }
     val healthPracticeRV = KRecyclerView(matcher,
-      { withId(R.id.horizontalRecycleView) }, { itemType(::HealthPracticeRvItem) }
+      { withId(R.id.horizontalRecycleView) }, { itemType(::ComposeHealthPracticeRvItem) }
     )
+
+    fun healthPracticeItem(name: String) =
+      healthPracticeRV.childWith<ComposeHealthPracticeRvItem> { withContentDescription("Create $name Report Button") }
+    fun scrollToHealthPractice(name: String) { // Useful to guarantee ComposeRule can find the ComposeView's Content Nodes
+      healthPracticeItem(name).scrollTo() // Since all HealthPracticeRV Children are ComposeViews
+    }
 
     class HealthPracticeRvItem(matcher: Matcher<View>): KRecyclerItem<HealthPracticeRvItem>(matcher) {
       val container = KView(matcher) { withId(R.id.practiceItemView) }
+    }
+    class ComposeHealthPracticeRvItem(matcher: Matcher<View>): KRecyclerItem<HealthPracticeRvItem>(matcher) {
+      /** All RecyclerView items that use Composables init their own ComposeView which each contain an AndroidComposeView
+       * that represents/holds the actual Compose Content. BUT as of 2023, the Espresso Matchers and
+       * ComposeRule/SemanticsNodeInteractionsProvider Matchers are not actually interoperable, i.e.
+       * Espresso Matchers can't see the Compose SemanticsNodes and vice versa. As a result, you can't
+       * be sure if the ComposeView's Content Root exists within this particular RecyclerViewItem's ComposeView */
     }
   }
 }
