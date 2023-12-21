@@ -1,7 +1,9 @@
 package edu.usc.nlcaceres.infectionprevention
 
-import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -20,10 +22,8 @@ import org.junit.Test
 class ActivityMainNavTestCase: TestCase() {
   @get:Rule(order = 0)
   val hiltRule = HiltAndroidRule(this)
-  @get:Rule(order = 1)
-  val composeRule = createComposeRule()
-  @get:Rule(order = 2)
-  val scenarioRule = ActivityScenarioRule(ActivityMain::class.java)
+  @get:Rule(order = 1) // Following combines createComposeRule() + ActivityScenarioRule(ActivityMain::class.java)
+  val composeTestRule = createAndroidComposeRule<ActivityMain>() // to launch the activity and find Compose nodes
 
   @Test fun click_Health_Practice_To_Go_To_Create_Report_Screen() {
     MainActivityScreen {
@@ -33,9 +33,11 @@ class ActivityMainNavTestCase: TestCase() {
       precautionRV.lastChild<MainActivityScreen.PrecautionRvItem> {
 
         assertEquals(4, healthPracticeRV.getSize())
-        healthPracticeRV.childWith<MainActivityScreen.PrecautionRvItem.HealthPracticeRvItem> {
-          withDescendant { withText("Contact Enteric") }
-        }.click()
+        // Following matcher also doubles as a scrollTo command, finding the Contact Enteric Button's parent ComposeView
+        healthPracticeItem("Contact Enteric").matches { isAssignableFrom(ComposeView::class.java) }
+        //? Unfortunately Espresso and ComposeRules/SemanticsNodeInteractionsProvider have no overlap at all
+        //? so matching the parent ComposeView to its child Composable Root seems impossible
+        composeTestRule.onNodeWithText("Contact Enteric").performClick()
       }
     }
 
