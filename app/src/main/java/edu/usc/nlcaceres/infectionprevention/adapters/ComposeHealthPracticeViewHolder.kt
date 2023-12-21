@@ -12,6 +12,7 @@ import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 
 class ComposeHealthPracticeViewHolder(private val composeView: ComposeView): RecyclerView.ViewHolder(composeView) {
   fun bind(healthPractice: HealthPractice, listener: HealthPracticeClickListener) {
+    composeView.contentDescription = "Create ${healthPractice.name} Report Button"
     composeView.setContent {
       HealthPracticeCreateReportButton(healthPractice, Modifier.padding(top = 10.dp)) {
         listener.onHealthPracticeItemClick(composeView, healthPractice)

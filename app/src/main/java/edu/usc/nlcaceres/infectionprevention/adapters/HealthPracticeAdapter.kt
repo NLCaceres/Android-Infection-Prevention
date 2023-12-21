@@ -6,6 +6,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import edu.usc.nlcaceres.infectionprevention.R
 import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 import edu.usc.nlcaceres.infectionprevention.databinding.ItemHealthPracticeBinding
 import androidx.core.view.ViewCompat
@@ -18,7 +19,7 @@ class HealthPracticeAdapter(private val healthPracticeClickListener : HealthPrac
   ListAdapter<HealthPractice, ComposeHealthPracticeViewHolder>(HealthPracticeDiffCallback()) {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-    ComposeHealthPracticeViewHolder(ComposeView(parent.context))
+    ComposeHealthPracticeViewHolder(ComposeView(parent.context).apply { id = R.id.healthPracticeItemComposeView })
 //  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = PracticeViewHolder(
 //    ItemHealthPracticeBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
