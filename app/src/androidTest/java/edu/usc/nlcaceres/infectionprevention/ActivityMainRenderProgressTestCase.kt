@@ -94,7 +94,7 @@ class ActivityMainRenderProgressTestCase: TestCase() {
     // WHEN expecting a list of data and receiving it
     launch(ActivityMain::class.java).use {
       MainActivityScreen { // THEN hide any error messages
-        sorryMessageTV.isInvisible()
+        sorryMessageTV.isGone()
         mainProgressBar.isInvisible()
         // AND show the precaution sections, each with a "Create New" title textView
         assertEquals(2, precautionRV.getSize())

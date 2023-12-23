@@ -27,7 +27,7 @@ class ActivityMainNavTestCase: TestCase() {
 
   @Test fun click_Health_Practice_To_Go_To_Create_Report_Screen() {
     MainActivityScreen {
-      sorryMessageTV.isInvisible()
+      sorryMessageTV.isGone()
 
       assertEquals(2, precautionRV.getSize())
       precautionRV.lastChild<MainActivityScreen.PrecautionRvItem> {

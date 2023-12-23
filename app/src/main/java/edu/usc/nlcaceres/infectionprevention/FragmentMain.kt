@@ -68,7 +68,7 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
       // SO NO POINT observing the message from precautionState, it couldn't ever receive it due to the flow crashing
       if (message.isNotBlank()) { // Can't be empty ("") or just whitespace ("   ")
         with(sorryMsgTextView) {
-          visibility = if (viewModel.precautionListEmpty()) View.VISIBLE else View.INVISIBLE
+          visibility = if (viewModel.precautionListEmpty()) View.VISIBLE else View.GONE
           text = message
         }
         (activity as? ActivityMain)?.showSnackbar(message)
@@ -103,8 +103,8 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
 
     viewModel.precautionState.observe(viewLifecycleOwner) { (loading, newList) ->
       precautionAdapter.submitList(newList)
-      with(sorryMsgTextView) {
-        visibility = if (newList.isEmpty()) View.VISIBLE else View.INVISIBLE
+      with(sorryMsgTextView) { // Starts as Invisible so it's accounted for on initial loading
+        visibility = if (newList.isEmpty()) View.VISIBLE else View.GONE // THEN when no longer needed, drop it via GONE
         text = when {
           loading -> "Looking up precautions"
           newList.isEmpty() -> "Weird! Seems we don't have any available precautions to choose from!"
