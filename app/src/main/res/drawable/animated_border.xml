@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector android:height="36dp" android:width="36dp" android:viewportHeight="24.0" android:viewportWidth="24.0">
+            <!-- The "Y" dimensions need slight (1 Unit) adjustment when used as a border.
+                 Otherwise, the left/right borders appear thicker than the top/bottom borders -->
+            <path android:name="v" android:strokeColor="@color/darkMode" android:strokeWidth="1"
+                android:pathData="M0,5 L0,1 L24,1 L24,23 L0,23z"
+                android:trimPathStart="0.0" android:trimPathEnd="0.08" android:trimPathOffset="0.0"/>
+        </vector>
+    </aapt:attr>
+    <target android:name="v">
+        <aapt:attr name="android:animation">
+            <set>
+                <!-- `trimPathOffset` is super useful for move the section trimmed by `trimPathStart` and `trimPathEnd`
+                     along the path defined in the vector, allowing this objectAnimator to make it seem like
+                     like the trimmed section is moving, when in reality, the visible section is just changing -->
+                <objectAnimator android:duration="5000" android:propertyName="trimPathOffset"
+                    android:valueFrom="0.0" android:valueTo="1.0" android:repeatCount="infinite"
+                    android:interpolator="@android:anim/linear_interpolator" />
+                <!-- For more complex animations, <propertyValuesHolder> can grab the propertyName
+                     while <keyframe> can specify values to interpolate between at specific times -->
+                <objectAnimator android:duration="5000" android:repeatCount="infinite" android:interpolator="@android:anim/linear_interpolator">
+                    <propertyValuesHolder android:propertyName="trimPathEnd">
+                        <keyframe android:fraction="0" android:value="0.08" />
+                        <keyframe android:fraction="0.1" android:value="0.2" />
+                        <keyframe android:fraction="0.15" android:value="0.15" />
+                        <keyframe android:fraction="0.25" android:value="0.06" />
+
+                        <keyframe android:fraction="0.35" android:value="0.18" />
+                        <keyframe android:fraction="0.48" android:value="0.06" />
+
+                        <keyframe android:fraction="0.55" android:value="0.2" />
+                        <keyframe android:fraction="0.6" android:value="0.18" />
+                        <keyframe android:fraction="0.72" android:value="0.08" />
+
+                        <keyframe android:fraction="0.82" android:value="0.18" />
+                        <keyframe android:fraction="0.92" android:value="0.12" />
+                        <keyframe android:fraction="1.0" android:value="0.06" />
+                    </propertyValuesHolder>
+                </objectAnimator>
+                <!-- Even colors can be interpolated! -->
+                <objectAnimator android:duration="5000" android:repeatCount="infinite" android:interpolator="@android:anim/linear_interpolator">
+                    <propertyValuesHolder android:propertyName="strokeColor">
+                        <keyframe android:fraction="0" android:value="@color/colorPrimary" />
+                        <keyframe android:fraction="0.3" android:value="@color/colorLight" />
+                        <keyframe android:fraction="0.5" android:value="#08FF00" />
+                        <keyframe android:fraction="0.65" android:value="@color/hypertextColor" />
+                        <keyframe android:fraction="0.8" android:value="#CA00EE" />
+                        <keyframe android:fraction="1" android:value="@color/colorPrimary" />
+                    </propertyValuesHolder>
+                </objectAnimator>
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>
