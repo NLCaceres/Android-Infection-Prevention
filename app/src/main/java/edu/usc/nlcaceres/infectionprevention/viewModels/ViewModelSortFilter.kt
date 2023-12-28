@@ -1,13 +1,11 @@
 package edu.usc.nlcaceres.infectionprevention.viewModels
 
-import android.util.Log
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.usc.nlcaceres.infectionprevention.data.FilterGroup
 import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,18 +13,19 @@ class ViewModelSortFilter @Inject constructor(private val ioDispatcher: Coroutin
   private val _doneButtonEnabled = MutableLiveData(false)
   val doneButtonEnabled = _doneButtonEnabled.distinctUntilChanged()
 
-  // Using a mutableList in _selectedFilterList IS faster (~30-45ms vs ~2-4ms at n<100 & n>1000) since no conversion needed
-  // BUT using a list provides better encapsulation, so the "out" keyword allows us to have the best of both worlds!
-  // It lets a class that extends List to be declared. Here it'll ONLY read "out" simple immutable lists
-  private val _selectedFilterList = MutableLiveData(mutableListOf<FilterItem>())
-  val selectedFilterList: LiveData<out List<FilterItem>> = _selectedFilterList
+  // BEFORE, used a MutableList<FilterItem> to avoid init'ing new Lists BUT NOW the View/Composable relies on emitted values
+  // SINCE mutations don't trigger emit(), so must copy via `value.toMutableList`, mutate THEN set the mutatedList to `.value`
+  private val _selectedFilterList = MutableStateFlow(emptyList<FilterItem>())
+  val selectedFilterList: StateFlow<List<FilterItem>> = _selectedFilterList.asStateFlow()
+  //? Why use asStateFlow()? It kills type coercion! If we ran `(selectedFilterList as MutableStateFlow).value = listOf()
+  //? It would fail and crash! If we didn't use asStateFlow(), the type cast would work and the new list would be emitted!
 
   fun removeSelectedFilter(index: Int) {
-    _selectedFilterList.value?.removeAt(index)
+    _selectedFilterList.value = _selectedFilterList.value.toMutableList().apply { removeAt(index) }
     _doneButtonEnabled.value = selectedFilterListNotEmpty()
   }
   fun resetFilters(): List<Int> {
-    _selectedFilterList.value = mutableListOf() // No need to clear. Just emit a new emptylist
+    _selectedFilterList.value = listOf() // No need to clear. Just emit a new emptyList
 
     val changedIndices = mutableListOf<Int>()
     // Go thru all the filters and unselect the selected ones for the full reset effect!
@@ -39,18 +38,21 @@ class ViewModelSortFilter @Inject constructor(private val ioDispatcher: Coroutin
     return changedIndices
   }
   // A null list == an empty list, An empty list returns false. A filled list returns true
-  private fun selectedFilterListNotEmpty() = selectedFilterList.value?.isNotEmpty() ?: false
+  private fun selectedFilterListNotEmpty() = selectedFilterList.value.isNotEmpty()
 
-  // No stateIn() needed since the cold flow backing these 2 stateFlows needs view's bundle for its params to collect
+  // No stateIn() needed since the cold flow creating data in initFilterList() for these 2 stateFlows needs
+  // to receive data from FragmentSortFilter's bundle to use as params during collection
   private val _filterGroupList = MutableStateFlow(emptyList<FilterGroup>())
-  val filterGroupList: StateFlow<List<FilterGroup>> = _filterGroupList
-  // Consequently very similar could be done using the same w/ a flow but instead backing an exposed liveData
-  // BUT given the power of flows this pattern could be very useful to know ESPECIALLY if no view bundle was needed for params
-  // Since stateIn() would let all collectors share 1 SYNC'd stateflow backed by 1 SYNC'd cold flow
+  val filterGroupList: StateFlow<List<FilterGroup>> = _filterGroupList.asStateFlow()
+  // COULD replace filterGroupList w/ a single LiveData var BUT given the power of Flows, this pattern is
+  // VERY USEFUL to know ESPECIALLY if the Fragments's Bundle data wasn't needed SINCE stateIn() would consolidate even more
+  // by running the cold flow, turning it into a StateFlow, scoped to viewModelScope, cancelling when the VM dies,
+  // AND the flow would only ever run ONCE, saving its result to emit to all collectors, saving plenty of time!
+  // Ex: `val filterGroupList: StateFlow<List<FilterGroup>> = flow { emit(foo) }.flowOn(ioDispatcher).stateIn(viewModelScope)
 
   fun initializeFilterList(precautionList: List<String>, healthPracticeList: List<String>) {
     val flow = flow { emit(emptyList()); emit(createGroupAndLists(precautionList, healthPracticeList)) }.flowOn(ioDispatcher)
-    viewModelScope.launch { flow.collect { _filterGroupList.value = it } } // Could use liveData in a similar way
+    flow.onEach { _filterGroupList.value = it }.launchIn(viewModelScope) // Could use LiveData in a similar way
   }
 
   private fun createGroupAndLists(precautionList: List<String>, healthPracticeList: List<String>): List<FilterGroup> {
@@ -77,7 +79,9 @@ class ViewModelSortFilter @Inject constructor(private val ioDispatcher: Coroutin
     return filterGroupList
   }
   fun selectFilter(filter: FilterItem, singleSelectionEnabled: Boolean): Pair<Int, Int> {
-    val mutableList = _selectedFilterList.value ?: mutableListOf()
+    //? MUST init a new list from _selectedFilterList FIRST, else StateFlow/LiveData will notice mutations
+    val mutableList = _selectedFilterList.value.toMutableList() // AND NOT emit any List made from the mutated _selectedFilterList
+    //? SINCE StateFlow/LiveData take both referential equality AND structural equality into account!
 
     val removalIndex = if (filter.isSelected && singleSelectionEnabled) // If radio button and selected a filter
       mutableList.indexOfFirst { it.filterGroupName == filter.filterGroupName } // Find the last selected radio button to unmark it
@@ -89,6 +93,7 @@ class ViewModelSortFilter @Inject constructor(private val ioDispatcher: Coroutin
     var lastIndex: Int = -1 // If just selected a filter, then update this var to list's last index so adapter can use
     if (filter.isSelected) { mutableList.add(filter); lastIndex = mutableList.size - 1 }
 
+    _selectedFilterList.value = mutableList
     _doneButtonEnabled.value = selectedFilterListNotEmpty() // If filters selected (size > 0), enable done button
     return Pair(removalIndex, lastIndex)
   }
