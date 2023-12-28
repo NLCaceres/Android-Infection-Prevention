@@ -1,6 +1,5 @@
 package edu.usc.nlcaceres.infectionprevention
 
-import android.util.Log
 import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat
@@ -15,8 +14,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.JustifyContent
 import dagger.hilt.android.AndroidEntryPoint
 import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 import edu.usc.nlcaceres.infectionprevention.adapters.ExpandableFilterAdapter
@@ -27,7 +24,8 @@ import edu.usc.nlcaceres.infectionprevention.databinding.FragmentSortFilterBindi
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelSortFilter
 import edu.usc.nlcaceres.infectionprevention.util.*
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelMain
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.launchIn
 
 /* Fragment with 2 RecyclerViews - Top tracks the selected filters from the Bottom containing filters to select
 * Launches from: FragmentReportList */
@@ -39,7 +37,6 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
   private val viewModel: ViewModelSortFilter by viewModels()
   private val activityViewModel: ViewModelMain by activityViewModels()
 
-  private lateinit var selectedFilterRV : RecyclerView
   private lateinit var selectedFilterAdapter : SelectedFilterAdapter
 
   private lateinit var expandableFilterRV : RecyclerView
@@ -74,7 +71,7 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
     }
     override fun onMenuItemSelected(item: MenuItem) = when (item.itemId) {
       R.id.set_filters_action -> {
-        val selectedFilters = ArrayList(viewModel.selectedFilterList.value ?: listOf())
+        val selectedFilters = ArrayList(viewModel.selectedFilterList.value)
         // setFragmentResult delivers its result to ReportList listener! BUT only once it's in STARTED lifecycle state
         setFragmentResult(SortFilterRequestKey, bundleOf(SelectedFilterParcel to selectedFilters))
         findNavController().navigateUp() // Pop off this fragment like parentFragmentManager.popBackStack() or activity.finish()
@@ -93,12 +90,10 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
       expandableFilterAdapter = ExpandableFilterAdapter(FilterSelectionListener()).also { adapter = it }
       addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         .apply { setDrawable(ContextCompat.getDrawable(context, R.drawable.custom_item_divider)!!) })
-      //isNestedScrollingEnabled = false // Making false usually not good w/ recyclerViews - messes with recycling
     }
-    // Unlike liveData, stateflow must collect in launch & use flowWithLifecycle to avoid collecting when view paused/stopped
-    lifecycleScope.launch { viewModel.filterGroupList.flowWithLifecycle(lifecycle).collect { newList ->
-      expandableFilterAdapter.submitList(newList)
-    }}
+    // Unlike LiveData, StateFlow MUST collect in launch & use flowWithLifecycle to CANCEL (not suspend/pause) collecting when view paused/stopped
+    viewModel.filterGroupList.flowWithLifecycle(lifecycle).onEach { expandableFilterAdapter.submitList(it) }.launchIn(lifecycleScope)
+
     val (precautionNames, healthPracticeNames) = activityViewModel.getNamesLists()
     viewModel.initializeFilterList(precautionNames, healthPracticeNames)
   }
@@ -114,12 +109,6 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
           .filterAdapter.notifyItemChanged(filterIndex)
       }
     }
-
-    selectedFilterRV = viewBinding.selectedFiltersRecyclerView.apply {
-      adapter = selectedFilterAdapter
-      layoutManager = FlexboxLayoutManager(context).apply { justifyContent = JustifyContent.CENTER }
-    }
-    viewModel.selectedFilterList.observe(viewLifecycleOwner) { newList -> selectedFilterAdapter.submitList(newList) }
   }
 
   private inner class FilterSelectionListener : OnFilterSelectedListener {
