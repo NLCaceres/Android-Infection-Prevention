@@ -73,6 +73,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling) // Preview support
     implementation(libs.androidx.compose.material3) // Transitively gets `.compose.ui` aka the main Compose APIs
     implementation(libs.androidx.compose.runtime.livedata)
+    implementation(libs.androidx.lifecycle.runtime.compose) // Lets Kotlin Stateflows work with Compose
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     // Navigation Graph Dependencies
