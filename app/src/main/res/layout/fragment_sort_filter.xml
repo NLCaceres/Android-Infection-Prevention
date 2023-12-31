@@ -2,14 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/selectedFiltersRecyclerView"
+  <androidx.compose.ui.platform.ComposeView
+      android:id="@+id/selectedFiltersFragment"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="5dp"
+      tools:composableName="edu.usc.nlcaceres.infectionprevention.composables.items.SelectedFilterKt.SelectedFilterPreview"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent"
@@ -22,7 +24,7 @@
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/selectedFiltersRecyclerView"
+      app:layout_constraintTop_toBottomOf="@+id/selectedFiltersFragment"
       app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

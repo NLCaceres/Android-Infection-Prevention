@@ -2,6 +2,8 @@ package edu.usc.nlcaceres.infectionprevention
 
 import android.os.Bundle
 import android.view.*
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.core.os.bundleOf
@@ -19,7 +21,7 @@ import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 import edu.usc.nlcaceres.infectionprevention.adapters.ExpandableFilterAdapter
 import edu.usc.nlcaceres.infectionprevention.adapters.ExpandableFilterAdapter.ExpandableFilterViewHolder
 import edu.usc.nlcaceres.infectionprevention.adapters.OnFilterSelectedListener
-import edu.usc.nlcaceres.infectionprevention.adapters.SelectedFilterAdapter
+import edu.usc.nlcaceres.infectionprevention.composables.items.SelectedFilterListFragment
 import edu.usc.nlcaceres.infectionprevention.databinding.FragmentSortFilterBinding
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelSortFilter
 import edu.usc.nlcaceres.infectionprevention.util.*
@@ -37,13 +39,24 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
   private val viewModel: ViewModelSortFilter by viewModels()
   private val activityViewModel: ViewModelMain by activityViewModels()
 
-  private lateinit var selectedFilterAdapter : SelectedFilterAdapter
+  private lateinit var selectedFilterComposeView: ComposeView
 
-  private lateinit var expandableFilterRV : RecyclerView
-  private lateinit var expandableFilterAdapter : ExpandableFilterAdapter
+  private lateinit var expandableFilterRV: RecyclerView
+  private lateinit var expandableFilterAdapter: ExpandableFilterAdapter
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
     _viewBinding = FragmentSortFilterBinding.inflate(inflater, container, false)
+    selectedFilterComposeView = viewBinding.selectedFiltersFragment.apply {
+      //? Following disposes the ComposeView when this Fragment's Lifecycle is destroyed
+      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+      setContent { SelectedFilterListFragment { filter, _ ->
+        // AFTER selected filter is removed, THEN this runs to find the indices to use in the filterAdapter to uncheck the filter
+        viewModel.findAndUnselectFilter(filter)?.let { (filterGroupIndex, filterIndex) ->
+          (expandableFilterRV.findViewHolderForAdapterPosition(filterGroupIndex) as ExpandableFilterViewHolder)
+            .filterAdapter.notifyItemChanged(filterIndex)
+        }
+      }}
+    }
     return viewBinding.root
   }
 
@@ -54,7 +67,6 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
 
     // Since doneButtonEnabled is distinct(), invalidate() always needed so onPrepareOptionsMenu can update doneButton
     viewModel.doneButtonEnabled.observe(viewLifecycleOwner) { requireActivity().invalidateOptionsMenu() }
-    setUpSelectedFilterRV()
 
     setupExpandableRecyclerView()
   }
@@ -98,25 +110,10 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
     viewModel.initializeFilterList(precautionNames, healthPracticeNames)
   }
 
-  private fun setUpSelectedFilterRV() {
-    selectedFilterAdapter = SelectedFilterAdapter removeSelectedFilter@{ _, filter, position -> // View, FilterItem, Int
-      viewModel.removeSelectedFilter(position) // First remove filter from selectedFilterList
-      selectedFilterAdapter.notifyItemRemoved(position) // Bit more efficient than submitting whole new list to diff
-
-      // Now find the indices to use in the filterAdapter to uncheck the filter
-      viewModel.findAndUnselectFilter(filter)?.let { (filterGroupIndex, filterIndex) ->
-        (expandableFilterRV.findViewHolderForAdapterPosition(filterGroupIndex) as ExpandableFilterViewHolder)
-          .filterAdapter.notifyItemChanged(filterIndex)
-      }
-    }
-  }
-
   private inner class FilterSelectionListener : OnFilterSelectedListener {
     override fun onFilterSelected(view: View, selectedFilter: FilterItem, singleSelectionEnabled : Boolean) {
-      // Unmark any previous radiobutton selected or if filter already selected. Add the newly selected filter to adapter
-      val (removalIndex, addedIndex) = viewModel.selectFilter(selectedFilter, singleSelectionEnabled)
-      if (removalIndex != -1) { selectedFilterAdapter.notifyItemRemoved(removalIndex) }
-      if (addedIndex != -1) { selectedFilterAdapter.notifyItemInserted(addedIndex) }
+      viewModel.selectFilter(selectedFilter, singleSelectionEnabled)
+      // ALSO unmarks any previous radiobutton selected or an already selected filter already
     }
   }
 
