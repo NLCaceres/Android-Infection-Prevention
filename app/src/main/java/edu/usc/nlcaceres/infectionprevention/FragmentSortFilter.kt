@@ -17,10 +17,8 @@ import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
-import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 import edu.usc.nlcaceres.infectionprevention.adapters.ExpandableFilterAdapter
 import edu.usc.nlcaceres.infectionprevention.adapters.ExpandableFilterAdapter.ExpandableFilterViewHolder
-import edu.usc.nlcaceres.infectionprevention.adapters.OnFilterSelectedListener
 import edu.usc.nlcaceres.infectionprevention.composables.items.SelectedFilterListFragment
 import edu.usc.nlcaceres.infectionprevention.databinding.FragmentSortFilterBinding
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelSortFilter
@@ -99,7 +97,10 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
 
   private fun setupExpandableRecyclerView() { // ExpandableListView = alt choice BUT RecyclerViews save on memory
     expandableFilterRV = viewBinding.expandableFilterRecyclerView.apply {
-      expandableFilterAdapter = ExpandableFilterAdapter(FilterSelectionListener()).also { adapter = it }
+      expandableFilterAdapter = ExpandableFilterAdapter { _ , selectedFilter, singleSelectionEnabled ->
+        viewModel.selectFilter(selectedFilter, singleSelectionEnabled)
+        // ALSO unmarks any previous radiobutton selected or an already selected filter already
+      }.also { adapter = it }
       addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         .apply { setDrawable(ContextCompat.getDrawable(context, R.drawable.custom_item_divider)!!) })
     }
@@ -108,13 +109,6 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
 
     val (precautionNames, healthPracticeNames) = activityViewModel.getNamesLists()
     viewModel.initializeFilterList(precautionNames, healthPracticeNames)
-  }
-
-  private inner class FilterSelectionListener : OnFilterSelectedListener {
-    override fun onFilterSelected(view: View, selectedFilter: FilterItem, singleSelectionEnabled : Boolean) {
-      viewModel.selectFilter(selectedFilter, singleSelectionEnabled)
-      // ALSO unmarks any previous radiobutton selected or an already selected filter already
-    }
   }
 
   override fun onDestroyView() {
