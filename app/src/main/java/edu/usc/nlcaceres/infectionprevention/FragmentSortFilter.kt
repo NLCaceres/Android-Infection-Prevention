@@ -61,7 +61,7 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    requireActivity().addMenuProvider(SortFilterMenu(), viewLifecycleOwner, Lifecycle.State.RESUMED)
+    requireActivity().addMenuProvider(SortFilterMenu(), viewLifecycleOwner, Lifecycle.State.STARTED)
 
     // Since doneButtonEnabled is distinct(), invalidate() always needed so onPrepareOptionsMenu can update doneButton
     viewModel.doneButtonEnabled.observe(viewLifecycleOwner) { requireActivity().invalidateOptionsMenu() }

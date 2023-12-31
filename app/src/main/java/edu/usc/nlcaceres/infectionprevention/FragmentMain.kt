@@ -50,7 +50,7 @@ class FragmentMain: Fragment(R.layout.fragment_main) {
     // MUST delay transition until recyclerview loads & renders all its data so its itemViews can animate properly
     //postponeEnterTransition() // Call start in precautionStateObserver below //! Turned off since no animations currently
 
-    requireActivity().addMenuProvider(MenuProviderBase(findNavController()), viewLifecycleOwner, Lifecycle.State.RESUMED)
+    requireActivity().addMenuProvider(MenuProviderBase(findNavController()), viewLifecycleOwner, Lifecycle.State.STARTED)
 
     setupStateViews()
     setupPrecautionRV()

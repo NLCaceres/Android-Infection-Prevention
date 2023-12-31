@@ -64,7 +64,7 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
     // Useful for shared element transitions to work //! BUT currently broken by Jetpack Compose
     postponeEnterTransition() // BUT the "lag" caused onNavClick by this postpone is negligible, so leaving it in
 
-    requireActivity().addMenuProvider(MenuProviderBase(findNavController()), viewLifecycleOwner, Lifecycle.State.RESUMED)
+    requireActivity().addMenuProvider(MenuProviderBase(findNavController()), viewLifecycleOwner, Lifecycle.State.STARTED)
 
     setupProgressIndicator()
     setupHeaderTextView()

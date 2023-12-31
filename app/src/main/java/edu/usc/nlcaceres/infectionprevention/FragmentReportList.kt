@@ -65,7 +65,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    requireActivity().addMenuProvider(ReportListMenu(), viewLifecycleOwner, Lifecycle.State.RESUMED)
+    requireActivity().addMenuProvider(ReportListMenu(), viewLifecycleOwner, Lifecycle.State.STARTED)
 
     setupRefresh()
     setupSnackbarMessage()
