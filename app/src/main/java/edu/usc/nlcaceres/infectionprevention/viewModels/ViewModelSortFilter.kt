@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention.viewModels
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.usc.nlcaceres.infectionprevention.data.FilterGroup
@@ -13,19 +14,18 @@ class ViewModelSortFilter @Inject constructor(private val ioDispatcher: Coroutin
   private val _doneButtonEnabled = MutableLiveData(false)
   val doneButtonEnabled = _doneButtonEnabled.distinctUntilChanged()
 
-  // BEFORE, used a MutableList<FilterItem> to avoid init'ing new Lists BUT NOW the View/Composable relies on emitted values
-  // SINCE mutations don't trigger emit(), so must copy via `value.toMutableList`, mutate THEN set the mutatedList to `.value`
-  private val _selectedFilterList = MutableStateFlow(emptyList<FilterItem>())
-  val selectedFilterList: StateFlow<List<FilterItem>> = _selectedFilterList.asStateFlow()
-  //? Why use asStateFlow()? It kills type coercion! If we ran `(selectedFilterList as MutableStateFlow).value = listOf()
-  //? It would fail and crash! If we didn't use asStateFlow(), the type cast would work and the new list would be emitted!
+  // Using SnapshotStateList makes observing List changes super easy compared to LiveData and StateFlow
+  // SINCE they benefited from RecyclerViewAdapter having its notifyItem() methods SO SINCE
+  // Composables lack those helpful methods, changes must be made to a copy of the List which can be
+  // emitted once done changing. SnapshotStateList simply emits a new List after applying changes to the current List!
+  val selectedFilterList = mutableStateListOf<FilterItem>()
 
   fun removeSelectedFilter(index: Int) {
-    _selectedFilterList.value = _selectedFilterList.value.toMutableList().apply { removeAt(index) }
+    selectedFilterList.removeAt(index)
     _doneButtonEnabled.value = selectedFilterListNotEmpty()
   }
   fun resetFilters(): List<Int> {
-    _selectedFilterList.value = listOf() // No need to clear. Just emit a new emptyList
+    selectedFilterList.clear()
 
     val changedIndices = mutableListOf<Int>()
     // Go thru all the filters and unselect the selected ones for the full reset effect!
@@ -38,7 +38,7 @@ class ViewModelSortFilter @Inject constructor(private val ioDispatcher: Coroutin
     return changedIndices
   }
   // A null list == an empty list, An empty list returns false. A filled list returns true
-  private fun selectedFilterListNotEmpty() = selectedFilterList.value.isNotEmpty()
+  private fun selectedFilterListNotEmpty() = selectedFilterList.isNotEmpty()
 
   // No stateIn() needed since the cold flow creating data in initFilterList() for these 2 stateFlows needs
   // to receive data from FragmentSortFilter's bundle to use as params during collection
@@ -79,21 +79,16 @@ class ViewModelSortFilter @Inject constructor(private val ioDispatcher: Coroutin
     return filterGroupList
   }
   fun selectFilter(filter: FilterItem, singleSelectionEnabled: Boolean): Pair<Int, Int> {
-    //? MUST init a new list from _selectedFilterList FIRST, else StateFlow/LiveData will notice mutations
-    val mutableList = _selectedFilterList.value.toMutableList() // AND NOT emit any List made from the mutated _selectedFilterList
-    //? SINCE StateFlow/LiveData take both referential equality AND structural equality into account!
-
     val removalIndex = if (filter.isSelected && singleSelectionEnabled) // If radio button and selected a filter
-      mutableList.indexOfFirst { it.filterGroupName == filter.filterGroupName } // Find the last selected radio button to unmark it
+      selectedFilterList.indexOfFirst { it.filterGroupName == filter.filterGroupName } // Find the last selected radio button to unmark it
       else if (filter.isSelected) { -1 } // If it's not single selection (a checkbox), no need to remove anything
-      else mutableList.indexOf(filter) // UNLESS user just tapped a marked filter to unselect it
+      else selectedFilterList.indexOf(filter) // UNLESS user just tapped a marked filter to unselect it
 
-    if (removalIndex != -1) { mutableList.removeAt(removalIndex) }
+    if (removalIndex != -1) { selectedFilterList.removeAt(removalIndex) }
 
     var lastIndex: Int = -1 // If just selected a filter, then update this var to list's last index so adapter can use
-    if (filter.isSelected) { mutableList.add(filter); lastIndex = mutableList.size - 1 }
+    if (filter.isSelected) { selectedFilterList.add(filter); lastIndex = selectedFilterList.size - 1 }
 
-    _selectedFilterList.value = mutableList
     _doneButtonEnabled.value = selectedFilterListNotEmpty() // If filters selected (size > 0), enable done button
     return Pair(removalIndex, lastIndex)
   }
