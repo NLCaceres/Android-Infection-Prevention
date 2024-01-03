@@ -14,7 +14,7 @@ class ComposeHealthPracticeViewHolder(private val composeView: ComposeView): Rec
   fun bind(healthPractice: HealthPractice, listener: HealthPracticeClickListener) {
     composeView.contentDescription = "Create ${healthPractice.name} Report Button"
     composeView.setContent {
-      HealthPracticeCreateReportButton(healthPractice, Modifier.padding(top = 10.dp)) {
+      HealthPracticeCreateReportButton(healthPractice.name, Modifier.padding(top = 10.dp)) {
         listener.onHealthPracticeItemClick(composeView, healthPractice)
       }
     }

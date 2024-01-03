@@ -24,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import edu.usc.nlcaceres.infectionprevention.R
-import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 
 /** Usable in the HealthPracticeAdapter as an item of the RecyclerView.
  * Alongside ComposeHealthPracticeViewHolder, replaces PracticeViewHolder and its XML-based layout
@@ -32,7 +31,7 @@ import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 **/
 
 @Composable
-fun HealthPracticeCreateReportButton(healthPractice: HealthPractice, modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun HealthPracticeCreateReportButton(healthPracticeName: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
   //! Currently doesn't have a Material Design feel, just a large icon above text, clicked as a unit
   Button(onClick, Modifier.widthIn(120.dp, 150.dp).heightIn(120.dp, 175.dp).then(modifier), shape = RoundedCornerShape(20.dp),
     colors = ButtonDefaults.buttonColors(Color.Transparent), contentPadding = PaddingValues(5.dp, 0.dp)
@@ -41,7 +40,7 @@ fun HealthPracticeCreateReportButton(healthPractice: HealthPractice, modifier: M
       // Image beats Icon since Icon is intended for smaller monochrome elements
       Image(painterResource(R.drawable.ic_circle_plus), null,
         Modifier.padding(bottom = 5.dp).background(colorResource(R.color.colorPrimary), CircleShape))
-      Text(healthPractice.name, color = Color.Black, fontSize = 18.sp, textAlign = TextAlign.Center)
+      Text(healthPracticeName, color = Color.Black, fontSize = 18.sp, textAlign = TextAlign.Center)
     }
   }
   //TODO: Decide between FilledTonal or Elevated for this, since both provide emphasis but don't distract from rest of View
@@ -74,6 +73,6 @@ fun HealthPracticeCreateReportButton(healthPractice: HealthPractice, modifier: M
 @Composable
 fun HealthPracticeCreateReportButtonPreview() {
   Column(Modifier.background(Color.White), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-    HealthPracticeCreateReportButton(HealthPractice(null, "Health Practice Name", null)) {}
+    HealthPracticeCreateReportButton("Health Practice Name") {}
   }
 }

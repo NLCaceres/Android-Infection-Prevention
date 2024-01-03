@@ -47,7 +47,7 @@ class ComposeFilterViewHolder(private val composeView: ComposeView, private val 
                               private val handleSingleSelection: () -> Unit): RecyclerView.ViewHolder(composeView) {
   fun bind(filter: FilterItem) {
     composeView.setContent {
-      FilterRow(filter, singleSelectionEnabled, Modifier.fillMaxWidth()) { selected ->
+      FilterRow(filter.name, filter.isSelected, singleSelectionEnabled, Modifier.fillMaxWidth()) { selected ->
         if (singleSelectionEnabled && !filter.isSelected) { handleSingleSelection() }
         filter.isSelected = selected
         parentListener.onChildSelected(filter, bindingAdapterPosition) // See ExpandedFilterAdapter for diff between binding vs absolute
@@ -58,20 +58,20 @@ class ComposeFilterViewHolder(private val composeView: ComposeView, private val 
 }
 
 @Composable
-fun FilterRow(filter: FilterItem, singleSelectionEnabled: Boolean, modifier: Modifier = Modifier, onClick: (Boolean) -> Unit) {
+fun FilterRow(filterName: String, isSelected: Boolean, singleSelectionEnabled: Boolean, modifier: Modifier = Modifier, onClick: (Boolean) -> Unit) {
   val role = if (singleSelectionEnabled) Role.RadioButton else Role.Checkbox
   Row(
-    Modifier.toggleable(filter.isSelected, role = role, onValueChange = onClick)
+    Modifier.toggleable(isSelected, role = role, onValueChange = onClick)
     .height(50.dp).testTag("FilterRow").then(modifier), Arrangement.SpaceBetween
   ) {
-    Text(filter.name, Modifier.padding(start = 20.dp).align(Alignment.CenterVertically), fontSize = 20.sp)
+    Text(filterName, Modifier.padding(start = 20.dp).align(Alignment.CenterVertically), fontSize = 20.sp)
     if (singleSelectionEnabled) {
-      RadioButton(filter.isSelected, null,
+      RadioButton(isSelected, null,
         Modifier.padding(end = 20.dp).align(Alignment.CenterVertically),
         colors = RadioButtonDefaults.colors(Color.Red, Color.Red))
     }
     else {
-      Checkbox(filter.isSelected, null,
+      Checkbox(isSelected, null,
         Modifier.padding(end = 20.dp).align(Alignment.CenterVertically),
         colors = CheckboxDefaults.colors(Color.Red, Color.Red, Color.Yellow))
     }
@@ -80,7 +80,7 @@ fun FilterRow(filter: FilterItem, singleSelectionEnabled: Boolean, modifier: Mod
 @Preview(widthDp = 350, showBackground = true)
 @Composable
 fun FilterRowPreview() {
-  FilterRow(FilterItem("Filter Name", false, "Filter Group"), false) { }
+  FilterRow("Filter Name", false, false) { }
 }
 
 fun interface OnFilterSelectedListener {
