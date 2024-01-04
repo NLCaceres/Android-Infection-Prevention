@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.recyclerview.widget.RecyclerView
-import edu.usc.nlcaceres.infectionprevention.composables.items.HealthPracticeCreateReportButton
+import edu.usc.nlcaceres.infectionprevention.composables.listItems.HealthPracticeCreateReportButton
 import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 
 /** Used in HealthPracticeAdapter to allow Composables to be used in FragmentMain's HealthPracticeRecyclerView Items */

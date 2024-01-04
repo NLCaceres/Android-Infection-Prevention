@@ -1,4 +1,4 @@
-package edu.usc.nlcaceres.infectionprevention.composables.items
+package edu.usc.nlcaceres.infectionprevention.composables.listItems
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -98,4 +98,3 @@ fun SelectedFilterPreview() {
   ) }
   SelectedFilterList(someList) { _, _ -> }
 }
-

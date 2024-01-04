@@ -11,7 +11,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="5dp"
-      tools:composableName="edu.usc.nlcaceres.infectionprevention.composables.items.SelectedFilterKt.SelectedFilterPreview"
+      tools:composableName="edu.usc.nlcaceres.infectionprevention.composables.listItems.SelectedFilterKt.SelectedFilterPreview"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent"

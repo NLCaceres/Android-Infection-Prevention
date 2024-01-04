@@ -1,4 +1,4 @@
-package edu.usc.nlcaceres.infectionprevention.composables.items
+package edu.usc.nlcaceres.infectionprevention.composables.listItems
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
