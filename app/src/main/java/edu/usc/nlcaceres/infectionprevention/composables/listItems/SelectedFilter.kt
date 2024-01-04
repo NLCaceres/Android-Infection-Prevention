@@ -28,10 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import edu.usc.nlcaceres.infectionprevention.R
 import edu.usc.nlcaceres.infectionprevention.data.FilterItem
-import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelSortFilter
 
 /** Used in FragmentSortFilter to show the Filters selected and to be applied in FragmentReportList
  * Currently: All Composable params are Stable, which suggests FlowRow and SnapshotStateList are
@@ -73,16 +71,6 @@ fun SelectedFilterList(selectedFilters: SnapshotStateList<FilterItem>, modifier:
         SelectedFilter(selectedFilter.name, onClick = { onClickFilter(position, selectedFilter) })
       }
     }
-  }
-}
-
-//? Technically, the viewModel is the ONLY unstable param in this file BUT since it's only really used to pass
-//? the Stable `selectedFilterList` into SelectedFilterList, it DOESN'T seem to trigger SelectedFilterListFragment to also recompose
-@Composable
-fun SelectedFilterListFragment(modifier: Modifier = Modifier, viewModel: ViewModelSortFilter = viewModel(), onClick: OnRemoveSelectedFilter) {
-  SelectedFilterList(viewModel.selectedFilterList, modifier) { position, filter ->
-    viewModel.removeSelectedFilter(position) // First remove filter from selectedFilterList
-    onClick(position, filter) // THEN let Parent View of the ComposeView containing this SelectedFilterListFrag run its own callback
   }
 }
 

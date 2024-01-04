@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import edu.usc.nlcaceres.infectionprevention.adapters.ExpandableFilterAdapter
 import edu.usc.nlcaceres.infectionprevention.adapters.ExpandableFilterAdapter.ExpandableFilterViewHolder
-import edu.usc.nlcaceres.infectionprevention.composables.items.SelectedFilterListFragment
+import edu.usc.nlcaceres.infectionprevention.composables.views.SelectedFilterListView
 import edu.usc.nlcaceres.infectionprevention.databinding.FragmentSortFilterBinding
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelSortFilter
 import edu.usc.nlcaceres.infectionprevention.util.*
@@ -47,7 +47,7 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
     selectedFilterComposeView = viewBinding.selectedFiltersFragment.apply {
       //? Following ViewCompositionStrategy disposes the ComposeView when this Fragment's Lifecycle is destroyed
       setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-      setContent { SelectedFilterListFragment { _, filter ->
+      setContent { SelectedFilterListView { _, filter ->
         // AFTER selected filter is removed, THEN this runs to find the indices to use in the filterAdapter to uncheck the filter
         viewModel.findAndUnselectFilter(filter)?.let { (filterGroupIndex, filterIndex) ->
           (expandableFilterRV.findViewHolderForAdapterPosition(filterGroupIndex) as ExpandableFilterViewHolder)
@@ -99,8 +99,9 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
     expandableFilterRV = viewBinding.expandableFilterRecyclerView.apply {
       expandableFilterAdapter = ExpandableFilterAdapter { _ , selectedFilter, singleSelectionEnabled ->
         viewModel.selectFilter(selectedFilter, singleSelectionEnabled)
-        // ALSO unmarks any previous radiobutton selected or an already selected filter already
+        // Above also deselects any selected RadioButton of the same group OR an already marked CheckBox
       }.also { adapter = it }
+
       addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         .apply { setDrawable(ContextCompat.getDrawable(context, R.drawable.custom_item_divider)!!) })
     }
