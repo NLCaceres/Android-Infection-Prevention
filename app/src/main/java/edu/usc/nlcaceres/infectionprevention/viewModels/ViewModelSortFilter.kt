@@ -84,12 +84,15 @@ class ViewModelSortFilter @Inject constructor(private val ioDispatcher: Coroutin
       else if (filter.isSelected) { -1 } // If it's not single selection (a checkbox), no need to remove anything
       else selectedFilterList.indexOf(filter) // UNLESS user just tapped a marked filter to unselect it
 
-    if (removalIndex != -1) { selectedFilterList.removeAt(removalIndex) }
+    var lastIndex: Int = -1 // If just selected a filter, then update this var below to list's last index
+    selectedFilterList.run {
+      if (removalIndex != -1) { selectedFilterList.removeAt(removalIndex) }
 
-    var lastIndex: Int = -1 // If just selected a filter, then update this var to list's last index so adapter can use
-    if (filter.isSelected) { selectedFilterList.add(filter); lastIndex = selectedFilterList.size - 1 }
+      if (filter.isSelected) { selectedFilterList.add(filter); lastIndex = selectedFilterList.size - 1 }
+    }
 
     _doneButtonEnabled.value = selectedFilterListNotEmpty() // If filters selected (size > 0), enable done button
+
     return Pair(removalIndex, lastIndex)
   }
   fun findAndUnselectFilter(filter: FilterItem): Pair<Int, Int>? {
