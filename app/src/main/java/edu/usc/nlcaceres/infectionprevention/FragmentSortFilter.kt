@@ -44,7 +44,7 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
     _viewBinding = FragmentSortFilterBinding.inflate(inflater, container, false)
-    selectedFilterComposeView = viewBinding.selectedFiltersFragment.apply {
+    selectedFilterComposeView = viewBinding.selectedFilterComposeView.apply {
       //? Following ViewCompositionStrategy disposes the ComposeView when this Fragment's Lifecycle is destroyed
       setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
       setContent { SelectedFilterListView { _, filter ->
