@@ -81,9 +81,8 @@ class FragmentSortFilter : Fragment(R.layout.fragment_sort_filter) {
     }
     override fun onMenuItemSelected(item: MenuItem) = when (item.itemId) {
       R.id.set_filters_action -> {
-        val selectedFilters = ArrayList(viewModel.selectedFilterList)
-        // setFragmentResult delivers its result to ReportList listener! BUT only once it's in STARTED lifecycle state
-        setFragmentResult(SortFilterRequestKey, bundleOf(SelectedFilterParcel to selectedFilters))
+        // setFragmentResult delivers its result to ReportList listener! BUT only once it's in STARTED Lifecycle state
+        setFragmentResult(SortFilterRequestKey, bundleOf(SelectedFilterParcel to ArrayList(viewModel.selectedFilterList)))
         findNavController().navigateUp() // Pop off this fragment like parentFragmentManager.popBackStack() or activity.finish()
         true
       }
