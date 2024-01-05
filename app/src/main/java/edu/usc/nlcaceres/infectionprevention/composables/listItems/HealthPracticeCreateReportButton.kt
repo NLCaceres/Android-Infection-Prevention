@@ -2,6 +2,7 @@ package edu.usc.nlcaceres.infectionprevention.composables.listItems
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -39,7 +40,7 @@ fun HealthPracticeCreateReportButton(healthPracticeName: String, modifier: Modif
     Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
       // Image beats Icon since Icon is intended for smaller monochrome elements
       Image(painterResource(R.drawable.ic_circle_plus), null,
-        Modifier.padding(bottom = 5.dp).background(colorResource(R.color.colorPrimary), CircleShape))
+        Modifier.padding(bottom = 5.dp).background(colorResource(R.color.colorPrimary), CircleShape).border(2.dp, Color.Black, CircleShape))
       Text(healthPracticeName, color = Color.Black, fontSize = 18.sp, textAlign = TextAlign.Center)
     }
   }
