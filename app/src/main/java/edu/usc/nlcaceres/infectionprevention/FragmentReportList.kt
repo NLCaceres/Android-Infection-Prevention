@@ -16,6 +16,8 @@ import com.google.android.flexbox.JustifyContent
 import androidx.core.view.MenuProvider
 import android.text.InputType.TYPE_CLASS_TEXT
 import android.view.MenuItem.OnActionExpandListener
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.*
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -30,6 +32,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import edu.usc.nlcaceres.infectionprevention.adapters.ReportAdapter
 import edu.usc.nlcaceres.infectionprevention.adapters.SelectedFilterAdapter
+import edu.usc.nlcaceres.infectionprevention.composables.views.SorterFilterListView
 import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 import edu.usc.nlcaceres.infectionprevention.databinding.FragmentReportListBinding
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelReportList
@@ -47,6 +50,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
   private lateinit var sorryMsgTextView : TextView
 
   private lateinit var filterFloatButton : FloatingActionButton
+  private lateinit var sorterFilterComposeView : ComposeView
   private lateinit var selectedFilterRV : RecyclerView
   private lateinit var selectedFilterAdapter : SelectedFilterAdapter
 
@@ -59,6 +63,13 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
   }
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
     _viewBinding = FragmentReportListBinding.inflate(inflater, container, false)
+    sorterFilterComposeView = viewBinding.sorterFilterComposeView.apply {
+      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+      setContent { SorterFilterListView { _, _ ->
+        // After the Composable removes the filter from selectedFilterList
+        reportsAdapter.submitList(viewModel.sortedFilteredList()) // THEN update the reportList
+      }}
+    }
     return viewBinding.root
   }
 
