@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention.viewModels
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.usc.nlcaceres.infectionprevention.data.FilterItem
@@ -17,8 +18,8 @@ import javax.inject.Inject
 class ViewModelReportList @Inject constructor(private val reportRepository: ReportRepository,
                                               private val sortFilterUseCase: SortFilterReportsUseCase = SortFilterReportsUseCase(),
                                               private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
-  // Since Lists can't "add()", it's easiest to just use an arrayList
-  var selectedFilters: ArrayList<FilterItem> = arrayListOf()
+
+  var selectedFilters = mutableStateListOf<FilterItem>() // Simplest to use SnapshotStateList for mutability BUT Stability
 
   private val _isLoading = MutableLiveData(false)
   private val loadingFlow = _isLoading.asFlow() // Just used to combine with reportsFlow

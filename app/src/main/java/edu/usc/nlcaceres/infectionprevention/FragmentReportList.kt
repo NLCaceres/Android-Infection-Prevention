@@ -11,8 +11,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.JustifyContent
 import androidx.core.view.MenuProvider
 import android.text.InputType.TYPE_CLASS_TEXT
 import android.view.MenuItem.OnActionExpandListener
@@ -31,7 +29,6 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import edu.usc.nlcaceres.infectionprevention.adapters.ReportAdapter
-import edu.usc.nlcaceres.infectionprevention.adapters.SelectedFilterAdapter
 import edu.usc.nlcaceres.infectionprevention.composables.views.SorterFilterListView
 import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 import edu.usc.nlcaceres.infectionprevention.databinding.FragmentReportListBinding
@@ -51,8 +48,6 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
 
   private lateinit var filterFloatButton : FloatingActionButton
   private lateinit var sorterFilterComposeView : ComposeView
-  private lateinit var selectedFilterRV : RecyclerView
-  private lateinit var selectedFilterAdapter : SelectedFilterAdapter
 
   private lateinit var reportsRV : RecyclerView
   private lateinit var reportsAdapter : ReportAdapter
@@ -120,9 +115,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
       result.fetchParcelableList<FilterItem>(SelectedFilterParcel)?.let { newFiltersList -> // Make sure not null
         (activity as? ActivityMain)?.showSnackbar(resources.getString(R.string.sorting_and_filtering_message))
 
-        viewModel.selectedFilters.clear()
-        viewModel.selectedFilters.addAll(newFiltersList) // Update filters for display
-        selectedFilterAdapter.notifyItemRangeInserted(0, newFiltersList.size)
+        viewModel.selectedFilters.run { clear(); addAll(newFiltersList)} // Update filters for display
 
         reportsAdapter.submitList(viewModel.sortedFilteredList()) // Update report list based on displayed filters
       }
@@ -131,18 +124,7 @@ class FragmentReportList: Fragment(R.layout.fragment_report_list) {
 
   private fun setupSortFilterViews() {
     arguments?.getString(PreSelectedFilterExtra)?.let { filterName ->
-      viewModel.selectedFilters = arrayListOf(FilterItem(filterName, true, "Precaution Type"))
-    }
-
-    selectedFilterAdapter = SelectedFilterAdapter { _, _, position -> // RemoveButton() - View, FilterItem, Int
-      viewModel.selectedFilters.removeAt(position) // First remove filter from selectedFilterList
-      selectedFilterAdapter.notifyItemRemoved(position) // Bit more efficient than submitting whole new list to diff
-      reportsAdapter.submitList(viewModel.sortedFilteredList())
-    }
-
-    selectedFilterRV = viewBinding.selectedFilterRV.apply {
-      adapter = selectedFilterAdapter.apply { submitList(viewModel.selectedFilters) }
-      layoutManager = FlexboxLayoutManager(context).apply { justifyContent = JustifyContent.CENTER }
+      viewModel.selectedFilters.add(FilterItem(filterName, true, "Precaution Type"))
     }
   }
   private fun setupReportRV() {
