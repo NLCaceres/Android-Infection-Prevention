@@ -22,7 +22,7 @@ import edu.usc.nlcaceres.infectionprevention.data.FilterItem
 
 /* RecyclerView Adapter used to select different types of filters each contained in an expandable/accordion view
 * that is multi-choice by default (typical checkbox behavior) and single choice if enabled
-* Linked to: SelectedFilterAdapter through its parent ExpandableFilterAdapter */
+* Linked to: SelectedFilterListView through its parent ExpandableFilterAdapter */
 class FilterAdapter(private val singleSelectionEnabled : Boolean, private val filterSelectedListener : OnFilterSelectedListener,
                     private val parentListener: FilterGroupListener) : ListAdapter<FilterItem, ComposeFilterViewHolder>(FilterDiffCallback()) {
 

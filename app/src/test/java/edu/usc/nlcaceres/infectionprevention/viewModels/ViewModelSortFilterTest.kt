@@ -119,7 +119,7 @@ class ViewModelSortFilterTest {
     assert(removedIndex2 == 0 && addedIndex2 == 0) // [0] Remove newSorter. Add oldSorter so still [0]
     assertEquals(1, viewModel.selectedFilterList.size)
     assertEquals(oldReportsSorter, viewModel.selectedFilterList.last())
-    // FilterAdapter would handle the underlying state of the filterGroup UI. The UI bridges the selectedFilterAdapter's state above
+    // FilterAdapter would handle the underlying state of the filterGroup UI. The UI bridges the SelectedFilterListView's state above
     assertEquals(true, newReportsSorter.isSelected) // There4 in prod, this would update BUT not here
     assertEquals(true, viewModel.doneButtonEnabled.value) // Not empty == done button enabled!
 
