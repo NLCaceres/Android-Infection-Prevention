@@ -1,25 +1,24 @@
 package edu.usc.nlcaceres.infectionprevention
 
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
+import com.kaspersky.components.composesupport.config.withComposeSupport
+import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import edu.usc.nlcaceres.infectionprevention.screens.CreateReportScreen
-import edu.usc.nlcaceres.infectionprevention.screens.MainActivityScreen
-import edu.usc.nlcaceres.infectionprevention.screens.PreferenceItem
-import edu.usc.nlcaceres.infectionprevention.screens.SettingsScreen
+import edu.usc.nlcaceres.infectionprevention.screens.*
 import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
+import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 
 @UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
-class ActivityMainNavTestCase: TestCase() {
+class ActivityMainNavTestCase: TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupport()) {
   @get:Rule(order = 0)
   val hiltRule = HiltAndroidRule(this)
   @get:Rule(order = 1) // Following combines createComposeRule() + ActivityScenarioRule(ActivityMain::class.java)
@@ -43,6 +42,89 @@ class ActivityMainNavTestCase: TestCase() {
 
     CreateReportScreen {
       headerTV.hasText("New Contact Enteric Observation")
+    }
+  }
+
+  @Test fun click_NavDrawer_Generic_Report_Button_To_Go_To_Report_List_Fragment() {
+    run {
+      step("Open Navigation Drawer to navigate to FragmentReportList") {
+        scenario(NavDrawerScenario { goToReportList() })
+      }
+      step("Check ReportList has loaded") {
+        ReportListScreen {
+          sorryMessageTV.isInvisible()
+          assertEquals(5, reportList.getSize())
+          reportList.firstChild<ReportListScreen.ReportRvItem> {
+            reportTypeTitleTV.containsText("Hand Hygiene")
+            employeeNameTV.containsText("John Smith")
+            dateTV.containsText("May 18")
+            locationTV.containsText("USC Unit: 4 Room: 202")
+          }
+        }
+        onComposeScreen<ReportListComposeScreen>(composeTestRule) {
+          // WHEN no filters rendered, THEN no container ComposeView displayed
+          hasTestTag("SorterFilterListView")
+          assertIsNotDisplayed()
+          // Kaspresso's composeScreen preferably targets the child of the Root aka my ComposeView aka TestTag "SorterFilterListView"
+          composeTestRule.onRoot().onChild().assert(hasTestTag("SorterFilterListView"))
+          composeTestRule.onRoot().onChild().onChildren().assertCountEquals(0)
+        }
+      }
+    }
+  }
+
+  @Test fun click_NavDrawer_Standard_Report_Only_Filter_To_Go_To_Report_List_Fragment() {
+    run {
+      step("Open Navigation Drawer to navigate to FragmentReportList with a Standard Report Filter") {
+        scenario(NavDrawerScenario { goToStandardReportList() })
+      }
+      step("Check ReportList has loaded only the Standard Reports") {
+        ReportListScreen {
+          sorryMessageTV.isInvisible()
+          assertEquals(3, reportList.getSize())
+          reportList.lastChild<ReportListScreen.ReportRvItem>{
+            reportTypeTitleTV.hasText("PPE Violation")
+            employeeNameTV.hasText("Committed by Brian Ishida")
+            dateTV.hasText("Apr 21, 2019 11:36PM")
+            locationTV.hasText("Location: USC Unit: 2 Room: 123")
+          }
+        }
+        onComposeScreen<ReportListComposeScreen>(composeTestRule) {
+          // WHEN any filter is rendered, THEN its container composerView must be displayed with 1 Standard Filter child
+          hasTestTag("SorterFilterListView")
+          assertIsDisplayed()
+          // Even when filters are rendered, the Root's child is STILL the ComposeView aka TestTag "SorterFilterListView"
+          composeTestRule.onRoot().onChild().assert(hasTestTag("SorterFilterListView"))
+          composeTestRule.onRoot().onChildren().assertCountEquals(1)
+          sorterFilterButtons("Standard").assertExists()
+        }
+      }
+    }
+  }
+
+  @Test fun click_NavDrawer_Isolation_Reports_Only_Filter_To_Go_To_Report_List_Fragment() {
+    run {
+      step("Open Navigation Drawer to navigate to FragmentReportList with an Isolation Report Filter") {
+        scenario(NavDrawerScenario { goToIsolationReportList() })
+      }
+      step("Check ReportList has loaded only the Isolation Reports") {
+        ReportListScreen {
+          sorryMessageTV.isInvisible()
+          assertEquals(2, reportList.getSize())
+          reportList.childAt<ReportListScreen.ReportRvItem>(1) {
+            reportTypeTitleTV.containsText("Droplet")
+            employeeNameTV.containsText("Victor Richards")
+            dateTV.containsText("May 25")
+            locationTV.containsText("HSC Unit: 3 Room: 213")
+          }
+        }
+        onComposeScreen<ReportListComposeScreen>(composeTestRule) {
+          // WHEN any filter is rendered, THEN its container composerView must be displayed with 1 Isolation Filter child
+          assertIsDisplayed()
+          composeTestRule.onRoot().onChildren().assertCountEquals(1)
+          sorterFilterButtons("Isolation").assertExists()
+        }
+      }
     }
   }
 
