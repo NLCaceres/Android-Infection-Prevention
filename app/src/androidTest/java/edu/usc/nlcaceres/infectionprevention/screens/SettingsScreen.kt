@@ -22,6 +22,7 @@ object SettingsScreen: KScreen<SettingsScreen>() {
   override val layoutId = null //? Null since FragmentSettings is init'd + laid out via the Preference Library
   override val viewClass = FragmentSettings::class.java
 
+  val rvContainer = KView { withId(AndroidRes.id.list_container) }
   val recyclerView = KRecyclerView(
     builder = { withId(PrefRes.id.recycler_view) }, itemTypeBuilder = { itemType(::PreferenceItem) }
   )
