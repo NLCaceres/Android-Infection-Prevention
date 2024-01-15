@@ -68,6 +68,7 @@ class ActivityMainNavTestCase: TestCase(kaspressoBuilder = Kaspresso.Builder.wit
           // Kaspresso's composeScreen preferably targets the child of the Root aka my ComposeView aka TestTag "SorterFilterListView"
           composeTestRule.onRoot().onChild().assert(hasTestTag("SorterFilterListView"))
           composeTestRule.onRoot().onChild().onChildren().assertCountEquals(0)
+          sortFilterButtons.assertCountEquals(0) // Simplified version of the above
         }
       }
     }
@@ -95,7 +96,7 @@ class ActivityMainNavTestCase: TestCase(kaspressoBuilder = Kaspresso.Builder.wit
           assertIsDisplayed()
           // Even when filters are rendered, the Root's child is STILL the ComposeView aka TestTag "SorterFilterListView"
           composeTestRule.onRoot().onChild().assert(hasTestTag("SorterFilterListView"))
-          composeTestRule.onRoot().onChildren().assertCountEquals(1)
+          sortFilterButtons.assertCountEquals(1)
           sorterFilterButtons("Standard").assertExists()
         }
       }
@@ -121,7 +122,7 @@ class ActivityMainNavTestCase: TestCase(kaspressoBuilder = Kaspresso.Builder.wit
         onComposeScreen<ReportListComposeScreen>(composeTestRule) {
           // WHEN any filter is rendered, THEN its container composerView must be displayed with 1 Isolation Filter child
           assertIsDisplayed()
-          composeTestRule.onRoot().onChildren().assertCountEquals(1)
+          sortFilterButtons.assertCountEquals(1)
           sorterFilterButtons("Isolation").assertExists()
         }
       }
