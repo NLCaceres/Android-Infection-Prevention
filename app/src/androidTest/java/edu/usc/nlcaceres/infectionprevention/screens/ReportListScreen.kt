@@ -3,6 +3,8 @@ package edu.usc.nlcaceres.infectionprevention.screens
 import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
+import androidx.compose.ui.test.hasParent
+import androidx.compose.ui.test.hasTestTag
 import com.kaspersky.kaspresso.screens.KScreen
 import edu.usc.nlcaceres.infectionprevention.FragmentReportList
 import edu.usc.nlcaceres.infectionprevention.R
@@ -43,4 +45,5 @@ object ReportListScreen: KScreen<ReportListScreen>() {
 class ReportListComposeScreen(semanticsProvider: SemanticsNodeInteractionsProvider):
   ComposeScreen<ReportListComposeScreen>(semanticsProvider, viewBuilderAction = { hasTestTag("SorterFilterListView") }) {
   fun sorterFilterButtons(text: String): KNode = child { hasText(text) }
+  val sortFilterButtons = semanticsProvider.onAllNodes(hasParent(hasTestTag("SorterFilterListView")))
 }
