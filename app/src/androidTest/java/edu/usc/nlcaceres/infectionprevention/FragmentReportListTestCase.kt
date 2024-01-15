@@ -37,9 +37,14 @@ class FragmentReportListTestCase: TestCase(kaspressoBuilder = Kaspresso.Builder.
   }
 
   //! Navigation
-  @Test fun navigate_To_Sort_Filter_Fragment() {
-    ReportListScreen { sortFilterButton.click() }
-    //TODO: FragmentSortFilter checks
+  @Test fun navigate_To_Sort_Filter_Fragment() = run {
+    step("Click Floating SortFilterButton to navigate to SortFilterScreen") {
+      ReportListScreen.sortFilterButton.click()
+    }
+    step("Check SortFilterScreen loaded") {
+      SortFilterScreen.expandableFilterList.isDisplayed()
+      SortFilterScreen.expandableFilterList("Sort By").isDisplayed()
+    }
   }
   @Test fun navigate_To_Settings() = run {
     step("Click Actionbar SettingsButton to navigate to SettingsScreen") {
