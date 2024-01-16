@@ -23,24 +23,26 @@ object SortFilterScreen: KScreen<SortFilterScreen>() {
   override val layoutId = R.layout.fragment_sort_filter
   override val viewClass = FragmentSortFilter::class.java
 
+  //! Actionbar Menu Buttons
   val settingsButton = KButton { withContentDescription("Settings") }
   val setFiltersButton = KButton { withId(R.id.set_filters_action) }
   val resetFiltersButton = KButton { withId(R.id.reset_filters_action) }
 
+  //! Main View
   val expandableFilterList = KRecyclerView(builder = { withId(R.id.expandableFilterRecyclerView) }, itemTypeBuilder = { itemType(::ExpandableListItem) })
-
   class ExpandableListItem(matcher: Matcher<View>): KRecyclerItem<ExpandableListItem>(matcher) {
     val filterGroupName = KTextView(matcher) { withId(R.id.filterGroupNameTextView) }
     val filterListRv = KRecyclerView(matcher, { withId(R.id.filterRecyclerView) }, { itemType(::ComposeFilterItem) })
-
-    //? No body needed for the this class, since Compose handles the view's content
-    class ComposeFilterItem(matcher: Matcher<View>): KRecyclerItem<ComposeFilterItem>(matcher)
   }
+  //? No body needed for the this class, since Compose handles the view's content
+  class ComposeFilterItem(matcher: Matcher<View>): KRecyclerItem<ComposeFilterItem>(matcher)
+
   fun expandableFilterList(text: String) =
     expandableFilterList.childWith<ExpandableListItem> { withDescendant { containsText(text) } }
   fun openExpandableFilterList(text: String) {
     expandableFilterList(text).click()
   }
+  //! Actually the Composables in the ComposeFilterItem of the ExpandableFilterRV. NOT the Compose half of the screen!
   fun findFilterItem(semanticsProvider: SemanticsNodeInteractionsProvider, text: String) =
     semanticsProvider.onNode(hasTestTag("FilterRow") and hasText(text))
   fun findSelectedFilterItem(semanticsProvider: SemanticsNodeInteractionsProvider, text: String) =
@@ -51,7 +53,7 @@ object SortFilterScreen: KScreen<SortFilterScreen>() {
     findFilterItem(semanticsProvider, text).performClick()
 }
 
-// This ComposeScreen ONLY handles any Filters selected from the ExpandableList
+//! This is the Compose half of the screen. Handling the list of SELECTED_FILTERS
 class SortFilterComposeScreen(semanticsProvider: SemanticsNodeInteractionsProvider):
   ComposeScreen<SortFilterComposeScreen>(semanticsProvider, viewBuilderAction = { hasTestTag("SelectedFilterListView") }) {
   fun selectedFilterButton(text: String): KNode = child { hasText(text) }
