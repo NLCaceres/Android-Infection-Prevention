@@ -9,10 +9,12 @@ import io.github.kakaocup.kakao.recycler.KRecyclerView
 import io.github.kakaocup.kakao.text.KTextView
 import org.hamcrest.Matcher
 import android.view.View
+import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.espresso.contrib.DrawerMatchers
 import com.kaspersky.kaspresso.testcases.api.scenario.Scenario
 import com.kaspersky.kaspresso.testcases.core.testcontext.TestContext
-import io.github.kakaocup.kakao.common.views.KView
 import io.github.kakaocup.kakao.drawer.KDrawerView
 import io.github.kakaocup.kakao.navigation.KNavigationView
 import io.github.kakaocup.kakao.text.KButton
@@ -47,24 +49,19 @@ object MainActivityScreen: KScreen<MainActivityScreen>() {
     val healthPracticeRV = KRecyclerView(matcher,
       { withId(R.id.horizontalRecycleView) }, { itemType(::ComposeHealthPracticeRvItem) }
     )
-
     fun healthPracticeItem(name: String) =
       healthPracticeRV.childWith<ComposeHealthPracticeRvItem> { withContentDescription("Create $name Report Button") }
-    fun scrollToHealthPractice(name: String) { // Useful to guarantee ComposeRule can find the ComposeView's Content Nodes
-      healthPracticeItem(name).scrollTo() // Since all HealthPracticeRV Children are ComposeViews
-    }
-
-    class HealthPracticeRvItem(matcher: Matcher<View>): KRecyclerItem<HealthPracticeRvItem>(matcher) {
-      val container = KView(matcher) { withId(R.id.practiceItemView) }
-    }
-    class ComposeHealthPracticeRvItem(matcher: Matcher<View>): KRecyclerItem<HealthPracticeRvItem>(matcher) {
-      /** All RecyclerView items that use Composables init their own ComposeView which each contain an AndroidComposeView
-       * that represents/holds the actual Compose Content. BUT as of 2023, the Espresso Matchers and
-       * ComposeRule/SemanticsNodeInteractionsProvider Matchers are not actually interoperable, i.e.
-       * Espresso Matchers can't see the Compose SemanticsNodes and vice versa. As a result, you can't
-       * be sure if the ComposeView's Content Root exists within this particular RecyclerViewItem's ComposeView */
-    }
   }
+  class ComposeHealthPracticeRvItem(matcher: Matcher<View>): KRecyclerItem<ComposeHealthPracticeRvItem>(matcher) {
+    /** All RecyclerView items that use Composables init their own ComposeView which each contain an AndroidComposeView
+     * that represents/holds the actual Compose Content. BUT as of 2023, the Espresso Matchers and
+     * ComposeRule/SemanticsNodeInteractionsProvider Matchers are not actually interoperable, i.e.
+     * Espresso Matchers can't see the Compose SemanticsNodes and vice versa. As a result, you can't
+     * be sure if the ComposeView's Content Root exists within this particular RecyclerViewItem's ComposeView */
+  }
+
+  fun findHealthPracticeItem(semanticsProvider: SemanticsNodeInteractionsProvider, name: String) = semanticsProvider.onNodeWithText(name)
+  fun tapHealthPracticeItem(semanticsProvider: SemanticsNodeInteractionsProvider, name: String) = findHealthPracticeItem(semanticsProvider, name).performClick()
 }
 
 //? Since Objects are a bit like Singletons/Static classes, they can't be initialized, so they're not great for holding state

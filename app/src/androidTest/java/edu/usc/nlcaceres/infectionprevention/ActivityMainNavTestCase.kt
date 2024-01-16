@@ -30,14 +30,12 @@ class ActivityMainNavTestCase: TestCase(kaspressoBuilder = Kaspresso.Builder.wit
 
       assertEquals(2, precautionRV.getSize())
       precautionRV.lastChild<MainActivityScreen.PrecautionRvItem> {
-
         assertEquals(4, healthPracticeRV.getSize())
         // Following matcher also doubles as a scrollTo command, finding the Contact Enteric Button's parent ComposeView
         healthPracticeItem("Contact Enteric").matches { isAssignableFrom(ComposeView::class.java) }
         //? Unfortunately Espresso and ComposeRules/SemanticsNodeInteractionsProvider have no overlap at all
-        //? so matching the parent ComposeView to its child Composable Root seems impossible
-        composeTestRule.onNodeWithText("Contact Enteric").performClick()
-      }
+      } //? so linking/matching the parent ComposeView (above) to its child Composable Root (below) seems impossible
+      tapHealthPracticeItem(composeTestRule, "Contact Enteric")
     }
 
     CreateReportScreen {
