@@ -1,17 +1,11 @@
 package edu.usc.nlcaceres.infectionprevention.helpers.util
 
-import androidx.test.espresso.DataInteraction
-import androidx.test.espresso.ViewInteraction
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.BoundedMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.startsWith
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
-
-// Actions
-fun DataInteraction.tap(): ViewInteraction = perform(click())
 
 // Custom Matchers - Useful for checking within onData calls for AdapterViews (Spinners, ListView, etc.)
 inline fun <reified T> withDataDescribedAs(text: String): Matcher<Any> {
@@ -21,7 +15,7 @@ inline fun <reified T> withDataDescribedAs(text: String): Matcher<Any> {
   // 3. To get the data type, we need reified to access it at runtime. Reified can only be used on inline funs though!
   // - What do reified + inline do: Reified means the ACTUAL type is provided at the call based on the <Type> contextual info
   //   Inline injects the fun's code at the callsite when compiling rather than looking up vars + creating new memory refs at runtime
-  //   To see what this fun becomes when calling, see CreateReportRobot OR go to Tools -> Kotlin -> Show ByteCode -> Decompile
+  //   To see what this fun becomes when calling, see CreateReportTestCase OR go to Tools -> Kotlin -> Show ByteCode -> Decompile
   // CON: Calling inline funs too often can bloat your code (since the generated code is just put there rather than looked up and reused)
   // BUT PRO: Used in moderation and with short funs can improve speed and memory usage immensely!
   return allOf(thatIs(instanceOf(T::class.java)), withItemDescribedAs(text))
