@@ -1,6 +1,8 @@
 package edu.usc.nlcaceres.infectionprevention
 
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.performClick
 import androidx.test.espresso.matcher.ViewMatchers
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
@@ -8,12 +10,9 @@ import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import edu.usc.nlcaceres.infectionprevention.screens.MainActivityScreen
-import edu.usc.nlcaceres.infectionprevention.screens.NavDrawerScenario
-import edu.usc.nlcaceres.infectionprevention.screens.ReportListScreen
-import edu.usc.nlcaceres.infectionprevention.screens.SettingsScreen
-import edu.usc.nlcaceres.infectionprevention.screens.SortFilterScreen
+import edu.usc.nlcaceres.infectionprevention.screens.*
 import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
+import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
 import io.github.kakaocup.kakao.edit.KEditText
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -155,6 +154,7 @@ class FragmentReportListTestCase: TestCase(kaspressoBuilder = Kaspresso.Builder.
     step("Close the searchBar and get 5 reports again") {
       ReportListScreen {
         searchBarCloseButton.click()
+        device.uiDevice.waitForIdle()
         searchBar.doesNotExist()
         assertEquals(5, reportList.getSize())
       }
@@ -173,5 +173,80 @@ class FragmentReportListTestCase: TestCase(kaspressoBuilder = Kaspresso.Builder.
     }
   }
 
-  //TODO: Add FragmentSortFilter's FilterList result testing
+  //! Handling Result of FragmentSortFilter via Report Sorting and Filtering
+  @Test fun add_OneFilter() = run {
+    step("Click SortFilterButton to open SortFilterScreen") { ReportListScreen.sortFilterButton.click() }
+    step("Check SortFilterScreen loaded to select Isolation Precaution Type Filter") {
+      SortFilterScreen {
+        expandableFilterList.isDisplayed(); assertEquals(3, expandableFilterList.getSize())
+        openExpandableFilterList("Precaution Type")
+        findFilterItem(composeTestRule, "Isolation").performClick()
+        setFiltersButton.click()
+      }
+    }
+    step("Check Isolation Precaution Type Filter applied, limiting Reports to 2") {
+      onComposeScreen<ReportListComposeScreen>(composeTestRule) {
+        sortFilterButtons.assertCountEquals(1)
+        sorterFilterButtons("Isolation").assertIsDisplayed()
+      }
+      assertEquals(2, ReportListScreen.reportList.getSize())
+    }
+  }
+  @Test fun add_Multiple_Filters() = run {
+    step("Click SortFilterButton to open SortFilterScreen") { ReportListScreen.sortFilterButton.click() }
+    step("Check SortFilterScreen loaded to select Hand Hygiene Health Practice Type Filter and Sort By Employee Name (A-Z)") {
+      SortFilterScreen {
+        expandableFilterList.isDisplayed(); assertEquals(3, expandableFilterList.getSize())
+        openExpandableFilterList("Health Practice Type")
+        findFilterItem(composeTestRule, "Hand Hygiene").performClick()
+
+        openExpandableFilterList("Sort By")
+        findFilterItem(composeTestRule, "Employee Name (A-Z)").performClick()
+        setFiltersButton.click()
+      }
+    }
+    step("Check both Filter and Sorter applied, limiting Reports to 2 and correctly sorting them by Employee Name") {
+      onComposeScreen<ReportListComposeScreen>(composeTestRule) {
+        sortFilterButtons.assertCountEquals(2)
+        sorterFilterButtons("Hand Hygiene").assertIsDisplayed()
+        sorterFilterButtons("Employee Name (A-Z)").assertIsDisplayed()
+      }
+      assertEquals(2, ReportListScreen.reportList.getSize())
+      ReportListScreen.reportList.firstChild<ReportListScreen.ReportRvItem> {
+        reportTypeTitleTV.hasText("Hand Hygiene Violation")
+        dateTV.hasText("May 18, 2019 11:36PM") //TODO: Space out the PM?
+        employeeNameTV.hasText("Committed by John Smith")
+      }
+      ReportListScreen.reportList.lastChild<ReportListScreen.ReportRvItem> {
+        reportTypeTitleTV.hasText("Hand Hygiene Violation")
+        dateTV.hasText("May 13, 2019 11:36PM")
+        employeeNameTV.hasText("Committed by Melody Rios")
+      }
+    }
+  }
+  @Test fun remove_Filter_and_Reprocess_List() = run {
+    step("Click SortFilterButton to open SortFilterScreen") { ReportListScreen.sortFilterButton.click() }
+    step("Check SortFilterScreen loaded to select Isolation Precaution Type Filter") {
+      SortFilterScreen {
+        expandableFilterList.isDisplayed(); assertEquals(3, expandableFilterList.getSize())
+        openExpandableFilterList("Precaution Type")
+        findFilterItem(composeTestRule, "Isolation").performClick()
+        setFiltersButton.click()
+      }
+    }
+    step("Check Isolation Precaution Type Filter applied, limiting Reports to 2") {
+      onComposeScreen<ReportListComposeScreen>(composeTestRule) {
+        sortFilterButtons.assertCountEquals(1)
+        sorterFilterButtons("Isolation").assertIsDisplayed()
+      }
+      assertEquals(2, ReportListScreen.reportList.getSize())
+    }
+    step("Remove Isolation Precaution Type Filter and re-display full list of 5 Reports") {
+      onComposeScreen<ReportListComposeScreen>(composeTestRule) {
+        sorterFilterButtons("Isolation").performClick() // Remove the Filter
+        sortFilterButtons.assertCountEquals(0)
+      }
+      assertEquals(5, ReportListScreen.reportList.getSize())
+    }
+  }
 }
