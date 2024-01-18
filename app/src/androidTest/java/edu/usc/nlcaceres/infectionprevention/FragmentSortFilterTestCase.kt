@@ -300,6 +300,7 @@ class FragmentSortFilterTestCase: TestCase(kaspressoBuilder = Kaspresso.Builder.
     }
     step("Press resetFiltersButton and check ExpandableLists closed + SelectedFilters ALL toggled off") {
       SortFilterScreen.resetFiltersButton.click()
+      device.uiDevice.waitForIdle()
       onComposeScreen<SortFilterComposeScreen>(composeTestRule) {
         selectedFilterButton("Standard").assertDoesNotExist()
         selectedFilterButton("PPE").assertDoesNotExist()
