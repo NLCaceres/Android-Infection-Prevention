@@ -17,21 +17,25 @@
 - Settings to personalize app, individually and as a team
 
 ### Recent Updates
-- Jetpack Composables for each ViewHolder in the HealthPracticeAdapter, FilterAdapter and SelectedFilterAdapter 
-- Consolidate Hilt Modules into main AppModule, leaving improved RepositoryModule for UI Testing to easily stub in data
+- Jetpack Composables for each ViewHolder in the HealthPracticeAdapter and FilterAdapter
+  - SelectedFilterAdapter completely replaced by FlowRow-based ListView Composables, consolidating UI into 2 simple Stateful Composables
+  as well as a Screen/View-level Composable containing the Stateful Composables, 1 each for FragmentReportList and FragmentSortFilter
+- Consolidated Hilt Modules into main AppModule, leaving improved RepositoryModule for UI Testing to easily stub in data
 - Updated RecyclerView Diff'ing for all Adapters
 - Sort/Filter Options + Search Bar working with Report List
-- Drop Toasts for Snackbars
+- Dropped Toasts for Snackbars
   - Update leftover references to Toasts
 - Reduced magic string usage
   - Relevant to i18n and future l10n
-- Add Kaspersky Kaspresso to not only reduce flakiness of Android UI Tests BUT ALSO to further improve their readability and speed
+- Added Kaspersky Kaspresso to not only reduce flakiness of Android UI Tests BUT ALSO to further improve their readability and speed
+  - All UI tests have been updated to Kaspresso TestCases, all of which consistently pass
 - Take advantage of AppManifest merging to set usesCleartext to false in all build variants EXCEPT for debug
   - Ensures only the Debug build connects over HTTP, allowing the Debug variant to connect to a local server
 
 ### Technical Upgrades
 - Integrated Android Navigation Component to simplify navigation logic
 - Dropped MVC for MVVM approach, splitting Views & ViewModels
+  - Using mix of LiveData, StateFlow, and MutableState depending on level of data-manipulation needed, making UI-updates as simple as possible through reactivity
 - Additions
     - Hilt
       - Merged DataSourceModule into main AppModule by converting it into abstract class that includes a Kotlin Companion Object
@@ -45,6 +49,9 @@
     - Mockito
     - Robolectric
     - Kaspersky Kaspresso
+      - Adding Kaspresso has reduced (and potentially completely eliminated) the need for Espresso Idling Resources
+        - As more features are built out, time will tell if Espresso Idling can be completely dropped
+- Leverage Compose Compiler Stability Reports as needed to maximize UI responsiveness and rendering efficiency
 - Improved accessibility
   - Sufficient contrast, text size, touch target size, and use of content descriptions
   - Improved use of modern native elements for more intuitive User Experience
@@ -66,10 +73,8 @@
 - Incorporate MaterialUI 3
   - Leverage MaterialTheme to improve personalization for individuals and teams
 - Cache data via Room Database (SQLCipher to maintain an encrypted version?)
-- Split ReportList, Sort/Filter Options, and Selected Filters into their own reusable child fragments
-- Try using new Flow Layouts (experimental as Dec 2023) with SelectedFilters Composables to imitate FlexboxLayouts
+- Split ReportList and Sort/Filter Options into their own reusable Composables similar to SelectedFilter Composables
 - Full Localization
-- Might be able to drop EspressoIdling because Kaspresso enables `waitUntil(result/timeOut)` style testing by default to reduce flakiness
 
 #### Note on Jetpack Compose
 - As of 2023, Jetpack Compose is getting very close to being full featured! With updates in availability for
@@ -83,6 +88,13 @@
     - Material 3 is missing Swipe to Refresh still
     - While super easy to use, ComposeTestRule is completely separate from Espresso UI Testing which makes
     hybrid views a bit more difficult to test since neither is aware of the other's View Hierarchy and where they intersect
+- Jetpack Compose offers a convenient Gradle Task that allows you to inspect its Stability Inferences. Ensuring your Composables
+  are Stable helps to optimize recomposition, skipping it whenever possible.
+  - The command to run in the root of the project is `./gradlew assembleRelease -PcomposeCompilerReports=true`
+    - Android Studio allows you to enter the command into its terminal and run it with the IDE using `Command + Return`
+  - When using the Compose Compiler Reports, it's worth noting that even Google insists not getting too caught up by its results.
+    If you or your users are noticing performance issues, and you think it's related to stability, THEN you can
+    guarantee it'll be important to check the Compose Compiler Reports. Otherwise, you'll just be optimizing prematurely
 
 ## Related Apps
 - Front-end website: https://github.com/NLCaceres/Angular-Infection-Prevention
