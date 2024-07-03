@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.kotlin.parcelize) apply false
     alias(libs.plugins.google.dagger.hilt) apply false
     alias(libs.plugins.androidx.navigation.safeargs.kotlin) apply false
@@ -11,24 +12,24 @@ plugins {
 }
 
 tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
 }
 
 subprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        kotlinOptions {
-            if (project.findProperty("composeCompilerReports") == "true") {
-                freeCompilerArgs += listOf(
-                    "-P",
-                    "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=${project.buildDir.absolutePath}/compose_compiler"
-                )
-            }
-            if (project.findProperty("composeCompilerMetrics") == "true") {
-                freeCompilerArgs += listOf(
-                    "-P",
-                    "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=${project.buildDir.absolutePath}/compose_compiler"
-                )
-            }
+        if (project.findProperty("composeCompilerReports") == "true") {
+            compilerOptions.freeCompilerArgs.addAll(
+                "-P",
+                ("plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
+                    "${project.layout.buildDirectory.asFile.get().absolutePath}/compose_compiler")
+            )
+        }
+        if (project.findProperty("composeCompilerMetrics") == "true") {
+            compilerOptions.freeCompilerArgs.addAll(
+                "-P",
+                ("plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
+                    "${project.layout.buildDirectory.asFile.get().absolutePath}/compose_compiler")
+            )
         }
     }
 }

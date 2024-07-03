@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.google.dagger.hilt)
     alias(libs.plugins.androidx.navigation.safeargs.kotlin)
@@ -40,14 +41,16 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.6"
-    }
     kotlinOptions {
         jvmTarget = "17"
     }
     testOptions.unitTests.isIncludeAndroidResources = true
     testOptions.animationsDisabled = false
+}
+
+composeCompiler {
+    enableStrongSkippingMode = true
+    reportsDestination = layout.buildDirectory.dir("compose_compiler")
 }
 
 dependencies {
@@ -118,4 +121,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     androidTestImplementation(libs.kaspersky.kaspresso)
     androidTestImplementation(libs.kaspersky.kaspresso.compose)
+}
+
+kapt {
+    correctErrorTypes = true
 }
