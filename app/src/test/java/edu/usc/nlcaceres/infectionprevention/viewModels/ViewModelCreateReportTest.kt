@@ -112,8 +112,9 @@ class ViewModelCreateReportTest {
     locationRepository = mock()
     reportRepository = mock()
     val viewModel = ViewModelCreateReport(employeeRepository, healthPracticeRepository, locationRepository, reportRepository)
-    val unobservedHeaderText = viewModel.healthPracticeHeaderText.value
-    assertNull("Unobserved header text should provide null value", unobservedHeaderText)
+    //? WHEN LiveData has an initial value (an empty string here), THEN its first value will never be null
+    // SINCE the healthPracticeHeader LiveData checks for empty strings, the first value is the following
+    assertEquals("New Observation", viewModel.healthPracticeHeaderText.value)
 
     viewModel.healthPracticeHeaderText.observeForever(headerTextObserver)
     val defaultHeaderText = viewModel.healthPracticeHeaderText.value

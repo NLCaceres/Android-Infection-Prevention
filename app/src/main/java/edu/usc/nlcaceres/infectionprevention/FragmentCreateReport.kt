@@ -87,7 +87,7 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
     }
   }
   private fun setupHeaderTextView() {
-    headerTV = viewBinding.headerTV // Should default to "New Observation" and will be changed when observer
+    headerTV = viewBinding.headerTV // Default to "New Observation" and update after loading observation completes
     // Other sharedElement for following transition is HealthPracticeAdapter's precautionButtonTextView
     arguments?.getString(CreateReportPracticeExtra)?.let { selectedPractice ->
       ViewCompat.setTransitionName(headerTV, TransitionName(ReportTypeTextViewTransition, selectedPractice))
@@ -130,7 +130,7 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
       ArrayAdapter(requireContext(), R.layout.custom_spinner_dropdown, employeeList).also { employeeSpinner.adapter = it }
       ArrayAdapter(requireContext(), R.layout.custom_spinner_dropdown, locationList).also { locationSpinner.adapter = it }
       ArrayAdapter(requireContext(), R.layout.custom_spinner_dropdown, healthPracticeList).also {
-        healthPracticeSpinner.adapter = it
+        healthPracticeSpinner.adapter = it // ArrayAdapters default to using toString's value to fill their items' TextViews
         if (healthPracticeList.isEmpty()) { return@also } // If empty, DON'T select a healthPractice
         val selectedIndex = viewModel.selectedHealthPracticeIndex(healthPracticeList, selectedPracticeType)
         if (selectedIndex != -1) { healthPracticeSpinner.setSelection(selectedIndex) } // MUST prevent outOfRange error
