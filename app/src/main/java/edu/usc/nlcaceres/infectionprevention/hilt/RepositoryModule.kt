@@ -16,9 +16,9 @@ import edu.usc.nlcaceres.infectionprevention.data.LocationRepository
 import edu.usc.nlcaceres.infectionprevention.data.PrecautionRepository
 import edu.usc.nlcaceres.infectionprevention.data.ReportRepository
 
-@Module
-@InstallIn(ViewModelComponent::class)
-abstract class RepositoryModule {
+@Module // - The Repositories get their own module to make it easier to stub in Instrumented Tests
+@InstallIn(ViewModelComponent::class) // - Ideally via @Module @TestInstallIn(components, replaces)
+abstract class RepositoryModule { // - BUT @Inject or @BindValue can help grab a mutated ref to a dependency
   @ViewModelScoped
   @Binds
   abstract fun provideReportRepository(appReportRepository: AppReportRepository): ReportRepository
