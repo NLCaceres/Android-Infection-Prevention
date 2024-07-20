@@ -1,6 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention.data
 
-import edu.usc.nlcaceres.infectionprevention.util.AppModule
+import edu.usc.nlcaceres.infectionprevention.hilt.ViewModelModule.RemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +14,7 @@ interface ReportRepository {
 }
 /* Repositories have the job of synthesizing the results of various dataSources
    Usually a remote/network one and a local database file one (Room in Android vs CoreData/Sqlite in iOS)  */
-class AppReportRepository @Inject constructor(@AppModule.RemoteDataSource private val reportRemoteDataSource: ReportDataSource,
+class AppReportRepository @Inject constructor(@RemoteDataSource private val reportRemoteDataSource: ReportDataSource,
                                               private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO): ReportRepository {
   override fun fetchReportList(): Flow<List<Report>> { // No "suspend" keyword needed since
     return flow { // the flow builder calls "suspend" funcs w/out blocking main via its own bubble/coroutine
@@ -37,7 +37,7 @@ interface EmployeeRepository {
   fun fetchEmployeeList(): Flow<List<Employee>>
 }
 // No @Inject needed in following constructors since the RepositoryModule details the injection process
-class AppEmployeeRepository @Inject constructor(@AppModule.RemoteDataSource private val employeeRemoteDataSource: EmployeeDataSource,
+class AppEmployeeRepository @Inject constructor(@RemoteDataSource private val employeeRemoteDataSource: EmployeeDataSource,
                                                 private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO): EmployeeRepository {
   override fun fetchEmployeeList(): Flow<List<Employee>> {
     return flow {
@@ -52,7 +52,7 @@ class AppEmployeeRepository @Inject constructor(@AppModule.RemoteDataSource priv
 interface HealthPracticeRepository {
   fun fetchHealthPracticeList(): Flow<List<HealthPractice>>
 }
-class AppHealthPracticeRepository @Inject constructor(@AppModule.RemoteDataSource private val healthPracticeRemoteDataSource: HealthPracticeDataSource,
+class AppHealthPracticeRepository @Inject constructor(@RemoteDataSource private val healthPracticeRemoteDataSource: HealthPracticeDataSource,
                                                       private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO): HealthPracticeRepository {
   override fun fetchHealthPracticeList(): Flow<List<HealthPractice>> {
     return flow {
@@ -67,7 +67,7 @@ class AppHealthPracticeRepository @Inject constructor(@AppModule.RemoteDataSourc
 interface LocationRepository {
   fun fetchLocationList(): Flow<List<Location>>
 }
-class AppLocationRepository @Inject constructor(@AppModule.RemoteDataSource private val locationRemoteDataSource: LocationDataSource,
+class AppLocationRepository @Inject constructor(@RemoteDataSource private val locationRemoteDataSource: LocationDataSource,
                                                 private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO): LocationRepository {
   override fun fetchLocationList(): Flow<List<Location>> {
     return flow {
@@ -82,7 +82,7 @@ class AppLocationRepository @Inject constructor(@AppModule.RemoteDataSource priv
 interface PrecautionRepository {
   fun fetchPrecautionList(): Flow<List<Precaution>>
 }
-class AppPrecautionRepository @Inject constructor(@AppModule.RemoteDataSource private val precautionRemoteDataSource: PrecautionDataSource,
+class AppPrecautionRepository @Inject constructor(@RemoteDataSource private val precautionRemoteDataSource: PrecautionDataSource,
                                                   private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO): PrecautionRepository {
   override fun fetchPrecautionList(): Flow<List<Precaution>> {
     return flow {
