@@ -9,7 +9,7 @@ import dagger.hilt.android.testing.UninstallModules
 import edu.usc.nlcaceres.infectionprevention.screens.MainActivityScreen
 import edu.usc.nlcaceres.infectionprevention.screens.PreferenceItem
 import edu.usc.nlcaceres.infectionprevention.screens.SettingsScreen
-import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
+import edu.usc.nlcaceres.infectionprevention.hilt.RepositoryModule
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

@@ -8,8 +8,8 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import edu.usc.nlcaceres.infectionprevention.data.PrecautionRepository
 import edu.usc.nlcaceres.infectionprevention.helpers.di.FakePrecautionRepository
+import edu.usc.nlcaceres.infectionprevention.hilt.RepositoryModule
 import edu.usc.nlcaceres.infectionprevention.screens.MainActivityScreen
-import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -25,7 +25,7 @@ class ActivityMainRenderProgressTestCase: TestCase() {
   @get:Rule(order = 1)
   val composeTestRule = createComposeRule()
 
-  @Inject // In order to manipulate the stubbed repositories, @Inject needs to be used here so @Before can actually inject
+  @Inject // Need @Inject to get the mutable stub Repository, THEN complete the injection in @Before
   lateinit var precautionRepository: PrecautionRepository
 
   @Before // Performs manual injection into the TestSuite itself, allowing each test to get a fresh injection

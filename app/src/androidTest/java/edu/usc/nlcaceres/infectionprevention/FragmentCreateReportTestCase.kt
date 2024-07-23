@@ -17,7 +17,7 @@ import edu.usc.nlcaceres.infectionprevention.screens.CreateReportScreen
 import edu.usc.nlcaceres.infectionprevention.screens.MainActivityScreen
 import edu.usc.nlcaceres.infectionprevention.screens.ReportListScreen
 import edu.usc.nlcaceres.infectionprevention.screens.SettingsScreen
-import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
+import edu.usc.nlcaceres.infectionprevention.hilt.RepositoryModule
 import io.github.kakaocup.kakao.spinner.KSpinnerItem
 import java.time.LocalDate
 import org.junit.Assert.assertEquals

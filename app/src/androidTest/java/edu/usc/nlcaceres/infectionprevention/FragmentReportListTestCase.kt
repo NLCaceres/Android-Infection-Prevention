@@ -11,7 +11,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import edu.usc.nlcaceres.infectionprevention.screens.*
-import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
+import edu.usc.nlcaceres.infectionprevention.hilt.RepositoryModule
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
 import io.github.kakaocup.kakao.edit.KEditText
 import org.junit.Assert.assertEquals

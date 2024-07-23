@@ -17,7 +17,7 @@ import edu.usc.nlcaceres.infectionprevention.screens.ReportListScreen
 import edu.usc.nlcaceres.infectionprevention.screens.SettingsScreen
 import edu.usc.nlcaceres.infectionprevention.screens.SortFilterComposeScreen
 import edu.usc.nlcaceres.infectionprevention.screens.SortFilterScreen
-import edu.usc.nlcaceres.infectionprevention.util.RepositoryModule
+import edu.usc.nlcaceres.infectionprevention.hilt.RepositoryModule
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
 import org.junit.Assert.assertEquals
 import org.junit.Before
