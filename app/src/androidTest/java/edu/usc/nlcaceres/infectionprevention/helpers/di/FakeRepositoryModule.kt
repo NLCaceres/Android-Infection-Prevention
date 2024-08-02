@@ -15,8 +15,9 @@ import javax.inject.Singleton
 /** Stubs in data across the InstrumentedTests using Hilt's preferred method of @TestInstallIn */
 
 // - Important to use the SingletonComponent, not the original ViewModelComponent
-// Since ViewModelComponent seems to cause ActivityMainRenderProgressTestCase to fail due to Field @Inject
-// It MAY be fixable via nested @Install Modules in each TestCase BUT that bloats the other TestCases just to fix 1 TestCase
+// Since ViewModelComponent seems to cause ActivityMainRenderProgressTestCase to fail due to its Field @Inject
+// @Install modules in EACH TestCase MAY let ViewModelComponents work BUT that bloats other TestCases to fix 1
+// REGARDLESS Hilt Field Injection seemingly requires SingletonComponent/@Singleton, or else a MissingBinding error is thrown
 @Module
 @TestInstallIn(components = [SingletonComponent::class], replaces = [RepositoryModule::class])
 object FakeRepositoryModule {
