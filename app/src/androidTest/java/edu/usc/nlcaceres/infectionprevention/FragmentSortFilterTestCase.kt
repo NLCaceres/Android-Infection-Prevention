@@ -10,21 +10,18 @@ import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import edu.usc.nlcaceres.infectionprevention.screens.NavDrawerScenario
 import edu.usc.nlcaceres.infectionprevention.screens.ReportListComposeScreen
 import edu.usc.nlcaceres.infectionprevention.screens.ReportListScreen
 import edu.usc.nlcaceres.infectionprevention.screens.SettingsScreen
 import edu.usc.nlcaceres.infectionprevention.screens.SortFilterComposeScreen
 import edu.usc.nlcaceres.infectionprevention.screens.SortFilterScreen
-import edu.usc.nlcaceres.infectionprevention.hilt.RepositoryModule
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
 class FragmentSortFilterTestCase: TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupport()) {
   @get:Rule(order = 0)

@@ -9,9 +9,7 @@ import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import edu.usc.nlcaceres.infectionprevention.screens.*
-import edu.usc.nlcaceres.infectionprevention.hilt.RepositoryModule
 import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
 import io.github.kakaocup.kakao.edit.KEditText
 import org.junit.Assert.assertEquals
@@ -19,7 +17,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
 class FragmentReportListTestCase: TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupport()) {
   @get:Rule(order = 0)

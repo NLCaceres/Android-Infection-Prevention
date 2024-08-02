@@ -8,7 +8,6 @@ import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import edu.usc.nlcaceres.infectionprevention.data.Employee
 import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 import edu.usc.nlcaceres.infectionprevention.data.Location
@@ -17,7 +16,6 @@ import edu.usc.nlcaceres.infectionprevention.screens.CreateReportScreen
 import edu.usc.nlcaceres.infectionprevention.screens.MainActivityScreen
 import edu.usc.nlcaceres.infectionprevention.screens.ReportListScreen
 import edu.usc.nlcaceres.infectionprevention.screens.SettingsScreen
-import edu.usc.nlcaceres.infectionprevention.hilt.RepositoryModule
 import io.github.kakaocup.kakao.spinner.KSpinnerItem
 import java.time.LocalDate
 import org.junit.Assert.assertEquals
@@ -25,7 +23,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
 class FragmentCreateReportTestCase: TestCase(kaspressoBuilder = Kaspresso.Builder.withComposeSupport()) {
   @get:Rule(order = 0)

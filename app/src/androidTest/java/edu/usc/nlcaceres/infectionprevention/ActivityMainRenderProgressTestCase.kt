@@ -5,10 +5,8 @@ import androidx.test.core.app.ActivityScenario.launch
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import edu.usc.nlcaceres.infectionprevention.data.PrecautionRepository
 import edu.usc.nlcaceres.infectionprevention.helpers.di.FakePrecautionRepository
-import edu.usc.nlcaceres.infectionprevention.hilt.RepositoryModule
 import edu.usc.nlcaceres.infectionprevention.screens.MainActivityScreen
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -17,7 +15,6 @@ import org.junit.Test
 import java.io.IOException
 import javax.inject.Inject
 
-@UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
 class ActivityMainRenderProgressTestCase: TestCase() {
   @get:Rule(order = 0)

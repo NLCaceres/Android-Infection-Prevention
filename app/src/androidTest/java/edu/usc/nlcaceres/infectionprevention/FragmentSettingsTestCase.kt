@@ -5,16 +5,13 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import edu.usc.nlcaceres.infectionprevention.screens.MainActivityScreen
 import edu.usc.nlcaceres.infectionprevention.screens.PreferenceItem
 import edu.usc.nlcaceres.infectionprevention.screens.SettingsScreen
-import edu.usc.nlcaceres.infectionprevention.hilt.RepositoryModule
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@UninstallModules(RepositoryModule::class)
 @HiltAndroidTest
 class FragmentSettingsTestCase: TestCase() {
   @get:Rule(order = 0)
