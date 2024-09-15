@@ -18,33 +18,35 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
+import edu.usc.nlcaceres.infectionprevention.data.Precaution
 import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
 
 //? Alternatively an OutlinedCard wrapping a Row of Text, Icon and Menu COULD work but isn't ideal
 @OptIn(ExperimentalMaterial3Api::class) //? Especially when ExposedDropdownMenu exists
 @Composable
-fun MaterialSpinner() {
-  val options = listOf("Cupcake", "Donut", "Eclair", "Froyo", "Gingerbread")
+fun <T> MaterialSpinner(title: String, options: List<T>, onSelect: (option: T) -> Unit, modifier: Modifier = Modifier) {
   var expanded by remember { mutableStateOf(false) }
-  var text by remember { mutableStateOf(options[0]) }
+  var selectedOption by remember { mutableStateOf(options[0]) }
 
   ExposedDropdownMenuBox(
     expanded = expanded, onExpandedChange = { expanded = it },
-    modifier = Modifier.padding(10.dp)
+    modifier = Modifier.then(modifier)
   ) {
     TextField( // - menuAnchor.PrimaryNotEditable helps a Read-Only TextField expand/collapse the menu
       modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable),
-      value = text, onValueChange = {}, readOnly = true, singleLine = true,
-      label = { Text("Label") },
+      value = selectedOption.toString(), onValueChange = {}, readOnly = true, singleLine = true,
+      label = { Text(title, style = MaterialTheme.typography.labelSmall) },
       trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
       colors = ExposedDropdownMenuDefaults.textFieldColors(),
     )
     ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
       options.forEach { option ->
         DropdownMenuItem(
-          text = { Text(option, style = MaterialTheme.typography.bodyLarge) },
+          text = { Text(option.toString(), style = MaterialTheme.typography.bodyLarge) },
           onClick = {
-            text = option
+            selectedOption = option
+            onSelect(selectedOption)
             expanded = false
           },
           contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
@@ -58,9 +60,13 @@ fun MaterialSpinner() {
 @Preview(widthDp = 320, heightDp = 500, showBackground = true)
 @Composable
 fun MaterialSpinnerPreview() {
+  val healthPractices = listOf(
+    HealthPractice("123", name = "Hand Hygiene", Precaution(null, "Standard", listOf())),
+    HealthPractice(id = null, name = "Contact", precaution = null)
+  )
   AppTheme {
     Column {
-      MaterialSpinner()
+      MaterialSpinner("Foobar", healthPractices, {}, Modifier.padding(20.dp))
     }
   }
 }
