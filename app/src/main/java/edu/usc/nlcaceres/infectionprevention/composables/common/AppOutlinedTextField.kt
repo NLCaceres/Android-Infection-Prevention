@@ -19,11 +19,12 @@ import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
 
 @Composable
 fun AppOutlinedTextField(
-  value: String, label: String, modifier: Modifier = Modifier, trailingIcon: @Composable (() -> Unit)? = null
+  value: String, label: String, modifier: Modifier = Modifier, readOnly: Boolean = false,
+  trailingIcon: @Composable (() -> Unit)? = null
 ) {
   OutlinedTextField(
     modifier = Modifier.then(modifier),
-    value = value, onValueChange = {}, readOnly = true, singleLine = true,
+    value = value, onValueChange = {}, readOnly = readOnly, singleLine = true,
     label = { Text(label, Modifier
       .layout { measurable, constraints ->
         val xOffset = (-4).dp.roundToPx()

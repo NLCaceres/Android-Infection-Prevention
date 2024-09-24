@@ -38,6 +38,7 @@ fun <T> MaterialSpinner(title: String, options: List<T>, onSelect: (option: T) -
     AppOutlinedTextField(
       selectedOption.toString(), title,
       Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable), // - Helps a Read-Only TextField expand/collapse the menu
+      readOnly = true,
       trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded, Modifier.scale(1.5f)) }
     )
     ExposedDropdownMenu(
