@@ -1,8 +1,7 @@
 package edu.usc.nlcaceres.infectionprevention.composables.common
 
-import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -37,14 +36,11 @@ fun AppOutlinedTextField(
     value.isEmpty() -> TextFieldPhase.UnfocusedEmpty
     else -> TextFieldPhase.UnfocusedNotEmpty
   }
-  val labelScalingProgress by updateTransition(textFieldState, label = "LabelScalingProgress")
-    .animateFloat(label = "LabelScalingFloatProgress", transitionSpec = { tween(150) }) {
-      when (it) {
-        TextFieldPhase.Focused -> 1f
-        TextFieldPhase.UnfocusedEmpty -> 0f
-        TextFieldPhase.UnfocusedNotEmpty -> 1f
-      }
-    }
+  val labelScalingProgress by animateFloatAsState(targetValue = when (textFieldState) {
+    TextFieldPhase.Focused -> 1f
+    TextFieldPhase.UnfocusedEmpty -> 0f
+    TextFieldPhase.UnfocusedNotEmpty -> 1f
+  }, animationSpec = tween(150), label = "LabelScalingFloatProgress")
   OutlinedTextField(
     modifier = Modifier.then(modifier),
     value = value, onValueChange = {}, readOnly = readOnly, singleLine = true,
