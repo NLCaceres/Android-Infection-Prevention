@@ -2,7 +2,6 @@ package edu.usc.nlcaceres.infectionprevention.composables.common.buttons
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -19,11 +18,13 @@ import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
 @Composable
 fun AppFilledTonalButton(
   onClick: () -> Unit, text: String,
-  modifier: Modifier = Modifier, colors: ButtonColors = ButtonDefaults.filledTonalButtonColors()
+  modifier: Modifier = Modifier, colors: ButtonColors = ButtonDefaults.filledTonalButtonColors(),
+  contentPadding: PaddingValues? = null
 ) {
   FilledTonalButton(
-    onClick, Modifier.padding(horizontal = 10.dp, vertical = 5.dp).then(modifier),
-    shape = RoundedCornerShape(7.dp), colors = colors, contentPadding = PaddingValues(15.dp, 8.dp)
+    onClick, Modifier.then(modifier),
+    shape = RoundedCornerShape(7.dp), colors = colors,
+    contentPadding = contentPadding ?: PaddingValues(15.dp, 8.dp)
   ) {
     Text(text)
   }
