@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -27,9 +29,18 @@ import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
 @Composable
 fun AppOutlinedTextField(
   value: String, label: String, modifier: Modifier = Modifier, readOnly: Boolean = false,
-  trailingIcon: @Composable (() -> Unit)? = null
+  onClick: (() -> Unit)? = null, trailingIcon: @Composable (() -> Unit)? = null
 ) {
   val interactionSource = remember { MutableInteractionSource() }
+  if (onClick != null) {
+    LaunchedEffect(interactionSource) {
+      interactionSource.interactions.collect {
+        if (it is PressInteraction.Release) {
+          onClick()
+        }
+      }
+    }
+  }
   val isFocused by interactionSource.collectIsFocusedAsState()
   val textFieldState = when {
     isFocused -> TextFieldPhase.Focused
@@ -87,7 +98,7 @@ fun AppOutlinedTextFieldPreview() {
   AppTheme {
     Column(Modifier.padding(start = 20.dp)) {
       AppOutlinedTextField("Foo", "Bar", readOnly = true)
-      AppOutlinedTextField("", "Foobar", readOnly = false)
+      AppOutlinedTextField("", "Foobar", readOnly = false, onClick = {})
       AppOutlinedTextField("", "Fizz", readOnly = true)
     }
   }
