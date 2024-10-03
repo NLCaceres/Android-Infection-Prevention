@@ -1,4 +1,4 @@
-package edu.usc.nlcaceres.infectionprevention.composables.common
+package edu.usc.nlcaceres.infectionprevention.composables.common.dialogs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import edu.usc.nlcaceres.infectionprevention.composables.common.AppOutlinedTextField
 import edu.usc.nlcaceres.infectionprevention.composables.common.buttons.NegativeButton
 import edu.usc.nlcaceres.infectionprevention.composables.common.buttons.PositiveButton
 import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
@@ -30,7 +31,7 @@ import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimeInputWidget(state: TimePickerState, onConfirm: () -> Unit, onDismiss: () -> Unit) {
+fun TimeInputDialog(state: TimePickerState, onConfirm: () -> Unit, onDismiss: () -> Unit) {
   BasicAlertDialog(onDismiss) {
     Surface(
       Modifier.padding(horizontal = 10.dp, vertical = 0.dp), shape = RoundedCornerShape(15.dp)
@@ -54,7 +55,7 @@ fun TimeInputWidget(state: TimePickerState, onConfirm: () -> Unit, onDismiss: ()
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(widthDp = 320, heightDp = 500, showBackground = true)
 @Composable
-private fun TimeDateWidgetPreview() {
+private fun TimeInputDialogPreview() {
   var isVisible by remember { mutableStateOf(true) }
   val currentTime = Calendar.getInstance()
   val timePickerState = rememberTimePickerState(
@@ -64,7 +65,7 @@ private fun TimeDateWidgetPreview() {
     Column {
       AppOutlinedTextField("", "Foo", readOnly = true)
       if (isVisible) {
-        TimeInputWidget(timePickerState, onConfirm = { isVisible = false }, onDismiss = { isVisible = false })
+        TimeInputDialog(timePickerState, onConfirm = { isVisible = false }, onDismiss = { isVisible = false })
       }
     }
   }
