@@ -13,6 +13,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimeInput
+import androidx.compose.material3.TimePickerColors
+import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
@@ -42,14 +44,29 @@ fun TimeInputDialog(state: TimePickerState, onConfirm: () -> Unit, onDismiss: ()
           style = MaterialTheme.typography.titleLarge
         )
         HorizontalDivider(Modifier.padding(start = 8.dp, bottom = 15.dp, end = 8.dp))
-        TimeInput(state, Modifier.padding(horizontal = 8.dp, vertical = 5.dp))
-        Row(Modifier.fillMaxWidth().padding(top = 5.dp, end = 10.dp, bottom = 5.dp), Arrangement.End) {
+        TimeInput(state, Modifier.padding(horizontal = 8.dp, vertical = 5.dp), appTimePickerColors())
+        Row(Modifier.fillMaxWidth().padding(end = 10.dp, bottom = 5.dp), Arrangement.End) {
           NegativeButton(onDismiss)
           PositiveButton(onConfirm)
         }
       }
     }
   }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun appTimePickerColors(): TimePickerColors {
+  //TODO: `timeSelector` doesn't currently let its border change, even though `periodSelector` can
+  return TimePickerDefaults.colors(
+    timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+    timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+    timeSelectorSelectedContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    timeSelectorUnselectedContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+    periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+    periodSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surface,
+    periodSelectorSelectedContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    periodSelectorUnselectedContentColor = MaterialTheme.colorScheme.onSurface
+  )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
