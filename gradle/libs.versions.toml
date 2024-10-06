@@ -1,11 +1,11 @@
 [versions]
-androidGradlePlugin = "8.6.0"
+androidGradlePlugin = "8.7.0"
 kotlin = "2.0.0"
 kotlinx-coroutines = "1.7.3"
-androidx-lifecycle = "2.8.5"
+androidx-lifecycle = "2.8.6"
 accompanist = "0.30.1"
-androidx-navigation = "2.8.0"
-androidx-compose-bom = "2024.09.00"
+androidx-navigation = "2.8.2"
+androidx-compose-bom = "2024.09.03"
 hilt = "2.51"
 retrofit = "2.9.0"
 espresso = "3.6.1"
@@ -14,7 +14,7 @@ kaspersky-kaspresso = "1.5.3"
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version = "1.7.0" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version = "1.13.1" }
-androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version = "1.8.3" }
+androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version = "1.8.4" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version = "2.1.4" }
@@ -57,7 +57,7 @@ mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", versio
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version = "1.6.2" }
 androidx-test-rules = { group = "androidx.test", name = "rules", version = "1.6.1" }
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version = "1.9.22" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version = "1.9.23" }
 google-dagger-hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
 google-dagger-hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
