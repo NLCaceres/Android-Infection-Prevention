@@ -30,8 +30,8 @@ fun PositiveButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 @Composable
 fun positiveButtonColors(): ButtonColors {
   return ButtonDefaults.buttonColors(
-    containerColor = MaterialTheme.colorScheme.inverseSurface,
-    contentColor = MaterialTheme.colorScheme.inverseOnSurface
+    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
   )
 }
 
