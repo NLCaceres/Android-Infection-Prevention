@@ -38,6 +38,7 @@ android {
         compose = true
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true // Helps add Java 8 & Java 11 APIs previously unavailable
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -58,6 +59,7 @@ dependencies {
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
+    coreLibraryDesugaring(libs.android.tools.desugar)
     // Basic Android Dependencies
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx) // Android seems to preload the Java versions
