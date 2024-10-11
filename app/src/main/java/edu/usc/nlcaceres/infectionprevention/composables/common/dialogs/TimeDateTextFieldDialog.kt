@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import edu.usc.nlcaceres.infectionprevention.composables.common.AppOutlinedTextField
 import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,7 +23,8 @@ fun TimeDateTextFieldDialog() {
   val timePickerState = rememberTimePickerState(
     localDateTime.hour, localDateTime.minute, is24Hour = false
   )
-  val datePickerState = rememberDatePickerState()
+  val datePickerState
+    = rememberDatePickerState(localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
   Column {
     AppOutlinedTextField("", "Select a Time & Date", onClick = { isVisible = true })
     if (isVisible) {
