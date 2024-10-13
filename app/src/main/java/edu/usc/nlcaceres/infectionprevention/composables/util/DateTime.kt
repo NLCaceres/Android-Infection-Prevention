@@ -29,7 +29,9 @@ fun formattedTime(time: TimePickerState): String {
   return formattedTime(time.hour, time.minute)
 }
 fun formattedTime(hour: Int, minute: Int): String {
-  val localTime = LocalTime.of(hour, minute)
+  val correctedHour = if (hour < 0) (hour * -1) % 23 else hour % 23
+  val correctedMinute = if (minute < 0) (minute * -1) % 59 else minute % 59
+  val localTime = LocalTime.of(correctedHour, correctedMinute)
   val formatter = DateTimeFormatter.ofPattern("h:mm a").withZone(ZoneId.systemDefault())
   return localTime.format(formatter)
 }
