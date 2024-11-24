@@ -14,7 +14,7 @@ import edu.usc.nlcaceres.infectionprevention.composables.common.AppOutlinedTextF
 import edu.usc.nlcaceres.infectionprevention.composables.util.DatesUntilNow
 import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
 import java.time.LocalDateTime
-import java.time.ZoneId
+import java.time.ZoneOffset
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,7 +25,7 @@ fun TimeDateTextFieldDialog() {
     localDateTime.hour, localDateTime.minute, is24Hour = false
   )
   val datePickerState = rememberDatePickerState(
-    localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+    localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli(),
     selectableDates = DatesUntilNow
   )
   Column {
