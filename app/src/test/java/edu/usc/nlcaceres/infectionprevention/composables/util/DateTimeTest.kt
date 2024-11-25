@@ -1,6 +1,7 @@
 package edu.usc.nlcaceres.infectionprevention.composables.util
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThrows
 import org.junit.Test
 
 class DateTimeTest {
@@ -11,29 +12,34 @@ class DateTimeTest {
     // - WHEN the hour and minute past 12, THEN the time is PM in 12-hour format
     val onePM = formattedTime(13, 5)
     assertEquals("1:05 PM", onePM)
+    // - WHEN the hour is 23, THEN the time is 11pm, NOT 12am
+    val elevenPM = formattedTime(23, 5)
+    assertEquals("11:05 PM", elevenPM)
 
-    //! The func shouldn't ever get negative values or values past 23 BUT it can handle them as shown below
+    // - WHEN the hour is over 23, THEN throw an IllegalArgumentException with the invalid hour:minute value
+    val hourException = assertThrows(IllegalArgumentException::class.java) { formattedTime(24, 5) }
+    assertEquals("Invalid hour:minute value of 24:05", hourException.message)
+    assertThrows(IllegalArgumentException::class.java) { formattedTime(72, 49) }
+    // - WHEN the hour is under 0, THEN throw an IllegalArgumentException with the invalid hour:minute value
+    val negativeHour = assertThrows(IllegalArgumentException::class.java) { formattedTime(-9, 12) }
+    assertEquals("Invalid hour:minute value of -9:12", negativeHour.message)
 
-    // - WHEN the hour is greater than 23, THEN it will be rotated to the correct value between 0 - 23
-    val rotatedOneAM = formattedTime(24, 5)
-    assertEquals("1:05 AM", rotatedOneAM)
-    // - Rotates every 23 hours (due to 0-index hour) so 70 is actually 1:00 AM, NOT 72
-    val tripleRotatedTime = formattedTime(72, 49)
-    assertEquals("3:49 AM", tripleRotatedTime)
-    // - WHEN the minute is greater than 59, THEN it will be rotated to the correct value between 0 - 59
-    val rotatedMinuteOneAM = formattedTime(1, 64) // - 64 becomes 5
-    assertEquals("1:05 AM", rotatedMinuteOneAM)
+    // - WHEN the minute is over 59, THEN throw an IllegalArgumentException with the invalid hour:minute value
+    val minuteException = assertThrows(IllegalArgumentException::class.java) { formattedTime(1, 64) }
+    assertEquals("Invalid hour:minute value of 1:64", minuteException.message)
+    assertThrows(IllegalArgumentException::class.java) { formattedTime(12, 72) }
+    // - WHEN the minute is under 0, THEN throw an IllegalArgumentException with the invalid hour:minute value
+    val negativeMinute = assertThrows(IllegalArgumentException::class.java) { formattedTime(9, -12) }
+    assertEquals("Invalid hour:minute value of 9:-12", negativeMinute.message)
 
-    // - WHEN the hour is negative, THEN its value is flipped to its positive value
-    val negativeHour = formattedTime(-10, 15) // - -10 becomes 10 AM
-    assertEquals("10:15 AM", negativeHour)
-    // - WHEN the minute is negative, THEN its value is flipped to the positive value
-    val negativeMinute = formattedTime(-13, -31) // - (-13, -31) flips to 1:31 PM
-    assertEquals("1:31 PM", negativeMinute)
-    // - WHEN the hour and minute are negative AND exceed the expected values
-    val rotatedNegative = formattedTime(-26, -99)
-    // - THEN the value is flipped to positive and rotated correctly
-    assertEquals("3:40 AM", rotatedNegative)
+    // - WHEN BOTH the hour and minute exceed their range
+    val badTime = assertThrows(IllegalArgumentException::class.java) { formattedTime(30, 61) }
+    // - THEN throw an IllegalArgumentException with the invalid hour:minute value
+    assertEquals("Invalid hour:minute value of 30:61", badTime.message)
+    // - WHEN BOTH the hour and minute are below their range
+    val negativeTime = assertThrows(IllegalArgumentException::class.java) { formattedTime(-25, -80) }
+    // - THEN throw an IllegalArgumentException with the invalid hour:minute value
+    assertEquals("Invalid hour:minute value of -25:-80", negativeTime.message)
   }
   @Test fun `Format date based on UTC milliseconds from epoch`() {
     // - WHEN 0 is given, THEN the date is Jan 01 1970 (the beginning of the epoch)
