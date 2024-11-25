@@ -6,6 +6,7 @@ import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.TimePickerState
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -14,7 +15,7 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 val DatesUntilNow: SelectableDates = object: SelectableDates {
   override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-    val instant = Instant.now()
+    val instant = LocalDateTime.now().atZone(ZoneId.of("UTC")).toInstant()
     val selectedDateInstant = Instant.ofEpochMilli(utcTimeMillis)
     return selectedDateInstant.isBefore(instant)
   }
