@@ -30,9 +30,11 @@ fun formattedTime(time: TimePickerState): String {
   return formattedTime(time.hour, time.minute)
 }
 fun formattedTime(hour: Int, minute: Int): String {
-  val correctedHour = if (hour < 0) (hour * -1) % 23 else hour % 23
-  val correctedMinute = if (minute < 0) (minute * -1) % 59 else minute % 59
-  val localTime = LocalTime.of(correctedHour, correctedMinute)
+  // Rotating the hour and minutes with "%" unfortunately doesn't work well for a few reasons
+  // 1. 23 % 23 = 0 so 11pm becomes 12am... 2. The offset grows each rotation so 46 isn't 11pm, it's 10pm, etc
+  // So `require()` is the perfect precondition check to get valid input OR throw an IllegalArgException
+  require(hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59) { "Invalid hour:minute value of $hour:${"%02d".format(minute)}" }
+  val localTime = LocalTime.of(hour, minute)
   val formatter = DateTimeFormatter.ofPattern("h:mm a").withZone(ZoneId.systemDefault())
   return localTime.format(formatter)
 }
