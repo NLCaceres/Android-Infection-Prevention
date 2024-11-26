@@ -12,6 +12,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import edu.usc.nlcaceres.infectionprevention.composables.common.AppOutlinedTextField
 import edu.usc.nlcaceres.infectionprevention.composables.util.DatesUntilNow
+import edu.usc.nlcaceres.infectionprevention.composables.util.formattedDate
+import edu.usc.nlcaceres.infectionprevention.composables.util.formattedTime
 import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -28,8 +30,9 @@ fun TimeDateTextFieldDialog() {
     localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli(),
     selectableDates = DatesUntilNow
   )
+  val timeDateStr = formattedTime(timePickerState) + " " + formattedDate(datePickerState)
   Column {
-    AppOutlinedTextField("", "Select a Time & Date", onClick = { isVisible = true })
+    AppOutlinedTextField(timeDateStr, "Select a Time & Date", onClick = { isVisible = true })
     if (isVisible) {
       TimeDatePickerDialog(timePickerState, datePickerState, {}, {}, { isVisible = false })
     }
