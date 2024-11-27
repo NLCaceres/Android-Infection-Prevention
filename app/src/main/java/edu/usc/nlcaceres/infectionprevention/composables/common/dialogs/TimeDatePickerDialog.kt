@@ -13,8 +13,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import edu.usc.nlcaceres.infectionprevention.composables.common.AppOutlinedTextField
+import edu.usc.nlcaceres.infectionprevention.composables.util.DatesUntilNow
+import edu.usc.nlcaceres.infectionprevention.composables.util.formattedDate
+import edu.usc.nlcaceres.infectionprevention.composables.util.formattedTime
 import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
-import java.util.Calendar
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,14 +40,18 @@ fun TimeDatePickerDialog(
 @Composable
 private fun TimeDatePickerDialogPreview() {
   var isVisible by remember { mutableStateOf(false) }
-  val currentTime = Calendar.getInstance()
+  val localDateTime = LocalDateTime.now()
   val timePickerState = rememberTimePickerState(
-    currentTime.get(Calendar.HOUR_OF_DAY), currentTime.get(Calendar.MINUTE), is24Hour = false
+    localDateTime.hour, localDateTime.minute, is24Hour = false
   )
-  val datePickerState = rememberDatePickerState()
+  val datePickerState = rememberDatePickerState(
+    localDateTime.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli(),
+    selectableDates = DatesUntilNow
+  )
+  val timeDateStr = formattedTime(timePickerState) + " " + formattedDate(datePickerState)
   AppTheme {
     Column {
-      AppOutlinedTextField("", "Foo", onClick = { isVisible = true })
+      AppOutlinedTextField(timeDateStr, "Foo", onClick = { isVisible = true })
       if (isVisible){
         TimeDatePickerDialog(timePickerState, datePickerState, {}, {}, { isVisible = false })
       }

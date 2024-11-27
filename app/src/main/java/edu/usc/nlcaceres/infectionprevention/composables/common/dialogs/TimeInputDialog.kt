@@ -28,8 +28,9 @@ import androidx.compose.ui.unit.dp
 import edu.usc.nlcaceres.infectionprevention.composables.common.AppOutlinedTextField
 import edu.usc.nlcaceres.infectionprevention.composables.common.buttons.NegativeButton
 import edu.usc.nlcaceres.infectionprevention.composables.common.buttons.PositiveButton
+import edu.usc.nlcaceres.infectionprevention.composables.util.formattedTime
 import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
-import java.util.Calendar
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,14 +74,15 @@ fun appTimePickerColors(): TimePickerColors {
 @Preview(widthDp = 320, heightDp = 500, showBackground = true)
 @Composable
 private fun TimeInputDialogPreview() {
-  var isVisible by remember { mutableStateOf(true) }
-  val currentTime = Calendar.getInstance()
+  var isVisible by remember { mutableStateOf(false) }
+  val localDateTime = LocalDateTime.now()
   val timePickerState = rememberTimePickerState(
-    currentTime.get(Calendar.HOUR_OF_DAY), currentTime.get(Calendar.MINUTE), is24Hour = false
+    localDateTime.hour, localDateTime.minute, is24Hour = false
   )
+  val timeStr = formattedTime(timePickerState)
   AppTheme {
     Column {
-      AppOutlinedTextField("", "Foo", readOnly = true)
+      AppOutlinedTextField(timeStr, "Foo", readOnly = true)
       if (isVisible) {
         TimeInputDialog(timePickerState, onConfirm = { isVisible = false }, onDismiss = { isVisible = false })
       }

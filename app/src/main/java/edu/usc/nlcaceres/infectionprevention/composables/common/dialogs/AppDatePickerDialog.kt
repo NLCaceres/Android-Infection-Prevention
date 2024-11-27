@@ -16,7 +16,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import edu.usc.nlcaceres.infectionprevention.composables.common.AppOutlinedTextField
 import edu.usc.nlcaceres.infectionprevention.composables.common.buttons.NegativeButton
 import edu.usc.nlcaceres.infectionprevention.composables.common.buttons.PositiveButton
+import edu.usc.nlcaceres.infectionprevention.composables.util.DatesUntilNow
+import edu.usc.nlcaceres.infectionprevention.composables.util.formattedDate
 import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,11 +43,15 @@ fun AppDatePickerDialog(
 @Composable
 private fun AppDatePickerDialogPreview() {
   var isVisible by remember { mutableStateOf(false) }
-  val datePickerState = rememberDatePickerState()
-
+  val localDateTime = LocalDateTime.now()
+  val datePickerState = rememberDatePickerState(
+    localDateTime.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli(),
+    selectableDates = DatesUntilNow
+  )
+  val dateStr = formattedDate(datePickerState)
   AppTheme {
     Column {
-      AppOutlinedTextField("", "Foo", readOnly = true, onClick = { isVisible = true })
+      AppOutlinedTextField(dateStr, "Foo", readOnly = true, onClick = { isVisible = true })
       if (isVisible) {
         AppDatePickerDialog(datePickerState, { isVisible = false }, { isVisible = false })
       }
