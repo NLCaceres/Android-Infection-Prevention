@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter
 
 // May have to refactor model to accommodate facilityName, UnitNum, and roomNum
 data class Location(val id : String?, val facilityName : String, val unitNum : String, val roomNum : String) {
-  override fun toString(): String = "$facilityName $unitNum $roomNum"
+  override fun toString(): String = "$facilityName Unit #$unitNum Room #$roomNum"
 }
 
 data class Profession(val id : String?, val observedOccupation : String, val serviceDiscipline : String) {

@@ -11,9 +11,9 @@ import org.junit.Assert.assertFalse
 import java.time.Instant
 
 class ReportsTest {
-  @Test fun `Check Models' String Overriden Output`() {
+  @Test fun `Check Models ToString Overridden Output`() {
     val fooLocation = Location(null, "FacilityName", "UnitNum", "RoomNum")
-    assertEquals("FacilityName UnitNum RoomNum", fooLocation.toString())
+    assertEquals("FacilityName Unit #UnitNum Room #RoomNum", fooLocation.toString())
     val fooProfession = Profession(null, "ObservedOccupation", "ServiceDiscipline")
     assertEquals("ObservedOccupation ServiceDiscipline", fooProfession.toString())
     val fooEmployee = Employee("123", "FirstName", "Surname", fooProfession)
@@ -37,7 +37,7 @@ class ReportsTest {
     assertEquals(expectedFormattedDate, formattedDateString)
   }
 
-  @Test fun `Check Overriden Equals Method of Precaution Class`() {
+  @Test fun `Check Overridden Equals Method of Precaution Class`() {
     val healthPracticeList = listOf(HealthPractice(null, "Foobar", null))
     val precaution1 = Precaution("123", "FooPrecaution", healthPracticeList)
     val diffIdAndNamePrecaution = Precaution("234", "BarPrecaution", healthPracticeList)
