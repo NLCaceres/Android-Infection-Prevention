@@ -27,7 +27,7 @@ import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
 //? Alternatively an OutlinedCard wrapping a Row of Text, Icon and Menu COULD work but isn't ideal
 @OptIn(ExperimentalMaterial3Api::class) //? Especially when ExposedDropdownMenu exists
 @Composable
-fun <T> MaterialSpinner(title: String, options: List<T>, onSelect: (option: T) -> Unit, modifier: Modifier = Modifier) {
+fun <T> MaterialSpinner(title: String, options: List<T>, onSelect: (index: Int, option: T) -> Unit, modifier: Modifier = Modifier) {
   var expanded by remember { mutableStateOf(false) }
   var selectedOption by remember { mutableStateOf(options[0]) }
 
@@ -51,7 +51,7 @@ fun <T> MaterialSpinner(title: String, options: List<T>, onSelect: (option: T) -
           text = { Text(option.toString(), style = MaterialTheme.typography.bodyLarge) },
           onClick = {
             selectedOption = option
-            onSelect(selectedOption)
+            onSelect(i, selectedOption)
             expanded = false
           },
           contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
@@ -73,9 +73,14 @@ fun MaterialSpinnerPreview() {
     HealthPractice(id = null, name = "Contact", precaution = null),
     HealthPractice(id = null, name = "Contact Enteric", precaution = null),
   )
+  var selectedHealthPractice by remember { mutableStateOf(healthPractices[1]) }
   AppTheme {
     Column {
-      MaterialSpinner("Select a Health Practice", healthPractices, {}, Modifier.padding(20.dp))
+      MaterialSpinner(
+        "Select a Health Practice", healthPractices,
+        { i, _ -> selectedHealthPractice = healthPractices[i] }, Modifier.padding(20.dp)
+      )
+      Text(selectedHealthPractice.toString())
     }
   }
 }
