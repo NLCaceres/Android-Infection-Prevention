@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,14 +30,15 @@ import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
 @Composable
 fun <T> MaterialSpinner(title: String, options: List<T>, onSelect: (index: Int, option: T) -> Unit, modifier: Modifier = Modifier) {
   var expanded by remember { mutableStateOf(false) }
-  var selectedOption by remember { mutableStateOf(options[0]) }
+  var selectedOption by remember { mutableStateOf<T?>(options.getOrNull(0)) }
+  LaunchedEffect(true) { if (options.isNotEmpty()) { onSelect(0, options[0]) } }
 
   ExposedDropdownMenuBox(
     expanded = expanded, onExpandedChange = { expanded = it },
     modifier = Modifier.then(modifier)
   ) {
     AppOutlinedTextField(
-      selectedOption.toString(), title,
+      selectedOption?.toString() ?: "", title,
       Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable), // - Helps a Read-Only TextField expand/collapse the menu
       readOnly = true,
       trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded, Modifier.scale(1.5f)) }
@@ -51,7 +53,7 @@ fun <T> MaterialSpinner(title: String, options: List<T>, onSelect: (index: Int, 
           text = { Text(option.toString(), style = MaterialTheme.typography.bodyLarge) },
           onClick = {
             selectedOption = option
-            onSelect(i, selectedOption)
+            selectedOption?.let { onSelect(i, it) }
             expanded = false
           },
           contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
@@ -81,6 +83,21 @@ fun MaterialSpinnerPreview() {
         { i, _ -> selectedHealthPractice = healthPractices[i] }, Modifier.padding(20.dp)
       )
       Text(selectedHealthPractice.toString())
+    }
+  }
+}
+@Preview(widthDp = 320, heightDp = 500, showBackground = true)
+@Composable
+fun EmptyMaterialSpinnerPreview() {
+  val healthPractices = listOf<HealthPractice>()
+  var selectedHealthPractice by remember { mutableStateOf<HealthPractice?>(healthPractices.getOrNull(0))}
+  AppTheme {
+    Column {
+      MaterialSpinner(
+        "Select a Health Practice", healthPractices,
+        { i, _ -> selectedHealthPractice = healthPractices.getOrNull(0) }, Modifier.padding(20.dp)
+      )
+      Text(selectedHealthPractice?.toString() ?: "Please select a Health Practice")
     }
   }
 }
