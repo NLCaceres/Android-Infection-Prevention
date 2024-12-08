@@ -20,6 +20,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 import edu.usc.nlcaceres.infectionprevention.data.Precaution
@@ -67,35 +69,27 @@ fun <T> MaterialSpinner(title: String, options: List<T>, onSelect: (index: Int, 
   }
 }
 
-@Preview(widthDp = 320, heightDp = 500, showBackground = true)
-@Composable
-fun MaterialSpinnerPreview() {
-  val healthPractices = listOf(
-    HealthPractice("123", name = "Hand Hygiene", Precaution(null, "Standard", listOf())),
-    HealthPractice(id = null, name = "Contact", precaution = null),
-    HealthPractice(id = null, name = "Contact Enteric", precaution = null),
+class SpinnerPreviewParamProvider: PreviewParameterProvider<List<HealthPractice>> {
+  override val values = sequenceOf(
+    listOf(),
+    listOf(
+      HealthPractice("123", name = "Hand Hygiene", Precaution(null, "Standard", listOf())),
+      HealthPractice(id = null, name = "Contact", precaution = null),
+      HealthPractice(id = null, name = "Contact Enteric", precaution = null),
+    )
   )
-  var selectedHealthPractice by remember { mutableStateOf(healthPractices[1]) }
-  AppTheme {
-    Column {
-      MaterialSpinner(
-        "Select a Health Practice", healthPractices,
-        { i, _ -> selectedHealthPractice = healthPractices[i] }, Modifier.padding(20.dp)
-      )
-      Text(selectedHealthPractice.toString())
-    }
-  }
 }
 @Preview(widthDp = 320, heightDp = 500, showBackground = true)
 @Composable
-fun EmptyMaterialSpinnerPreview() {
-  val healthPractices = listOf<HealthPractice>()
+fun MaterialSpinnerPreview(
+  @PreviewParameter(SpinnerPreviewParamProvider::class) healthPractices: List<HealthPractice>
+) {
   var selectedHealthPractice by remember { mutableStateOf<HealthPractice?>(healthPractices.getOrNull(0))}
   AppTheme {
     Column {
       MaterialSpinner(
         "Select a Health Practice", healthPractices,
-        { i, _ -> selectedHealthPractice = healthPractices.getOrNull(0) }, Modifier.padding(20.dp)
+        { i, _ -> selectedHealthPractice = healthPractices.getOrNull(i) }, Modifier.padding(20.dp)
       )
       Text(selectedHealthPractice?.toString() ?: "Please select a Health Practice")
     }
