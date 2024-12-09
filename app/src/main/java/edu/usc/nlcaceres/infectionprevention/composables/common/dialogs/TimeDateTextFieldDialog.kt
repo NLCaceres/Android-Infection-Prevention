@@ -23,7 +23,9 @@ import java.time.ZoneOffset
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimeDateTextFieldDialog(modifier: Modifier = Modifier) {
+fun TimeDateTextFieldDialog(
+  onTimeChange: ((String) -> Unit)? = null, onDateChange: ((String) -> Unit)? = null, modifier: Modifier = Modifier
+) {
   var isVisible by remember { mutableStateOf(false) }
   val localDateTime = LocalDateTime.now()
   val timePickerState = rememberTimePickerState(
@@ -37,7 +39,10 @@ fun TimeDateTextFieldDialog(modifier: Modifier = Modifier) {
   Column(Modifier.then(modifier)) {
     AppOutlinedTextField(timeDateStr, "Select a Time & Date", onClick = { isVisible = true })
     if (isVisible) {
-      TimeDatePickerDialog(timePickerState, datePickerState, {}, {}, { isVisible = false })
+      TimeDatePickerDialog(
+        timePickerState, datePickerState, { onTimeChange?.invoke(timeDateStr) },
+        { onDateChange?.invoke(timeDateStr) }, { isVisible = false }
+      )
     }
   }
 }
@@ -46,6 +51,6 @@ fun TimeDateTextFieldDialog(modifier: Modifier = Modifier) {
 @Composable
 private fun TimeDateTextFieldDialogPreview() {
   AppTheme {
-    TimeDateTextFieldDialog(Modifier.padding(start = 10.dp))
+    TimeDateTextFieldDialog(modifier = Modifier.padding(start = 10.dp))
   }
 }
