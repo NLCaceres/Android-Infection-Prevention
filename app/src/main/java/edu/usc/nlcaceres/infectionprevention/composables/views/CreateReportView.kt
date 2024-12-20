@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
@@ -17,29 +21,54 @@ import edu.usc.nlcaceres.infectionprevention.composables.common.MaterialSpinner
 import edu.usc.nlcaceres.infectionprevention.composables.common.NavigableTextField
 import edu.usc.nlcaceres.infectionprevention.composables.common.buttons.AppButton
 import edu.usc.nlcaceres.infectionprevention.composables.common.dialogs.TimeDateTextFieldDialog
+import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
+import edu.usc.nlcaceres.infectionprevention.data.Report
 import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
-fun CreateReportView() {
+fun CreateReportView(
+  headerText: String, healthPractices: List<HealthPractice>, report: Report, modifier: Modifier = Modifier,
+  onTimeDateChange: (String) -> Unit, onHealthPracticeSelect: (HealthPractice) -> Unit, onSubmit: () -> Unit
+) {
+  val employeeName = report.employee?.fullName ?: ""
+  val locationName = report.location?.toString() ?: ""
   Box(Modifier.fillMaxSize()) {
-    Column(Modifier.fillMaxWidth()) {
+    Column(Modifier.fillMaxWidth().then(modifier)) {
       Text(
-        "New Observation", modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 10.dp),
+        headerText, modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 10.dp),
         color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge
       )
-      TimeDateTextFieldDialog(Modifier.padding(start = 20.dp, top = 15.dp))
-      MaterialSpinner("Select a Health Practice", listOf("Hand Hygiene", "Contact"), {}, Modifier.padding(start = 20.dp, top = 15.dp))
-      NavigableTextField("John Smith", "Select an Employee", Modifier.padding(start = 20.dp, top = 15.dp))
-      NavigableTextField("USC Unit #2 Room #123", "Select a Location", Modifier.padding(start = 20.dp, top = 15.dp))
+      TimeDateTextFieldDialog(onTimeDateChange, onTimeDateChange, Modifier.padding(start = 20.dp, top = 15.dp))
+      MaterialSpinner(
+        "Select a Health Practice", healthPractices,
+        { _, healthPractice -> onHealthPracticeSelect(healthPractice) },
+        Modifier.padding(start = 20.dp, top = 15.dp)
+      )
+      NavigableTextField(employeeName, "Select an Employee", Modifier.padding(start = 20.dp, top = 15.dp))
+      NavigableTextField(locationName, "Select a Location", Modifier.padding(start = 20.dp, top = 15.dp))
     }
-    AppButton({}, "Submit", Modifier.align(BiasAlignment(0.7f, 0.85f)))
+    AppButton(onSubmit, "Submit", Modifier.align(BiasAlignment(0.7f, 0.85f)))
   }
 }
 
 @Preview(widthDp = 325, heightDp = 500, showBackground = true)
 @Composable
 fun CreateReportViewPreview() {
+  var report  by remember { mutableStateOf(Report(null, null, null, null, Instant.now())) }
+  var headerStr by remember { mutableStateOf("Some Observation") }
+  val healthPractices = listOf(HealthPractice(null, "Foo", null), HealthPractice(null, "Bar", null))
   AppTheme {
-    CreateReportView()
+    CreateReportView(
+      headerStr, healthPractices, report, Modifier,
+      {
+        val formatter = DateTimeFormatter.ofPattern("h:mm a MMM dd, yyyy").withZone(ZoneId.systemDefault())
+        report = report.copy(date = ZonedDateTime.parse(it, formatter).toInstant())
+      },
+      { headerStr = "Some ${it.name}"; report = report.copy(healthPractice = it) }
+    ) {}
   }
 }
