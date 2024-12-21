@@ -58,9 +58,14 @@ fun CreateReportView(
 @Preview(widthDp = 325, heightDp = 500, showBackground = true)
 @Composable
 fun CreateReportViewPreview() {
-  var report  by remember { mutableStateOf(Report(null, null, null, null, Instant.now())) }
   var headerStr by remember { mutableStateOf("Some Observation") }
   val healthPractices = listOf(HealthPractice(null, "Foo", null), HealthPractice(null, "Bar", null))
+  // Why no `remember` or `mutableStateOf` for `report`? `report.copy` almost always causes recomposition
+  // when using them. It ONLY SKIPS if the new Report is structurally equivalent since `copy`
+  // is shallow BUT always produces a referentially different `report` instance. SO it CAN be
+  // more performant to limit `State` usage if the stateful parent Screen correctly updates w/out it
+  // SINCE child composables w/ params related to un-remembered state will recompose or skip anyway
+  var report = Report(null, null, null, null, Instant.now())
   AppTheme {
     CreateReportView(
       headerStr, healthPractices, report, Modifier,
