@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -17,17 +18,34 @@ import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import edu.usc.nlcaceres.infectionprevention.composables.common.MaterialSpinner
 import edu.usc.nlcaceres.infectionprevention.composables.common.NavigableTextField
 import edu.usc.nlcaceres.infectionprevention.composables.common.buttons.AppButton
 import edu.usc.nlcaceres.infectionprevention.composables.common.dialogs.TimeDateTextFieldDialog
+import edu.usc.nlcaceres.infectionprevention.data.Employee
 import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
+import edu.usc.nlcaceres.infectionprevention.data.Location
 import edu.usc.nlcaceres.infectionprevention.data.Report
 import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
+import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelCreateReport
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+
+@Composable
+fun CreateReportView(modifier: Modifier = Modifier, viewModel: ViewModelCreateReport = viewModel()) {
+  val report = viewModel.newReport()
+  val headerText by viewModel.healthPracticeHeaderText.observeAsState("")
+  val adapterData by viewModel.adapterData.observeAsState(
+    Triple(emptyList<Employee>(), emptyList<HealthPractice>(), emptyList<Location>())
+  )
+  CreateReportView(
+    headerText, adapterData.second, report, modifier,
+    viewModel::updateDate, viewModel::updateHealthPractice, viewModel::submitReport
+  )
+}
 
 @Composable
 fun CreateReportView(
