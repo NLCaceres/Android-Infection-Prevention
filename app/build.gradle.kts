@@ -10,11 +10,11 @@ plugins {
 
 android {
     namespace = "edu.usc.nlcaceres.infectionprevention"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "edu.usc.nlcaceres.infectionprevention"
         minSdk = 26 // Android 8.0 Oreo
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "edu.usc.nlcaceres.infectionprevention.HiltTestRunner"
