@@ -101,7 +101,6 @@ dependencies {
     testImplementation(libs.androidx.arch.core.testing) // Helps with liveData in tests
     testImplementation(libs.androidx.test.espresso.core) // For robolectric UI-Unit testing
     testImplementation(libs.robolectric)
-    implementation(libs.accompanist.testharness) // Tests Composables w/ diff device specs, lowers need to test on multiple devices
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.kotlinx.coroutines.test) // Mocks out Dispatcher.Main for coroutine/suspended funs
 

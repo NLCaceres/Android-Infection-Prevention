@@ -3,7 +3,6 @@ androidGradlePlugin = "8.8.0"
 kotlin = "2.0.0"
 kotlinx-coroutines = "1.10.1"
 androidx-lifecycle = "2.8.7"
-accompanist = "0.36.0"
 androidx-navigation = "2.8.6"
 androidx-compose-bom = "2025.01.01"
 hilt = "2.55"
@@ -52,7 +51,6 @@ androidx-test-espresso-idling-resource = { group = "androidx.test.espresso", nam
 kaspersky-kaspresso = { group = "com.kaspersky.android-components", name = "kaspresso", version.ref = "kaspersky-kaspresso" }
 kaspersky-kaspresso-compose = { group = "com.kaspersky.android-components", name = "kaspresso-compose-support", version.ref = "kaspersky-kaspresso" }
 robolectric = { module = "org.robolectric:robolectric", version = "4.14.1" }
-accompanist-testharness = { group = "com.google.accompanist", name = "accompanist-testharness", version.ref = "accompanist" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version = "5.4.0" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version = "1.6.2" }
