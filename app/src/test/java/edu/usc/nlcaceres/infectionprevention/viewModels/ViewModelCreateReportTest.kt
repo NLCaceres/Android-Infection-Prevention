@@ -181,7 +181,7 @@ class ViewModelCreateReportTest {
     val viewModelDate = viewModel.newReport().date.truncatedTo(ChronoUnit.MINUTES)
     assertEquals(dateTimeInstant, viewModelDate) // Since only need time precision to minutes, these instants should now be equal
 
-    val dateTimeStringAfternoon = "12:34 PM 1/1/2011"
+    val dateTimeStringAfternoon = "12:34 PM Jan 01, 2011"
     viewModel.updateDate(dateTimeStringAfternoon)
     assertEquals(dateTimeStringAfternoon, viewModel.dateTimeString.value!!)
     assertNotNull("ViewModel Report Date not set!", viewModel.newReport().date)
@@ -192,7 +192,7 @@ class ViewModelCreateReportTest {
     assertEquals(1, viewModelDate2.dayOfMonth)
     assertEquals(2011, viewModelDate2.year)
 
-    val dateTimeStringNight = "8:08 PM 5/15/2015"
+    val dateTimeStringNight = "8:08 PM May 15, 2015"
     viewModel.updateDate(dateTimeStringNight)
     assertEquals(dateTimeStringNight, viewModel.dateTimeString.value!!)
     assertNotNull("ViewModel Report Date not set!", viewModel.newReport().date)
@@ -203,7 +203,7 @@ class ViewModelCreateReportTest {
     assertEquals(15, viewModelDate3.dayOfMonth)
     assertEquals(2015, viewModelDate3.year)
 
-    val dateTimeStringMidnight = "12:34 AM 10/11/2020"
+    val dateTimeStringMidnight = "12:34 AM Oct 11, 2020"
     viewModel.updateDate(dateTimeStringMidnight)
     assertEquals(dateTimeStringMidnight, viewModel.dateTimeString.value!!)
     assertNotNull("ViewModel Report Date not set!", viewModel.newReport().date)

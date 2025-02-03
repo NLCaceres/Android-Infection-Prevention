@@ -37,7 +37,7 @@ class ViewModelCreateReport @Inject constructor(private val employeeRepository: 
   fun updateDate(dateTimeString: String) {
     _dateTimeString.value = dateTimeString
     // Need single 'd' and 'M' in pattern since it is never 0-padded aka 12/01/1996 vs 12/1/1996
-    val dateFormatter = DateTimeFormatter.ofPattern("h:mm a M/d/yyyy").withZone(ZoneId.systemDefault())
+    val dateFormatter = DateTimeFormatter.ofPattern("h:mm a MMM dd, yyyy").withZone(ZoneId.systemDefault())
     val dateTimeInstant = ZonedDateTime.parse(dateTimeString, dateFormatter).toInstant()
     updateReport(dateTime = dateTimeInstant)
   }
@@ -70,7 +70,7 @@ class ViewModelCreateReport @Inject constructor(private val employeeRepository: 
   val adapterData = adapterFlow.asLiveData() // EVEN if the observer is removed and added again
 
   private val _newReport = MutableLiveData(Report(null, null, null, null, Instant.now()))
-  fun newReport() = _newReport.value!! // Should always have a value due to above default
+  fun newReport() = _newReport.value!! // Should never be null since initial value set above
   fun updateReport(employee: Employee? = newReport().employee, healthPractice: HealthPractice? = newReport().healthPractice,
                    location: Location? = newReport().location, dateTime: Instant = Instant.now()) {
     _newReport.value = Report(null, employee, healthPractice, location, dateTime)
