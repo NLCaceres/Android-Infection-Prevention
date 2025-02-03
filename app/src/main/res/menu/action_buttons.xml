@@ -6,6 +6,8 @@
         android:id="@+id/globalActionToFragmentSettings"
         android:icon="@drawable/ic_settings"
         android:title="@string/action_settings"
+        android:menuCategory="system"
         app:showAsAction="ifRoom" />
-
+    <!-- Menu items NEED a menuCategory OR else the Navigation Component will pop its -->
+    <!-- Back stack ALL THE WAY TO THE STARTING FRAGMENT instead of the most recent fragment -->
 </menu>
