@@ -22,7 +22,6 @@ import org.mockito.quality.Strictness
 import java.io.IOException
 import java.time.*
 import java.time.temporal.ChronoUnit
-import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
@@ -57,8 +56,8 @@ class ViewModelCreateReportTest {
     viewModel.loadingState.observeForever(loadingObserver)
     viewModel.adapterData.observeForever(adapterDataObserver) // Starts the loadingState
     viewModel.adapterData.removeObserver(adapterDataObserver)
-    viewModel.loadingState.removeObserver(loadingObserver)
 
+    mainDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
     verify(loadingObserver, times(3)).onChanged(any())
     val inOrderChecker = inOrder(loadingObserver)
     inOrderChecker.verify(loadingObserver, times(1)).onChanged(false) // Defaults to false
@@ -68,6 +67,7 @@ class ViewModelCreateReportTest {
     verify(adapterDataObserver, times(1)).onChanged(any())
     val expectedTriple = Triple(employeeList, healthPracticeList, locationList)
     verify(adapterDataObserver, times(1)).onChanged(expectedTriple)
+    viewModel.loadingState.removeObserver(loadingObserver)
   }
   @Test fun `Observe Repositories Failed with Basic Exception`() {
     employeeRepository = mock { on { fetchEmployeeList() } doReturn flow { throw Exception("Failed Employees") } }
@@ -77,9 +77,10 @@ class ViewModelCreateReportTest {
     val viewModel = ViewModelCreateReport(employeeRepository, healthPracticeRepository, locationRepository, reportRepository)
 
     viewModel.adapterData.observeForever(adapterDataObserver)
-    viewModel.adapterData.removeObserver(adapterDataObserver)
+    mainDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
     val defaultSnackbarErrorMessage = "Sorry! Seems we're having an issue on our end!"
     assertEquals(defaultSnackbarErrorMessage, viewModel.snackbarMessage.value)
+    viewModel.adapterData.removeObserver(adapterDataObserver)
   }
   @Test fun `Observe Repositories All Failed`() {
     employeeRepository = mock { on { fetchEmployeeList() } doReturn flow { throw Exception("Failed Employees") } }
@@ -89,9 +90,10 @@ class ViewModelCreateReportTest {
     val viewModel = ViewModelCreateReport(employeeRepository, healthPracticeRepository, locationRepository, reportRepository)
 
     viewModel.adapterData.observeForever(adapterDataObserver)
-    viewModel.adapterData.removeObserver(adapterDataObserver)
+    mainDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
     val defaultSnackbarErrorMessage = "Sorry! Seems we're having an issue on our end!"
     assertEquals(defaultSnackbarErrorMessage, viewModel.snackbarMessage.value)
+    viewModel.adapterData.removeObserver(adapterDataObserver)
   }
   @Test fun `Observe Repositories Failed with IO Exception`() {
     employeeRepository = mock { on { fetchEmployeeList() } doReturn flow { emit(emptyList()) } }
@@ -101,9 +103,10 @@ class ViewModelCreateReportTest {
     val viewModel = ViewModelCreateReport(employeeRepository, healthPracticeRepository, locationRepository, reportRepository)
 
     viewModel.adapterData.observeForever(adapterDataObserver)
-    viewModel.adapterData.removeObserver(adapterDataObserver)
+    mainDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
     val snackbarIOErrorMessage = "Sorry! Having trouble with the internet connection!"
     assertEquals(snackbarIOErrorMessage, viewModel.snackbarMessage.value)
+    viewModel.adapterData.removeObserver(adapterDataObserver)
   }
 
   @Test fun `Check and Update Selected Health Practice`() { // HeaderText + Report's HealthPractice

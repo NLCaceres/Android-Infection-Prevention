@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.usc.nlcaceres.infectionprevention.data.*
 import edu.usc.nlcaceres.infectionprevention.util.EspressoIdlingResource
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
@@ -62,11 +63,12 @@ class ViewModelCreateReport @Inject constructor(private val employeeRepository: 
       _healthPracticeList.value = healthPracticeList
       _locationList.value = locationList
       Triple(employeeList, healthPracticeList, locationList)
-    }.onStart { _loadingState.value = true }.onCompletion { _loadingState.value = false; EspressoIdlingResource.decrement() }
-    .catch { e -> _snackbarMessage.value = when (e) {
-      is IOException -> "Sorry! Having trouble with the internet connection!"
-      else -> "Sorry! Seems we're having an issue on our end!"
-    }} // If all 3 flows fail, whichever fails 1st is the 1 caught & stops EVERYTHING. The liveData WON'T restart the flow
+    }.onStart { _loadingState.value = true }
+      .onCompletion { delay(1000);  _loadingState.value = false; EspressoIdlingResource.decrement() }
+      .catch { e -> _snackbarMessage.value = when (e) {
+        is IOException -> "Sorry! Having trouble with the internet connection!"
+        else -> "Sorry! Seems we're having an issue on our end!"
+      }} // If all 3 flows fail, 1st to fail is ONLY 1 caught. All else stop. LiveData WON'T restart the flow
   val adapterData = adapterFlow.asLiveData() // EVEN if the observer is removed and added again
 
   private val _newReport = MutableLiveData(Report(null, null, null, null, Instant.now()))
