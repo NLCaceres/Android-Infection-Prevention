@@ -225,36 +225,61 @@ class ViewModelCreateReportTest {
     reportRepository = mock()
     val viewModel = ViewModelCreateReport(employeeRepository, healthPracticeRepository, locationRepository, reportRepository)
     val viewModelReport = viewModel.newReport()
-    // Instant and HealthPractice defaults tested w/ updateDate above
+    val initDate = viewModelReport.date
     assertNotNull("ViewModel Report not set!", viewModelReport)
     assertEquals(null, viewModelReport.id)
+    assertEquals(initDate, viewModel.newReport().date) // Only non-null default
+    assertNotNull(initDate)
     assertEquals(null, viewModelReport.employee)
+    assertEquals(null, viewModelReport.healthPractice)
     assertEquals(null, viewModelReport.location)
 
     val newEmployee = buildEmployee()
     viewModel.updateReport(employee = newEmployee)
     val newReportWithEmployee = viewModel.newReport()
-    assertNotEquals(viewModelReport, newReportWithEmployee) // LiveData gets a whole new Report object!
-    assertNotEquals(newEmployee, viewModelReport.employee) // So employee field also not equal!
-    assertEquals(newEmployee, newReportWithEmployee.employee)
-    assertEquals(null, newReportWithEmployee.id) // BUT ID and location values remain equal to previous's null values
+    assertNotEquals(viewModelReport, newReportWithEmployee) // Grab new report and they DON'T match
+    assertNotEquals(newEmployee, viewModelReport.employee) // SINCE old employee dropped
+    assertEquals(newEmployee, newReportWithEmployee.employee) // and new employee now in new report!
+    // AND all previously set values keep matching, even if default set value is null
+    assertEquals(null, newReportWithEmployee.id)
+    assertEquals(initDate, newReportWithEmployee.date)
+    assertEquals(null, newReportWithEmployee.healthPractice)
     assertEquals(null, newReportWithEmployee.location)
 
     val newLocation = buildLocation()
     viewModel.updateReport(location = newLocation)
     val newReportWithLocation = viewModel.newReport()
-    assertNotEquals(newReportWithEmployee, newReportWithLocation) // Previous location different than new location
+    assertNotEquals(newReportWithEmployee, newReportWithLocation) // Last location different than new location
     assertNotEquals(newReportWithEmployee.location, newReportWithLocation.location)
-    assertEquals(newEmployee, newReportWithLocation.employee) // BUT same employee value as before!
-    assertEquals(null, newReportWithLocation.id) // BUT ID remains equal to previous's null values
-    assertEquals(newLocation, newReportWithLocation.location)
+    assertEquals(newLocation, newReportWithLocation.location) // New location set in report
+    // AND all previously set values keep matching
+    assertEquals(null, newReportWithLocation.id) // ID + healthPractice remain null
+    assertEquals(null, newReportWithLocation.healthPractice)
+    assertEquals(initDate, newReportWithLocation.date) // AND same date + employee values as before
+    assertEquals(newEmployee, newReportWithLocation.employee)
+
+    val newHealthPractice = buildHealthPractice()
+    viewModel.updateReport(healthPractice = newHealthPractice)
+    val newReportWithHealthPractice = viewModel.newReport()
+    assertNotEquals(newReportWithLocation, newReportWithHealthPractice) // Last HealthPractice different
+    assertNotNull(newReportWithHealthPractice.healthPractice) // No longer null
+    assertNotEquals(newReportWithLocation.healthPractice, newReportWithHealthPractice.healthPractice)
+    // AND all previously set values keep matching
+    assertEquals(null, newReportWithHealthPractice.id) // ID only remaining null value
+    assertEquals(initDate, newReportWithHealthPractice.date) // All the rest are their set values
+    assertEquals(newEmployee, newReportWithHealthPractice.employee)
+    assertEquals(newLocation, newReportWithHealthPractice.location)
 
     val anotherEmployee = buildEmployee()
     viewModel.updateReport(employee = anotherEmployee)
     val newReportWithNewEmployee = viewModel.newReport()
-    assertNotEquals(newReportWithLocation, newReportWithNewEmployee)
-    assertNotEquals(newEmployee, newReportWithNewEmployee.employee) // New employee value!
-    assertEquals(anotherEmployee, newReportWithNewEmployee.employee) // Got a match with new employee value
+    assertNotEquals(newReportWithHealthPractice, newReportWithNewEmployee)
+    assertNotEquals(newEmployee, newReportWithNewEmployee.employee) // Original new employee DOESN'T match
+    assertEquals(anotherEmployee, newReportWithNewEmployee.employee) // BUT does match with NEWEST employee
+    // AND all previously set values keep matching
+    assertEquals(null, newReportWithNewEmployee.id) // ID only remaining null value
+    assertEquals(initDate, newReportWithNewEmployee.date)
+    assertEquals(newHealthPractice, newReportWithNewEmployee.healthPractice)
     assertEquals(newLocation, newReportWithNewEmployee.location)
 
     val finalEmployee = buildEmployee()
@@ -262,10 +287,26 @@ class ViewModelCreateReportTest {
     viewModel.updateReport(employee = finalEmployee, location = finalLocation)
     val finalReport = viewModel.newReport()
     assertNotEquals(newReportWithNewEmployee, finalReport)
-    assertNotEquals(anotherEmployee, finalReport.employee) // Previous value not the new value
-    assertEquals(finalEmployee, finalReport.employee) // Got a match with new employee value
-    assertNotEquals(newLocation, finalReport.location) // Previous location also no longer equal
-    assertEquals(finalLocation, finalReport.location) // New location value too!
+    assertNotEquals(anotherEmployee, finalReport.employee) // Last value once again overwritten
+    assertEquals(finalEmployee, finalReport.employee) // With latest employee now matching
+    assertNotEquals(newLocation, finalReport.location) // Last location also no longer matches
+    assertEquals(finalLocation, finalReport.location) // BUT new latest location DOES match
+    // AND all previously set values keep matching
+    assertEquals(null, finalReport.id) // ID only remaining null value
+    assertEquals(initDate, finalReport.date)
+    assertEquals(newHealthPractice, finalReport.healthPractice)
+
+    val newDate = Instant.now()
+    viewModel.updateReport(dateTime = newDate)
+    val dateReport = viewModel.newReport()
+    assertNotEquals(finalReport, dateReport) // Last report and new report NOT equal
+    assertNotEquals(initDate, newDate) // Original date ISN'T the new date
+    assertEquals(newDate, dateReport.date) // New Report DOES MATCH new date
+    // AND all previously set values keep matching
+    assertEquals(null, dateReport.id) // ID only remaining null value
+    assertEquals(finalEmployee, dateReport.employee)
+    assertEquals(newHealthPractice, dateReport.healthPractice)
+    assertEquals(finalLocation, dateReport.location)
 
     // ID not tested since it can't be set or affected by user input
   }

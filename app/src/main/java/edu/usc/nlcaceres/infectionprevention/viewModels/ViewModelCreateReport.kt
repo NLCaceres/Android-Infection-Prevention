@@ -74,7 +74,7 @@ class ViewModelCreateReport @Inject constructor(private val employeeRepository: 
   private val _newReport = MutableLiveData(Report(null, null, null, null, Instant.now()))
   fun newReport() = _newReport.value!! // Should never be null since initial value set above
   fun updateReport(employee: Employee? = newReport().employee, healthPractice: HealthPractice? = newReport().healthPractice,
-                   location: Location? = newReport().location, dateTime: Instant = Instant.now()) {
+                   location: Location? = newReport().location, dateTime: Instant = newReport().date) {
     _newReport.value = Report(null, employee, healthPractice, location, dateTime)
   }
   fun submitReport() {
