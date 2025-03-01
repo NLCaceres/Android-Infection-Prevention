@@ -7,8 +7,10 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.progressSemantics
@@ -38,32 +40,36 @@ import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
 fun ZigZagProgressIndicator(
   modifier: Modifier = Modifier, color: Color, trackColor: Color = Color.Transparent
 ) {
-  var path by remember { mutableStateOf(Path()) } // Shape to draw as a track for the animated path
-  val pathMeasure = remember { PathMeasure() } // Linear length of shape
-  val progress = remember { Animatable(0f) } // How much has been colored-in
-  LaunchedEffect(true) {
-    progress.animateTo( // Speed up to fully drawn path, slowly finishing and reverse
-      1f, infiniteRepeatable(tween(2000, 0, CubicBezierEasing(.45f, .25f, .4f, .9f)), RepeatMode.Reverse)
-    ) // cubic-bezier.com is helpful for animation timing
-  }
-  // Actually colored-in path, use derivedState to limit recompositions to path updates
-  val animatedPath = remember { derivedStateOf { Path().also {
+  BoxWithConstraints(Modifier.progressSemantics().then(modifier)) {
+    var path by remember { mutableStateOf(Path().apply { // Shape to draw as track for animated path
+      val width = this@BoxWithConstraints.constraints.maxWidth
+      val height = this@BoxWithConstraints.constraints.maxHeight
+      moveTo(width * 0.1f, height * 0.13f)
+      lineTo(width * 0.9f, height * 0.13f)
+      lineTo(width * 0.1f, height * 0.87f)
+      lineTo(width * 0.9f, height * 0.87f)
+      close()
+    })}
+    val pathMeasure = remember { PathMeasure() } // Linear length of shape
+    val progress = remember { Animatable(0f) } // How much has been colored-in
+    LaunchedEffect(true) {
+      progress.animateTo( // Speed up to fully drawn path, slowly finishing and reverse
+        1f, infiniteRepeatable(tween(2000, 0, CubicBezierEasing(.45f, .25f, .4f, .9f)), RepeatMode.Reverse)
+      ) // cubic-bezier.com is helpful for animation timing
+    }
     pathMeasure.setPath(path, false)
-    // Only draw & color over a segment of the full track path to create animation effect
-    pathMeasure.getSegment(0f, progress.value * pathMeasure.length, it)
-  } } }
+    // Actually colored-in path, use derivedState to limit recompositions to path updates
+    val animatedPath = remember { derivedStateOf { Path().also {
+      pathMeasure.setPath(path, false)
+      // Only draw & color over a segment of the full track path to create animation effect
+      pathMeasure.getSegment(0f, progress.value * pathMeasure.length, it)
+    } } }
 
-  Canvas(modifier.progressSemantics().size(100.dp)) {
-    // Based on 100.dp, use float "percents" to size/scale the path to the Canvas
-    path.moveTo(size.width * 0.13f, size.height * 0.13f)
-    path.lineTo(size.width * 0.9f, size.height * 0.13f)
-    path.lineTo(size.width * 0.13f, size.height * 0.87f)
-    path.lineTo(size.width * 0.9f, size.height * 0.87f)
-    path.close()
-    pathMeasure.setPath(path, false) // Calculate and set length of the shape
-    // Draw both the track path and then draw the most update to colored-in path
-    drawPath(path, trackColor, style = Stroke(10f, cap = StrokeCap.Round, join = StrokeJoin.Round))
-    drawPath(animatedPath.value, color, style = Stroke(15f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+    Canvas(modifier.fillMaxWidth()) {
+      // Draw both the track path and then draw the most update to colored-in path
+      drawPath(path, trackColor, style = Stroke(10f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+      drawPath(animatedPath.value, color, style = Stroke(15f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+    }
   }
 }
 
@@ -73,8 +79,8 @@ private fun ZigZagPreview() {
   AppTheme {
     Box(Modifier.fillMaxSize(), Alignment.Center) {
       Surface(shape = RoundedCornerShape(10f), color = MaterialTheme.colorScheme.primaryContainer) {
-        Column(Modifier.padding(100.dp)) {
-          ZigZagProgressIndicator(
+        Column(Modifier.padding(10.dp)) {
+          ZigZagProgressIndicator(Modifier.size(300.dp),
             color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.surfaceDim
           )
         }
