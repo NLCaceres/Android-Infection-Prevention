@@ -1,9 +1,10 @@
 package edu.usc.nlcaceres.infectionprevention.composables.common.icons
 
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
@@ -18,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,19 +50,15 @@ fun ZigZagProgressIndicator(
       lineTo(width * 0.9f, height * 0.87f)
       close()
     })}
-    val pathMeasure = remember { PathMeasure() } // Linear length of shape
-    val progress = remember { Animatable(0f) } // How much has been colored-in
-    LaunchedEffect(true) {
-      progress.animateTo( // Speed up to fully drawn path, slowly finishing and reverse
-        1f, infiniteRepeatable(tween(2000, 0, CubicBezierEasing(.45f, .25f, .4f, .9f)), RepeatMode.Reverse)
-      ) // cubic-bezier.com is helpful for animation timing
-    }
-    pathMeasure.setPath(path, false)
+    val pathMeasure = PathMeasure().apply { setPath(path, false) } // Linear length of shape
+    // Safe to remember infiniteTransition like this since `remember` caches to the current composition
+    val progress by rememberInfiniteTransition().animateFloat(
+      0f, pathMeasure.length,
+      infiniteRepeatable(tween(2000, 0, CubicBezierEasing(.45f, .25f, .4f, .9f)), RepeatMode.Reverse)
+    )
     // Actually colored-in path, use derivedState to limit recompositions to path updates
     val animatedPath = remember { derivedStateOf { Path().also {
-      pathMeasure.setPath(path, false)
-      // Only draw & color over a segment of the full track path to create animation effect
-      pathMeasure.getSegment(0f, progress.value * pathMeasure.length, it)
+      pathMeasure.getSegment(0f, progress, it) // Inject this portion of full path to animate/draw
     } } }
 
     Canvas(modifier.fillMaxWidth()) {
