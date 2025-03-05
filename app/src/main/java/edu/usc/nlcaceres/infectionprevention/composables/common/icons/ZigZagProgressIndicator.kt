@@ -9,22 +9,17 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.progressSemantics
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -33,6 +28,8 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
 
@@ -40,7 +37,7 @@ import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
 fun ZigZagProgressIndicator(
   modifier: Modifier = Modifier, color: Color, trackColor: Color = Color.Transparent
 ) {
-  BoxWithConstraints(Modifier.progressSemantics().then(modifier)) {
+  BoxWithConstraints(Modifier.fillMaxSize().progressSemantics().then(modifier)) {
     var path by remember { mutableStateOf(Path().apply { // Shape to draw as track for animated path
       val width = this@BoxWithConstraints.constraints.maxWidth
       val height = this@BoxWithConstraints.constraints.maxHeight
@@ -69,18 +66,23 @@ fun ZigZagProgressIndicator(
   }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun ZigZagPreview() {
-  AppTheme {
-    Box(Modifier.fillMaxSize(), Alignment.Center) {
-      Surface(shape = RoundedCornerShape(10f), color = MaterialTheme.colorScheme.primaryContainer) {
-        Column(Modifier.padding(10.dp)) {
-          ZigZagProgressIndicator(Modifier.size(300.dp),
-            color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.surfaceDim
-          )
-        }
+class IndicatorPreviewProvider: PreviewParameterProvider<@Composable () -> Unit> {
+  override val values: Sequence<@Composable (() -> Unit)>
+    get() = sequenceOf(
+      @Composable {
+        ZigZagProgressIndicator(
+          color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.surfaceDim
+        )
+      },
+      @Composable {
+        Box(Modifier.fillMaxSize()) { ZigZagProgressIndicator(Modifier.requiredSize(100.dp), Color.Blue) }
       }
-    }
-  }
+    )
+}
+@Preview(showBackground = true, widthDp = 300, heightDp = 500)
+@Composable
+private fun ZigZagPreview(
+  @PreviewParameter(IndicatorPreviewProvider::class) composable: @Composable (() -> Unit)
+) {
+  AppTheme { composable() }
 }
