@@ -7,6 +7,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import edu.usc.nlcaceres.infectionprevention.BuildConfig
+import edu.usc.nlcaceres.infectionprevention.util.BaseDevURL
 import edu.usc.nlcaceres.infectionprevention.util.BaseURL
 import kotlinx.coroutines.Dispatchers
 import retrofit2.Retrofit
@@ -40,7 +42,8 @@ abstract class AppModule {
     @Singleton // - Excellent example of Dagger's benefits, avoiding a semi-complex companion obj lazily to create a Singleton
     @Provides
     fun provideBaseRetrofitInstance(gsonConverterFactory: retrofit2.Converter.Factory): Retrofit {
-      return Retrofit.Builder().baseUrl(BaseURL) // - BaseUrl must end in '/'
+      return Retrofit.Builder() // - Check if debug or release buildType at runtime and use proper URL
+        .baseUrl(if (BuildConfig.BUILD_TYPE == "debug") BaseDevURL else BaseURL) // BuildConfig constants set at build time
         .addConverterFactory(gsonConverterFactory) // - Custom Gson factory based on a GsonBuilder instance
         .build()
     }
