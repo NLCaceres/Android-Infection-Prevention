@@ -49,7 +49,6 @@ android {
 }
 
 composeCompiler {
-    enableStrongSkippingMode = true // Lets "restartable" composables become skippable too!
     reportsDestination = layout.buildDirectory.dir("compose_compiler")
 }
 
