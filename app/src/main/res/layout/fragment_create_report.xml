@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,7 +12,19 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/createReportComposeView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        tools:composableName="edu.usc.nlcaceres.infectionprevention.composables.views.CreateReportViewKt.CreateReportViewPreview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progress_indicator"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
     <TextView
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/headerTV"
@@ -34,6 +47,7 @@
         app:layout_constraintGuide_percent="0.075" />
 
     <TextView
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/dateTV"
@@ -45,6 +59,7 @@
         app:layout_constraintBottom_toTopOf="@+id/dateEditText"
         app:layout_constraintStart_toStartOf="@+id/startGuideline" />
     <EditText
+        android:visibility="gone"
         android:id="@+id/dateEditText"
         android:layout_width="200dp"
         android:layout_height="48dp"
@@ -59,6 +74,7 @@
         app:layout_constraintStart_toStartOf="@+id/startGuideline" />
 
     <TextView
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/employeeTV"
@@ -70,6 +86,7 @@
         app:layout_constraintTop_toBottomOf="@+id/dateEditText"
         app:layout_constraintStart_toStartOf="@+id/startGuideline" />
     <Spinner
+        android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:paddingEnd="50dp"
@@ -86,6 +103,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/healthPracticeTV"
@@ -98,6 +116,7 @@
         app:layout_constraintBottom_toTopOf="@+id/healthPracticeSpinner"
         app:layout_constraintStart_toStartOf="@+id/startGuideline" />
     <Spinner
+        android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:paddingEnd="50dp"
@@ -115,6 +134,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/facilityTV"
@@ -127,6 +147,7 @@
         app:layout_constraintBottom_toTopOf="@+id/facilitySpinner"
         app:layout_constraintStart_toStartOf="@+id/startGuideline" />
     <Spinner
+        android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:paddingEnd="50dp"
@@ -142,6 +163,7 @@
         app:layout_constraintStart_toStartOf="@+id/startGuideline"
         app:layout_constraintEnd_toEndOf="parent" />
     <Button
+        android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:id="@+id/see_assignment_button"
@@ -156,6 +178,7 @@
     <!-- Filler for Unit and Room Spinners -->
 
     <Button
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/createReportButton"
