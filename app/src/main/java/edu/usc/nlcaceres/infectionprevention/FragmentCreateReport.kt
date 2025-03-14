@@ -11,6 +11,8 @@ import android.widget.Spinner
 import android.widget.Button
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.os.bundleOf
 import androidx.fragment.app.*
 import androidx.lifecycle.Lifecycle
@@ -19,10 +21,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.transition.ChangeBounds
 import androidx.transition.Fade
 import dagger.hilt.android.AndroidEntryPoint
+import edu.usc.nlcaceres.infectionprevention.composables.views.CreateReportView
 import edu.usc.nlcaceres.infectionprevention.databinding.FragmentCreateReportBinding
 import edu.usc.nlcaceres.infectionprevention.data.Location
 import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 import edu.usc.nlcaceres.infectionprevention.data.Employee
+import edu.usc.nlcaceres.infectionprevention.ui.theme.AppTheme
 import edu.usc.nlcaceres.infectionprevention.util.*
 import edu.usc.nlcaceres.infectionprevention.viewModels.ViewModelCreateReport
 import java.time.LocalTime
@@ -35,6 +39,7 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
   private var _viewBinding: FragmentCreateReportBinding? = null
   private val viewBinding get() = _viewBinding!!
   private lateinit var progressIndicator : ProgressBar // lateinit vars must be init'd or will throw!
+  private lateinit var createReportComposeView: ComposeView
   private lateinit var headerTV : TextView
   private lateinit var dateET : EditText
   private lateinit var dateTimeSetListener: ListenerDateTimeSet
@@ -56,6 +61,10 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
     _viewBinding = FragmentCreateReportBinding.inflate(layoutInflater)
+    createReportComposeView = viewBinding.createReportComposeView.apply {
+      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+      setContent { AppTheme { CreateReportView(viewModel = viewModel) } }
+    }
     return viewBinding.root
   }
 
@@ -64,26 +73,41 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
     // Useful for shared element transitions to work //! BUT currently broken by Jetpack Compose
     postponeEnterTransition() // BUT the "lag" caused onNavClick by this postpone is negligible, so leaving it in
 
-    requireActivity().addMenuProvider(MenuProviderDefault(findNavController()), viewLifecycleOwner, Lifecycle.State.STARTED)
+    requireActivity().addMenuProvider(
+      MenuProviderDefault(findNavController()), viewLifecycleOwner, Lifecycle.State.STARTED)
 
     setupProgressIndicator()
-    setupHeaderTextView()
     setupSnackbar()
-    setupDateEditText()
-    setupSpinners()
 
-    createReportButton = viewBinding.createReportButton.apply { setOnClickListener {
-      if (viewModel.dateTimeString.value.isNullOrBlank()) { // Date likely was NOT selected, so alert user
-        createAlertDialog().show(childFragmentManager, CreateReportAlertDialogTag)
-      }
-      else { completeReportSubmission() }
-    }}
+    viewModel.adapterData.observe(viewLifecycleOwner) { (_, healthPracticeList, _) ->
+      if (healthPracticeList.isEmpty()) { return@observe } // If empty, DON'T select a healthPractice
+      val selectedPracticeType = arguments?.getString(CreateReportPracticeExtra) ?: ""
+      viewModel.updateHealthPractice(healthPracticeList.firstOrNull { it.name == selectedPracticeType })
+    }
+//    setupHeaderTextView()
+//    setupDateEditText()
+//    setupSpinners()
+
+//    createReportButton = viewBinding.createReportButton.apply { setOnClickListener {
+//      if (viewModel.dateTimeString.value.isNullOrBlank()) { // Date likely was NOT selected, so alert user
+//        createAlertDialog().show(childFragmentManager, CreateReportAlertDialogTag)
+//      }
+//      else { completeReportSubmission() }
+//    }}
   }
 
   private fun setupProgressIndicator() {
     progressIndicator = viewBinding.progressIndicator.appProgressbar
     viewModel.loadingState.observe(viewLifecycleOwner) { loading ->
       progressIndicator.visibility = if (loading) View.VISIBLE else View.INVISIBLE
+    }
+  }
+  private fun setupSnackbar() {
+    viewModel.snackbarMessage.observe(viewLifecycleOwner) { errMsg ->
+      if (errMsg.isNotBlank()) {
+        (activity as? ActivityMain)?.showSnackbar(errMsg)
+        startPostponedEnterTransition()
+      }
     }
   }
   private fun setupHeaderTextView() {
@@ -94,14 +118,6 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
     } // Unclear if this transition runs if selectedPractice == "" (i.e. when arriving at this fragment via shortcut)
 
     viewModel.healthPracticeHeaderText.observe(viewLifecycleOwner) { headerTV.text = it } // emits a string from flow map func
-  }
-  private fun setupSnackbar() {
-    viewModel.snackbarMessage.observe(viewLifecycleOwner) { errMsg ->
-      if (errMsg.isNotBlank()) {
-        (activity as? ActivityMain)?.showSnackbar(errMsg)
-        startPostponedEnterTransition()
-      }
-    }
   }
   private fun setupDateEditText() {
     // Kotlin can use "apply" (and other scope funcs) as convenient extension funcs that can often times help in setting up
