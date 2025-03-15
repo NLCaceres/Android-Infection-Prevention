@@ -1,5 +1,6 @@
 package edu.usc.nlcaceres.infectionprevention
 
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Until
@@ -35,12 +36,14 @@ class FragmentCreateReportTestCase: TestCase(kaspressoBuilder = Kaspresso.Builde
       MainActivityScreen.tapHealthPracticeItem(composeTestRule, "Hand Hygiene")
       device.uiDevice.waitForIdle()
     }
-    step("Check CreateReportScreen loaded") { CreateReportScreen.headerTV.hasText("New Hand Hygiene Observation") }
+    step("Check CreateReportScreen loaded") {
+      composeTestRule.onNode(hasText("New Hand Hygiene Observation"))
+    }
   }
 
   @Test fun check_Default_Header() = run {
     step("Check that 'Before' func navigated to CreateReportScreen via 'Create Hand Hygiene Report' Button") {
-      CreateReportScreen.headerTV.hasText("New Hand Hygiene Observation")
+      composeTestRule.onNode(hasText("New Hand Hygiene Observation"))
     }
   }
 
