@@ -2,10 +2,13 @@ package edu.usc.nlcaceres.infectionprevention.screens
 
 import android.widget.DatePicker
 import android.widget.TimePicker
+import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.test.espresso.matcher.ViewMatchers
 import com.kaspersky.kaspresso.screens.KScreen
 import edu.usc.nlcaceres.infectionprevention.FragmentCreateReport
 import edu.usc.nlcaceres.infectionprevention.R
+import io.github.kakaocup.compose.node.element.ComposeScreen
+import io.github.kakaocup.compose.node.element.KNode
 import io.github.kakaocup.kakao.common.views.KView
 import io.github.kakaocup.kakao.edit.KEditText
 import io.github.kakaocup.kakao.picker.date.KDatePicker
@@ -41,4 +44,9 @@ object CreateReportScreen: KScreen<CreateReportScreen>() {
   val submitButton = KButton { withId(R.id.createReportButton) }
 
   val snackbar = KSnackbar()
+}
+
+class CreateReportComposeScreen(semanticsProvider: SemanticsNodeInteractionsProvider):
+  ComposeScreen<CreateReportComposeScreen>(semanticsProvider, { hasTestTag("CreateReportView") }) {
+  fun headerText(text: String): KNode = child { hasText(text) }
 }
