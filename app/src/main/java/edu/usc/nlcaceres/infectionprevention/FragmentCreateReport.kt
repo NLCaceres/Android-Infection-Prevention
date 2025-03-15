@@ -55,8 +55,8 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
     enterTransition = Fade(Fade.IN) // Like activity's window.enterTransition
     exitTransition = Fade(Fade.OUT) // AND window.exitTransition
     // Using androidx.transition.ChangeBounds for API 14 AndroidX improvements over old android.transition
-    sharedElementEnterTransition = ChangeBounds() //! SharedElementTransition currently unsupported by Jetpack Compose
-    sharedElementReturnTransition = ChangeBounds() // Occurs on popback to slide it back in place in prev fragment
+//    sharedElementEnterTransition = ChangeBounds() //! SharedElementTransition currently unsupported by Jetpack Compose
+//    sharedElementReturnTransition = ChangeBounds() // Occurs on popback to slide it back in place in prev fragment
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -71,7 +71,7 @@ class FragmentCreateReport : Fragment(R.layout.fragment_create_report) {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     // Useful for shared element transitions to work //! BUT currently broken by Jetpack Compose
-    postponeEnterTransition() // BUT the "lag" caused onNavClick by this postpone is negligible, so leaving it in
+//    postponeEnterTransition() // BUT the "lag" caused onNavClick by this postpone is negligible, so leaving it in
 
     requireActivity().addMenuProvider(
       MenuProviderDefault(findNavController()), viewLifecycleOwner, Lifecycle.State.STARTED)
