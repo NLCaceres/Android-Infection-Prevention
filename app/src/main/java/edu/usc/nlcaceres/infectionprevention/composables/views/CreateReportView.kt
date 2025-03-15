@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -42,7 +43,7 @@ fun CreateReportView(modifier: Modifier = Modifier, viewModel: ViewModelCreateRe
     Triple(emptyList<Employee>(), emptyList<HealthPractice>(), emptyList<Location>())
   )
   CreateReportView(
-    headerText, adapterData.second, report, modifier,
+    headerText, adapterData.second, report, modifier.then(Modifier.testTag("CreateReportView")),
     viewModel::updateDate, viewModel::updateHealthPractice, viewModel::submitReport
   )
 }
