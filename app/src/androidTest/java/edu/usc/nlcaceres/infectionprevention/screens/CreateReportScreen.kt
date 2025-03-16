@@ -49,4 +49,13 @@ object CreateReportScreen: KScreen<CreateReportScreen>() {
 class CreateReportComposeScreen(semanticsProvider: SemanticsNodeInteractionsProvider):
   ComposeScreen<CreateReportComposeScreen>(semanticsProvider, { hasTestTag("CreateReportView") }) {
   fun headerText(text: String): KNode = child { hasText(text) }
+
+  val timePickerTextField: KNode = child { hasText("Select a Time & Date") }
+
+  val hourInputTextField = KNode(semanticsProvider) { hasContentDescription("for hour") }
+  val minuteInputTextField = KNode(semanticsProvider) { hasContentDescription("for minutes") }
+  val amButton: KNode = KNode(semanticsProvider) { hasText("AM") }
+  val pmButton: KNode = KNode(semanticsProvider) { hasText("PM") }
+  val cancelDialogButton: KNode = KNode(semanticsProvider) { hasText("Cancel") }
+  val okDialogButton: KNode = KNode(semanticsProvider) { hasText("OK") }
 }
