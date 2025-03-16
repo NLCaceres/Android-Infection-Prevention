@@ -13,10 +13,12 @@ import edu.usc.nlcaceres.infectionprevention.data.Employee
 import edu.usc.nlcaceres.infectionprevention.data.HealthPractice
 import edu.usc.nlcaceres.infectionprevention.data.Location
 import edu.usc.nlcaceres.infectionprevention.helpers.util.withDataDescribedAs
+import edu.usc.nlcaceres.infectionprevention.screens.CreateReportComposeScreen
 import edu.usc.nlcaceres.infectionprevention.screens.CreateReportScreen
 import edu.usc.nlcaceres.infectionprevention.screens.MainActivityScreen
 import edu.usc.nlcaceres.infectionprevention.screens.ReportListScreen
 import edu.usc.nlcaceres.infectionprevention.screens.SettingsScreen
+import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
 import io.github.kakaocup.kakao.spinner.KSpinnerItem
 import java.time.LocalDate
 import org.junit.Assert.assertEquals
@@ -37,13 +39,17 @@ class FragmentCreateReportTestCase: TestCase(kaspressoBuilder = Kaspresso.Builde
       device.uiDevice.waitForIdle()
     }
     step("Check CreateReportScreen loaded") {
-      composeTestRule.onNode(hasText("New Hand Hygiene Observation"))
+      onComposeScreen<CreateReportComposeScreen>(composeTestRule) {
+        headerText("New Hand Hygiene Observation").assertIsDisplayed()
+      }
     }
   }
 
   @Test fun check_Default_Header() = run {
     step("Check that 'Before' func navigated to CreateReportScreen via 'Create Hand Hygiene Report' Button") {
-      composeTestRule.onNode(hasText("New Hand Hygiene Observation"))
+      onComposeScreen<CreateReportComposeScreen>(composeTestRule) {
+        headerText("New Hand Hygiene Observation").assertIsDisplayed()
+      }
     }
   }
 
