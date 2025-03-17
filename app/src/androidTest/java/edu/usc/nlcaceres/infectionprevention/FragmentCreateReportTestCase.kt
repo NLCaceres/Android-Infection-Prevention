@@ -58,14 +58,18 @@ class FragmentCreateReportTestCase: TestCase(kaspressoBuilder = Kaspresso.Builde
     step("Press back button from CreateReportScreen") { CreateReportScreen.pressBack() }
     step("Check MainActivityScreen reappeared") {
       device.uiDevice.waitForIdle()
-      MainActivityScreen.precautionRV.firstChild<MainActivityScreen.PrecautionRvItem> { precautionTypeTV.containsText("Standard Report") }
+      MainActivityScreen.precautionRV.firstChild<MainActivityScreen.PrecautionRvItem> {
+        precautionTypeTV.containsText("Standard Report")
+      }
     }
   }
   @Test fun handle_Up_Navigation() = run {
     step("Press Up button from CreateReportScreen") { CreateReportScreen.upButton.click() }
     step("Check MainActivityScreen reappeared") {
       device.uiDevice.waitForIdle()
-      MainActivityScreen.precautionRV.lastChild<MainActivityScreen.PrecautionRvItem> { precautionTypeTV.containsText("Isolation Report") }
+      MainActivityScreen.precautionRV.lastChild<MainActivityScreen.PrecautionRvItem> {
+        precautionTypeTV.containsText("Isolation Report")
+      }
     }
   }
   @Test fun handle_Settings_Navigation() = run {
