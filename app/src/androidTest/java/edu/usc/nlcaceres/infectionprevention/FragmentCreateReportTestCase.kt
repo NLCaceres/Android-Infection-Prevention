@@ -85,20 +85,31 @@ class FragmentCreateReportTestCase: TestCase(kaspressoBuilder = Kaspresso.Builde
   //! Time and Date
   @Test fun select_Time() = run {
     step("Open TimePicker by tapping TimePickerEditText") {
-      CreateReportScreen.timePickerET.click()
+      onComposeScreen<CreateReportComposeScreen>(composeTestRule) {
+        timePickerTextField.performClick()
+      }
     }
     step("Set time to 3:34 PM") {
-      device.uiDevice.waitForIdle()
-      CreateReportScreen.timePicker.setTime(15, 34)
-      CreateReportScreen.dialogOkButton.click() // Goes to DatePicker
+      onComposeScreen<CreateReportComposeScreen>(composeTestRule) {
+        hourInputTextField.performTextReplacement("3")
+        minuteInputTextField.performTextReplacement("34")
+        pmButton.performClick()
+        okDialogButton.performClick() // Begin picking date
+      }
     }
     step("Cancel DatePicker's AlertDialog") {
-      CreateReportScreen.dialogCancelButton.click()
+      onComposeScreen<CreateReportComposeScreen>(composeTestRule) {
+        cancelDialogButton.performClick()
+      }
     }
-    step("Check timePickerET's value") {
+    step("Check timePickerTextField's value") {
       val localDate = LocalDate.now()
-      val expectedDateTimeString = "3:34 PM ${localDate.monthValue}/${localDate.dayOfMonth}/${localDate.year}"
-      CreateReportScreen.timePickerET.hasText(expectedDateTimeString)
+      val dateString = localDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"))
+      val expectedDateTimeString = "3:34 PM $dateString"
+      onComposeScreen<CreateReportComposeScreen>(composeTestRule) {
+        // Need both the TextField label and its value to correctly assert its text
+        timePickerTextField.assertTextEquals("Select a Time & Date", expectedDateTimeString)
+      }
     }
   }
   @Test fun select_Time_And_Date() = run {
